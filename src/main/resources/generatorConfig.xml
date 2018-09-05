@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<!-- 命令： mybatis-generator:generate -->
+<!-- tk.mapper官方文档 https://mapperhelper.github.io/docs/ -->
+<generatorConfiguration>
+    <properties resource="application.properties"/>
+    <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+        <property name="javaFileEncoding" value="UTF-8"/>
+
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="tk.mybatis.mapper.common.Mapper"/>
+            <property name="caseSensitive" value="true"/>
+        </plugin>
+
+        <jdbcConnection driverClass="${spring.datasource.driverClassName}"
+                        connectionURL="${spring.datasource.url}" userId="${spring.datasource.username}"
+                        password="${spring.datasource.password}">
+        </jdbcConnection>
+
+        <javaModelGenerator targetPackage="com.boot.entity"
+                            targetProject="${targetJavaProject}"/>
+
+        <sqlMapGenerator targetPackage="/mapper"
+                         targetProject="${targetResourcesProject}"/>
+
+        <javaClientGenerator targetPackage="com.boot.mapper"
+                             targetProject="${targetJavaProject}" type="XMLMAPPER"/>
+
+        <table tableName="u_permission"></table>
+    </context>
+
+</generatorConfiguration>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>首页</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
+    <script th:src="@{/layui/layui.all.js}"></script>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">layui 后台布局</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left" lay-filter="menu1">
+            <li class="layui-nav-item" th:each="menu1,meanuSta:${menuList1}">
+                <a href="#" th:id="${menu1.id}" th:utext="${menu1.content}"></a>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    <font th:text="${user.userName}"></font>
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="#" data-method="offset" data-type="info">基本资料</a></dd>
+                    <dd><a href="#" data-method="offset" data-type="password">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">注销</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="menu2">
+                <li class="layui-nav-item"  th:each="menu2,meanuSta:${menuList2}" th:parentid="${menu2.parentId}">
+                    <a href="#"  th:name="${menu2.content}" th:utext="${menu2.content}"  th:id="${menu2.id}" th:url="${menu2.url}"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <div class="layui-tab layui-tab-brief" lay-filter="tab" lay-allowclose="true" >
+            <ul class="layui-tab-title">
+                <li class="layui-this" lay-id="0">网站设置</li>
+            </ul>
+            <div class="layui-tab-content layui-bg-gray" >
+                <div class="layui-tab-item layui-show " style="background-color: #01AAED">
+                    <table border="1" height="600Px"></table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="layui-footer" >
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+
+    <div class="layui-hide">
+        <div id="info" layui-btn-fluid>
+            <div class="layui-form-item layui-inline" style="margin:4% 30%">
+                <a href="#"><img src="http://t.cn/RCzsdCq" class="layui-circle"></a>
+            </div>
+            <form class="layui-form layui-form-pane" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" autocomplete="off" th:value="${user.userName}" class="layui-input" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item ">
+                    <label class="layui-form-label">角色</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" autocomplete="off" th:value="${role.name}" class="layui-input" disabled>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    //JavaScript代码区域
+    layui.use(['jquery', 'layer', 'element'], function () {
+        var $ = jQuery = layui.$;
+        var element = layui.element, layer = layui.layer;
+        element.init();
+        element.render('nav');
+
+
+        //监听菜单
+        element.on('nav(menu1)', function (elem) {
+            $(".layui-nav-tree").children("li").each(function (i, n) {
+                if(elem.attr("id") == $(n).attr("parentid")){
+                    $(n).show();
+                }else{
+                    $(n).hide();
+                }
+            });
+        });
+        element.on('nav(menu2)', function (elem) {
+            if($("li[lay-id='"+elem.attr("id")+"']").length==0){
+                element.tabAdd('tab', {
+                    title: elem.attr("name")
+                    ,content: '<iframe data-frameid="' + elem.attr("id") + '"  src="' + elem.attr("url") + '"  ' +
+                    'scrolling="yes" frameborder="0"  class="layui-admin-iframe" ></iframe>'
+                    ,id: elem.attr("id")
+                });
+                FrameWH();
+            }
+            element.tabChange('tab',elem.attr("id"));
+        });
+        //触发事件
+        var active = {
+            offset: function (othis) {
+                var type = othis.data('type')
+                    , text = othis.text();
+                layer.open({
+                    type: 1
+                    ,offset: type
+                    ,id: 'layerDemo'+type //防止重复弹出
+                    ,content: $("#info").html()
+                    ,btn: '确定'
+                    ,btnAlign: 'c' //按钮居中
+                    ,shade: 0.3 //不显示遮罩
+                    ,anim:1
+                    ,area: ['300px', '350px']
+                    ,yes: function(){
+                        layer.closeAll();
+                    }
+                });
+            }
+        }
+
+        $('.layui-nav-child a').on('click', function(){
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+
+        //初始化点击第一个菜单
+        $("ul li:first").addClass("layui-this");
+        $(".layui-nav-tree").children("li").each(function (i, n) {
+            if($("ul li:first").find("a").attr("id") == $(n).attr("parentid")){
+                $(n).show();
+            }else{
+                $(n).hide();
+            }
+        });
+
+        //iframe高度设置
+        function FrameWH() {
+            var h = $(".layui-side").height()-$(".layui-footer").height()-$(".layui-tab-title").height()-44;
+            $("iframe").css("height",h+"px");
+        }
+
+        $(window).resize(function () {
+            FrameWH();
+        });
+    });
+
+</script>
+</body>
+</html>

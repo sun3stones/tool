@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lei.tool.mapper.URoleMapper">
+    <resultMap id="BaseResultMap" type="com.lei.tool.entity.URole">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectRole" parameterType="com.lei.tool.entity.UUser" resultMap="BaseResultMap">
+        select a.* from u_role a left join u_user_role b on a.id=b.rid left join u_user c on b.uid = c.id where c.id= #{id}
+    </select>
+</mapper>
