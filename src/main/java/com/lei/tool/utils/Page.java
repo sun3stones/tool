@@ -6,8 +6,8 @@ public class Page<T> {
 
     private int page;//页数
     private int limit;//每页条数
-    private int sum;//总条数
-    private List<T> data;//数据
+    private int count;//总条数
+    private List<T> data;//数据wx
 
     private int code;//状态码
     private String msg;//返回信息
@@ -44,12 +44,12 @@ public class Page<T> {
         this.limit = limit;
     }
 
-    public int getSum() {
-        return sum;
+    public int getCount() {
+        return count;
     }
 
-    public void setSum(int sum) {
-        this.sum = sum;
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public List<T> getData() {

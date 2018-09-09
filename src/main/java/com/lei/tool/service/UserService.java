@@ -22,6 +22,15 @@ public interface UserService {
 
     List<UPermission> getPermission(UUser user);
 
+    List<UPermission> getRolePermission(URole uRole);
+
     List<UPermission> getMenu(UUser user);
 
+    List<UPermission> getAllMenu();
+
+    List<UPermission> getAllPermission();
+
+    int updateRolePermission(String perIds,Long id);
+
+    int insertRole(URole uRole);
 }

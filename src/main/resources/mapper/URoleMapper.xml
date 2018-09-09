@@ -13,4 +13,5 @@
     <select id="selectRole" parameterType="com.lei.tool.entity.UUser" resultMap="BaseResultMap">
         select a.* from u_role a left join u_user_role b on a.id=b.rid left join u_user c on b.uid = c.id where c.id= #{id}
     </select>
+
 </mapper>

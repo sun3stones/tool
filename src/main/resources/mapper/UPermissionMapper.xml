@@ -1,28 +1,38 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lei.tool.mapper.UPermissionMapper">
-    <resultMap id="BaseResultMap" type="com.lei.tool.entity.UPermission">
-        <!--
-          WARNING - @mbg.generated
-        -->
-        <id column="id" property="id" jdbcType="BIGINT"/>
-        <result column="url" property="url" jdbcType="VARCHAR"/>
-        <result column="name" property="name" jdbcType="VARCHAR"/>
-        <result column="sort" property="sort" jdbcType="INTEGER"/>
-        <result column="is_menu" property="isMenu" jdbcType="INTEGER"/>
-        <result column="level" property="level" jdbcType="INTEGER"/>
-        <result column="content" property="content" jdbcType="VARCHAR"/>
-        <result column="parent_id" property="parentId" jdbcType="BIGINT"/>
-    </resultMap>
+  <resultMap id="BaseResultMap" type="com.lei.tool.entity.UPermission">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="is_menu" jdbcType="INTEGER" property="isMenu" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+  </resultMap>
 
-    <select id="selectPermission" resultMap="BaseResultMap" parameterType="com.lei.tool.entity.UUser">
-      select e.* from u_user a left join u_user_role b on a.id=b.uid left join u_role c on b.rid=c.id
+
+  <select id="selectPermission" parameterType="com.lei.tool.entity.UUser" resultMap="BaseResultMap">
+    select e.* from u_user a left join u_user_role b on a.id=b.uid left join u_role c on b.rid=c.id
       left join u_role_permission d on d.rid=c.id left join u_permission e on e.id =d.pid where a.id = #{id} order by sort
-    </select>
+  </select>
 
-    <select id="selectMenu" resultMap="BaseResultMap" parameterType="UUser">
-        select e.* from u_user a left join u_user_role b on a.id=b.uid left join u_role c on b.rid=c.id
-            left join u_role_permission d on d.rid=c.id left join u_permission e on e.id =d.pid where a.id = #{id}
-            and e.is_menu ='1'
-    </select>
+  <select id="selectRolePermission" parameterType="URole" resultMap="BaseResultMap">
+    select * from u_permission where id in (select pid from u_role_permission where rid=#{id})
+  </select>
+
+  <select id="selectMenu" parameterType="URole" resultMap="BaseResultMap">
+    select e.* from u_user a left join u_user_role b on a.id=b.uid left join u_role c on b.rid=c.id
+      left join u_role_permission d on d.rid=c.id left join u_permission e on e.id =d.pid where a.id = #{id}
+      and e.is_menu ='1'
+  </select>
+
+  <select id="selectAllMenu" resultMap="BaseResultMap">
+    select  * from u_permission where is_menu='1'
+  </select>
 </mapper>

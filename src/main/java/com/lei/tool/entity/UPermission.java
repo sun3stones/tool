@@ -39,6 +39,11 @@ public class UPermission {
     private String content;
 
     /**
+     * 描述
+     */
+    private String remark;
+
+    /**
      * 父权限id
      */
     @Column(name = "parent_id")
@@ -164,6 +169,24 @@ public class UPermission {
      */
     public void setContent(String content) {
         this.content = content;
+    }
+
+    /**
+     * 获取描述
+     *
+     * @return remark - 描述
+     */
+    public String getRemark() {
+        return remark;
+    }
+
+    /**
+     * 设置描述
+     *
+     * @param remark 描述
+     */
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     /**

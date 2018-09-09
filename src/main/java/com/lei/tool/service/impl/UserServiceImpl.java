@@ -3,9 +3,11 @@ package com.lei.tool.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.lei.tool.entity.UPermission;
 import com.lei.tool.entity.URole;
+import com.lei.tool.entity.URolePermission;
 import com.lei.tool.entity.UUser;
 import com.lei.tool.mapper.UPermissionMapper;
 import com.lei.tool.mapper.URoleMapper;
+import com.lei.tool.mapper.URolePermissionMapper;
 import com.lei.tool.mapper.UUserMapper;
 import com.lei.tool.service.UserService;
 import com.lei.tool.utils.Page;
@@ -26,6 +28,8 @@ public class UserServiceImpl implements UserService {
     private UPermissionMapper permissionMapper;
     @Autowired
     private URoleMapper roleMapper;
+    @Autowired
+    private URolePermissionMapper rolePermissionMapper;
 
     @Override
     public UUser selectUser(UUser user) {
@@ -65,12 +69,12 @@ public class UserServiceImpl implements UserService {
             ex.createCriteria().andEqualTo("name",uRole.getName());
         }
         list =  roleMapper.selectByExample(ex);
+        page.setCount(roleMapper.selectCountByExample(ex));
         page.setData(list);
         page.setCode(0);
         page.setMsg("成功");
         return page;
     }
-
 
     @Override
     public List<UPermission> getPermission(UUser user) {
@@ -78,8 +82,44 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UPermission> getRolePermission(URole uRole) {
+        return permissionMapper.selectRolePermission(uRole);
+    }
+
+    @Override
     public List<UPermission> getMenu(UUser user) {
         return permissionMapper.selectMenu(user);
+    }
+
+    @Override
+    public List<UPermission> getAllMenu() {
+        return permissionMapper.selectAllMenu();
+    }
+
+    @Override
+    public List<UPermission> getAllPermission() {
+        return permissionMapper.selectAll();
+    }
+
+    @Override
+    public int updateRolePermission(String perIds, Long id) {
+        int i = 0;
+        Example ex = new Example(URolePermission.class);
+        ex.createCriteria().andEqualTo("rid",id);
+        rolePermissionMapper.deleteByExample(ex);
+        URolePermission rolePermission = new URolePermission();
+        rolePermission.setRid(id);
+        String[] pids =  perIds.split(",");
+        for (String pid:pids) {
+            rolePermission.setPid(Long.parseLong(pid));
+            i += rolePermissionMapper.insert(rolePermission);
+        }
+        return i;
+    }
+
+    @Override
+    public int insertRole(URole uRole) {
+        return roleMapper.insertSelective(uRole);
     }
 
 

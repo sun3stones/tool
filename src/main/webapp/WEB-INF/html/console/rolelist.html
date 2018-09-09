@@ -22,7 +22,7 @@
         </div>
      </div>
        <div class="layui-card-body">
-           <button class="layui-btn" data-type="reload">新增</button>
+           <button class="layui-btn" data-type="reload" id="addRole">新增</button>
            <table class="layui-form-item"  id="rolelist" lay-filter="rolelist"></table>
        </div>
 
@@ -32,14 +32,35 @@
 </div>
 </body>
 <script type="text/html" id="roleBar">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    {{#  if(d.id != 1){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="edit" >编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{#  } }}
+</script>
+<script type="text/html" id="addRoleBar">
+
+        <form class="layui-form layui-form-pane" id="addRoleForm">
+            <div class="layui-site-20">
+                <label class="layui-form-label">角色名称</label>
+                <div class="layui-inline">
+                    <input type="text" name="name" required lay-verify="name"  placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+                </div>
+
+            </div>
+            <div class="layui-btn-container" style="margin-top: 10px;margin-left: 110px">
+                <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="subBtn">保存</button>
+                <button class="layui-btn layui-btn-sm layui-btn-primary"  id="cancalBtn">取消</button>
+            </div>
+        </form>
+
+
 </script>
 <script>
-    layui.use(['jquery', 'layer', 'element','table'], function(){
+    layui.use(['jquery', 'layer', 'element','table','form'], function(){
         var $ = jQuery = layui.$;
         var element = layui.element;
         var table = layui.table;
+        var form = layui.form;
         //方法级渲染
         table.render({
             elem: '#rolelist'
@@ -87,17 +108,87 @@
                     layer.close(index);
                 });
             } else if(obj.event === 'edit'){
-                layer.prompt({
-                    formType: 2
-                    ,value: data.email
-                }, function(value, index){
-                    obj.update({
-                        email: value
-                    });
-                    layer.close(index);
+                layer.open({
+                    type: 2
+                    ,offset: 'auto'
+                    ,title: data.name+'-权限信息'
+                    ,id: 'layerDemo'
+                    ,content: '/console/permissionlist?id='+data.id
+                    ,btnAlign: 'c' //按钮居中
+                    ,shade: 0.3 //不显示遮罩
+                    ,anim:1
+                    ,area: ['900px', '600px']
+                    ,btn: ['保存', '取消']
+                    ,yes: function(index, layero){
+                        var body = layer.getChildFrame('body', index);//通过该对象可以获取iframe中的dom元素
+                        var perIds = "";
+                        body.find("input[type='checkbox']:checked").each(function(){//获取选中的权限id
+                            perIds += ","+$(this).attr("id");
+                        });
+                        if(perIds.length>0){
+                            perIds = perIds.substr(1);
+                        }
+                        $.post("/console/savePermission",{perIds:perIds,roleId:data.id},function(result){
+                            layer.msg(result);
+                        });
+
+                    },no:function(){
+                        layer.closeAll();
+                    }
                 });
             }
         });
+
+        $("#addRole").click(function(){
+            layer.open({
+                type: 1
+                ,offset: 'auto'
+                ,title: '新增角色'
+                ,id: 'layerRole'
+                ,content: $('#addRoleBar').html()
+                ,btnAlign: 'c' //按钮居中
+                ,shade: 0.3 //不显示遮罩
+                ,anim:1
+                ,area: ['320px', '175px']
+                ,resize: false
+            });
+            form.render();
+        });
+
+        form.verify({
+            name: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "角色名不能为空";
+                }
+                if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                    return '角色名不能有特殊字符';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '角色名首尾不能出现下划线\'_\'';
+                }
+                if(/^\d+\d+\d$/.test(value)){
+                    return '角色名不能全为数字';
+                }
+            }
+
+        });
+
+        //监听提交
+        form.on('submit(subBtn)', function(data){
+            //ajax 提交
+            $.post('/console/addRole',data.field,function(data){
+                layer.closeAll();
+                layer.msg(data);
+                $("#roleSearch").click();
+            });
+            return false;
+        });
+
+        $(document).on('click','#cancalBtn',function(){
+            layer.closeAll();
+        });
+
     });
+
 </script>
 </html>

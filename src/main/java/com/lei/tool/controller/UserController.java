@@ -40,19 +40,15 @@ public class UserController {
         List<UPermission> mlist = userService.getMenu(user);
         List<UPermission> mlist1 = new ArrayList<>();
         List<UPermission> mlist2 = new ArrayList<>();
-        List<UPermission> mlist3 = new ArrayList<>();
         for (UPermission menu:mlist) {
             if(menu.getLevel() == 1){
                 mlist1.add(menu);
             }else if(menu.getLevel() == 2){
                 mlist2.add(menu);
-            }else if(menu.getLevel() == 3){
-                mlist3.add(menu);
             }
         }
         request.setAttribute("menuList1", mlist1);
         request.setAttribute("menuList2", mlist2);
-        request.setAttribute("menuList3", mlist3);
         request.setAttribute("user",user);
         request.setAttribute("role",role);
         return "index";

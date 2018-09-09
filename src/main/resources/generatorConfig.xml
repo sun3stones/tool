@@ -21,16 +21,16 @@
                         password="${spring.datasource.password}">
         </jdbcConnection>
 
-        <javaModelGenerator targetPackage="com.boot.entity"
+        <javaModelGenerator targetPackage="com.lei.tool.entity"
                             targetProject="${targetJavaProject}"/>
 
         <sqlMapGenerator targetPackage="/mapper"
                          targetProject="${targetResourcesProject}"/>
 
-        <javaClientGenerator targetPackage="com.boot.mapper"
+        <javaClientGenerator targetPackage="com.lei.tool.mapper"
                              targetProject="${targetJavaProject}" type="XMLMAPPER"/>
 
-        <table tableName="u_permission"></table>
+        <table tableName="u_role_permission"></table>
     </context>
 
 </generatorConfiguration>

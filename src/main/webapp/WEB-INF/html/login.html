@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>开始使用layui</title>
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
     <link rel="stylesheet" th:href="@{/css/login.css}"/>
@@ -73,12 +72,12 @@
             ]
         });
 
-        //监听提交
+        /*//监听提交
         form.on('submit(subBtn)', function (data) {
             data.field.password = hex_md5(data.field.password);
             layer.msg(JSON.stringify(data.field));
             //return false;
-        });
+        });*/
 
     });
 
