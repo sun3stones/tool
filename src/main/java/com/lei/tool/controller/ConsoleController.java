@@ -106,4 +106,18 @@ public class ConsoleController {
         }
         return "新增角色失败";
     }
+    @RequestMapping("/deleteRole")
+    @ResponseBody
+    public String deleteRole(URole role){
+        try{
+            if(role != null){
+                userService.deleteRole(role);
+                return "删除角色成功";
+            }
+
+        }catch (Exception e){
+            throw (e);
+        }
+        return "删除角色失败";
+    }
 }

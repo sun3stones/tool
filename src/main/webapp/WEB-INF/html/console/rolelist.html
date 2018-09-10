@@ -8,7 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
     <script th:src="@{/layui/layui.all.js}"></script>
 </head>
-<body >
+<body style="overflow-y: scroll;">
 <div >
 
    <div class="layui-card" >
@@ -18,11 +18,13 @@
             <div class="layui-inline">
                 <input class="layui-input" name="id" id="roleReload" autocomplete="off">
             </div>
-            <button class="layui-btn" data-type="reload" id="roleSearch">搜索</button>
+            <div class="layui-inline">
+                <button class="layui-btn" data-type="reload" id="roleSearch"><i class="layui-icon layui-icon-search"></i></button>
+                <button class="layui-btn" data-type="reload" id="addRole"><i class="layui-icon layui-icon-add-1"></i></button>
+            </div>
         </div>
      </div>
        <div class="layui-card-body">
-           <button class="layui-btn" data-type="reload" id="addRole">新增</button>
            <table class="layui-form-item"  id="rolelist" lay-filter="rolelist"></table>
        </div>
 
@@ -33,8 +35,8 @@
 </body>
 <script type="text/html" id="roleBar">
     {{#  if(d.id != 1){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="edit" >编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit" ><i class="layui-icon layui-icon-edit"></i></a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i></a>
     {{#  } }}
 </script>
 <script type="text/html" id="addRoleBar">
@@ -65,12 +67,11 @@
         table.render({
             elem: '#rolelist'
             ,id:'roleTable'
-            ,height: 'full'
             ,url: '/console/roledatalist/' //数据接口
             ,page: true //开启分页
             ,cols: [
                 [ //表头
-                    {field: 'id', title: 'ID',width:100,  sort: true},
+                    {type: 'numbers', title: '序号',width:60},
                     {field: 'name', title: '用户名'},
                     {fixed: 'right', title:'操作', toolbar: '#roleBar', width:150}
                 ]
@@ -104,7 +105,13 @@
             //console.log(obj)
             if(obj.event === 'del'){
                 layer.confirm('真的删除行么', function(index){
-                    obj.del();
+                    $.post('/console/deleteRole',data,function(data){
+                        layer.closeAll();
+                        layer.msg(data);
+                        obj.del();
+                    });
+                    return false;
+
                     layer.close(index);
                 });
             } else if(obj.event === 'edit'){
@@ -117,7 +124,7 @@
                     ,btnAlign: 'c' //按钮居中
                     ,shade: 0.3 //不显示遮罩
                     ,anim:1
-                    ,area: ['900px', '600px']
+                    ,area: ['90%', '80%']
                     ,btn: ['保存', '取消']
                     ,yes: function(index, layero){
                         var body = layer.getChildFrame('body', index);//通过该对象可以获取iframe中的dom元素

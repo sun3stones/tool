@@ -33,4 +33,6 @@ public interface UserService {
     int updateRolePermission(String perIds,Long id);
 
     int insertRole(URole uRole);
+
+    int deleteRole(URole uRole);
 }

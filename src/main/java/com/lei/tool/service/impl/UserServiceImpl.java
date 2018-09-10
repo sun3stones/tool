@@ -118,8 +118,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int insertRole(URole uRole) {
-        return roleMapper.insertSelective(uRole);
+    public int insertRole(URole role) {
+        return roleMapper.insertSelective(role);
+    }
+
+    @Override
+    public int deleteRole(URole role) {
+        return roleMapper.deleteByPrimaryKey(role.getId());
     }
 
 
