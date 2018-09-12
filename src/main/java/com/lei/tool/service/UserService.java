@@ -35,4 +35,6 @@ public interface UserService {
     int insertRole(URole uRole);
 
     int deleteRole(URole uRole);
+
+    Page<UUser> getUserPage(Page<UUser> page,UUser user);
 }

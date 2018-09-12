@@ -120,4 +120,14 @@ public class ConsoleController {
         }
         return "删除角色失败";
     }
+    @RequestMapping("/userlist")
+    public String userlist(HttpServletRequest request){
+        return "console/userlist";
+    }
+    @RequestMapping("/userdatalist")
+    @ResponseBody
+    public Page<UUser> userdatalist(HttpServletRequest request, Page<UUser> page, UUser user){
+        page = userService.getUserPage(page,user);
+        return  page;
+    }
 }

@@ -63,13 +63,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<URole> getRolePage(Page<URole> page, URole uRole) {
         PageHelper.startPage(page.getPage(),page.getLimit());
-        List<URole> list = new ArrayList<URole>();
-        Example ex = new Example(URole.class);
-        if(StringUtils.isNotEmpty(uRole.getName())){
-            ex.createCriteria().andEqualTo("name",uRole.getName());
-        }
-        list =  roleMapper.selectByExample(ex);
-        page.setCount(roleMapper.selectCountByExample(ex));
+        List<URole> list = roleMapper.select(uRole);
+        page.setCount(roleMapper.selectCount(uRole));
         page.setData(list);
         page.setCode(0);
         page.setMsg("成功");
@@ -125,6 +120,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public int deleteRole(URole role) {
         return roleMapper.deleteByPrimaryKey(role.getId());
+    }
+
+    @Override
+    public Page<UUser> getUserPage(Page<UUser> page, UUser user) {
+        PageHelper.startPage(page.getPage(),page.getLimit());
+        List<UUser> list = userMapper.select(user);
+        page.setCount(userMapper.selectCount(user));
+        page.setData(list);
+        page.setCode(0);
+        page.setMsg("成功");
+        return page;
     }
 
 
