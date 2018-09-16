@@ -6,6 +6,7 @@ import java.util.Date;
 @Table(name = "u_user")
 public class UUser {
     @Id
+    @GeneratedValue(generator = "JDBC")
     private Long id;
 
     /**

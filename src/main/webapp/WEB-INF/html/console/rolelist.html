@@ -25,7 +25,7 @@
         </div>
      </div>
        <div class="layui-card-body">
-           <table class="layui-form-item"  id="rolelist" lay-filter="rolelist"></table>
+           <table class="layui-form-item"  id="roleList" lay-filter="roleList"></table>
        </div>
 
    </div>
@@ -65,9 +65,9 @@
         var form = layui.form;
         //方法级渲染
         table.render({
-            elem: '#rolelist'
+            elem: '#roleList'
             ,id:'roleTable'
-            ,url: '/console/roledatalist/' //数据接口
+            ,url: '/console/roleDataList/' //数据接口
             ,page: true //开启分页
             ,cols: [
                 [ //表头
@@ -100,7 +100,7 @@
             active[type] ? active[type].call(this) : '';
         });
 
-        table.on('tool(rolelist)', function(obj){
+        table.on('tool(roleList)', function(obj){
             var data = obj.data;
             //console.log(obj)
             if(obj.event === 'del'){
@@ -120,7 +120,7 @@
                     ,offset: 'auto'
                     ,title: data.name+'-权限信息'
                     ,id: 'layerDemo'
-                    ,content: '/console/permissionlist?id='+data.id
+                    ,content: '/console/permissionList?id='+data.id
                     ,btnAlign: 'c' //按钮居中
                     ,shade: 0.3 //不显示遮罩
                     ,anim:1
@@ -156,7 +156,6 @@
                 ,btnAlign: 'c' //按钮居中
                 ,shade: 0.3 //不显示遮罩
                 ,anim:1
-                ,area: ['20%', '25%']
                 ,resize: false
             });
             form.render();

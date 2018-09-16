@@ -37,8 +37,8 @@ CREATE TABLE `u_permission` (
 -- ----------------------------
 INSERT INTO `u_permission` VALUES ('1', '/console/list', 'console', '100', '1', '1', '<i class=\'layui-icon\'>&#xe614;</i>控制台', null, null);
 INSERT INTO `u_permission` VALUES ('2', '/task/list', 'task', '200', '1', '1', '<i class=\'layui-icon\'>&#xe60a;</i>任务管理', null, null);
-INSERT INTO `u_permission` VALUES ('3', '/console/userlist', 'usermanager', '110', '1', '2', '用户管理', null, '1');
-INSERT INTO `u_permission` VALUES ('4', '/console/rolelist', 'rolemanager', '120', '1', '2', '角色管理', null, '1');
+INSERT INTO `u_permission` VALUES ('3', '/console/userList', 'usermanager', '110', '1', '2', '用户管理', null, '1');
+INSERT INTO `u_permission` VALUES ('4', '/console/roleList', 'rolemanager', '120', '1', '2', '角色管理', null, '1');
 INSERT INTO `u_permission` VALUES ('5', null, 'addrole', '121', '0', '3', '新增', '增加角色', '4');
 
 -- ----------------------------

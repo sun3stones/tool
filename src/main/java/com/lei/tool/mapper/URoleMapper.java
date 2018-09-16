@@ -2,12 +2,8 @@ package com.lei.tool.mapper;
 
 import com.lei.tool.entity.URole;
 import com.lei.tool.entity.UUser;
-import com.lei.tool.utils.MyMapper;
-import org.apache.ibatis.annotations.Param;
+import tk.mybatis.mapper.common.Mapper;
 
-
-public interface URoleMapper extends MyMapper<URole> {
-
+public interface URoleMapper extends Mapper<URole> {
     URole selectRole(UUser user);
-
 }

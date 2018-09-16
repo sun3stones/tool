@@ -6,6 +6,8 @@
     <title>用户管理</title>
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
     <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
+    <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/js/myjs/myjs.js}"></script>
     <script th:src="@{/layui/layui.all.js}"></script>
 </head>
 <body style="overflow-y: scroll;">
@@ -44,13 +46,28 @@
     <input type="checkbox" name="status" value="{{d.status}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="sexDemo" {{ d.status == 1 ? 'checked' : '' }}>
     {{#  } }}
 </script>
-<script type="text/html" id="adduserBar">
-
+<div id="addUserBar" hidden>
     <form class="layui-form layui-form-pane" id="adduserForm">
         <div class="layui-site-20">
-            <label class="layui-form-label">用户名称</label>
-            <div class="layui-inline">
-                <input type="text" name="name" required lay-verify="name"  placeholder="请输入用户名称" autocomplete="off" class="layui-input">
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户名称</label>
+                <div class="layui-inline">
+                    <input type="text" name="userName" required lay-verify="name"  placeholder="请输入用户名称" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">联系方式</label>
+                <div class="layui-inline">
+                    <input type="text"  name="email"    placeholder="请输入联系方式" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户角色</label>
+                <div class="layui-inline">
+                    <select name="roleId" id="roleId" lay-verify="required">
+                        <option value="">请选择角色</option>
+                    </select>
+                </div>
             </div>
 
         </div>
@@ -59,9 +76,7 @@
             <button class="layui-btn layui-btn-sm layui-btn-primary"  id="cancalBtn">取消</button>
         </div>
     </form>
-
-
-</script>
+</div>
 <script>
     layui.use(['jquery', 'layer', 'element','table','form'], function(){
         var $ = jQuery = layui.$;
@@ -72,7 +87,7 @@
         table.render({
             elem: '#userlist'
             ,id:'userTable'
-            ,url: '/console/userdatalist/' //数据接口
+            ,url: '/console/userDataList/' //数据接口
             ,page: true //开启分页
             ,cols: [
                 [ //表头
@@ -111,45 +126,35 @@
             var data = obj.data;
             //console.log(obj)
             if(obj.event === 'del'){
-                layer.confirm('确定删除‘'+ data.name+'’用户吗？', function(index){
-                    $.post('/console/deleteuser',data,function(data){
+                layer.confirm('确定删除‘'+ data.userName+'’用户吗？', function(index){
+                    $.post('/console/deleteUser',data,function(data){
                         layer.closeAll();
                         layer.msg(data);
                         obj.del();
                     });
-                    return false;
-
                     layer.close(index);
+                    return false;
                 });
             } else if(obj.event === 'edit'){
                 layer.open({
-                    type: 2
+                    type: 1
                     ,offset: 'auto'
-                    ,title: data.name+'-权限信息'
-                    ,id: 'layerDemo'
-                    ,content: '/console/permissionlist?id='+data.id
+                    ,title: '修改用户'
+                    ,id: 'layerUser'
+                    ,content: $('#addUserBar').html()
                     ,btnAlign: 'c' //按钮居中
                     ,shade: 0.3 //不显示遮罩
                     ,anim:1
-                    ,area: ['90%', '80%']
-                    ,btn: ['保存', '取消']
-                    ,yes: function(index, layero){
-                        var body = layer.getChildFrame('body', index);//通过该对象可以获取iframe中的dom元素
-                        var perIds = "";
-                        body.find("input[type='checkbox']:checked").each(function(){//获取选中的权限id
-                            perIds += ","+$(this).attr("id");
-                        });
-                        if(perIds.length>0){
-                            perIds = perIds.substr(1);
-                        }
-                        $.post("/console/savePermission",{perIds:perIds,userId:data.id},function(result){
-                            layer.msg(result);
-                        });
-
-                    },no:function(){
-                        layer.closeAll();
+                    ,resize: false
+                });
+                $("input[name='userName']").val(obj.data.userName);
+                $("input[name='email']").val(obj.data.email);
+                $("#roleId option").each(function() {
+                    if ($(this).val() == 4) {
+                        $(this).attr("selected", "selected");
                     }
                 });
+                form.render();
             }
         });
 
@@ -159,11 +164,10 @@
                 ,offset: 'auto'
                 ,title: '新增用户'
                 ,id: 'layeruser'
-                ,content: $('#adduserBar').html()
+                ,content: $('#addUserBar').html()
                 ,btnAlign: 'c' //按钮居中
                 ,shade: 0.3 //不显示遮罩
                 ,anim:1
-                ,area: ['20%', '25%']
                 ,resize: false
             });
             form.render();
@@ -206,6 +210,8 @@
             layer.tips(obj.elem.checked?"已启用":"已禁用", obj.othis);
         });
 
+        initSelect("[[@{/comm/initRoleSelect}]]",$("#roleId"),null);
+        form.render();
     });
 
 </script>

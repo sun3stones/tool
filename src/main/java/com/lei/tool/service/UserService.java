@@ -16,7 +16,7 @@ public interface UserService {
 
     URole getRole(UUser user);
 
-    List<URole> getRoleList(String roleName);
+    List<URole> getroleList(String roleName);
 
     Page<URole> getRolePage(Page<URole> page,URole uRole);
 
@@ -37,4 +37,10 @@ public interface UserService {
     int deleteRole(URole uRole);
 
     Page<UUser> getUserPage(Page<UUser> page,UUser user);
+
+    List<URole> getInitRole(UUser user);
+
+    String insertUser(UUser user,Long roleId);
+
+    int deleteUser(UUser user);
 }

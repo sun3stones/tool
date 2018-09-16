@@ -15,4 +15,6 @@
     <select id="getUserCount" resultType="java.lang.Integer">
         select count(1) from u_user
     </select>
+
+
 </mapper>

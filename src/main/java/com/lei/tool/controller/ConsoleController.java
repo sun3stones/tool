@@ -6,19 +6,15 @@ import com.lei.tool.entity.UUser;
 import com.lei.tool.service.UserService;
 import com.lei.tool.utils.Page;
 import com.lei.tool.utils.StringUtils;
-import org.apache.ibatis.javassist.bytecode.stackmap.BasicBlock;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sun.awt.im.InputMethodWindow;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/console")
@@ -27,21 +23,21 @@ public class ConsoleController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/rolelist")
-    public String rolelist(HttpServletRequest request){
+    @RequestMapping("/roleList")
+    public String roleList(HttpServletRequest request){
 
-        return "console/rolelist";
+        return "console/roleList";
     }
 
-    @RequestMapping("/roledatalist")
+    @RequestMapping("/roleDataList")
     @ResponseBody
-    public Page<URole> roledatalist(HttpServletRequest request, Page<URole> page, URole uRole){
+    public Page<URole> roleDataList(HttpServletRequest request, Page<URole> page, URole uRole){
         page = userService.getRolePage(page,uRole);
         return  page;
     }
 
-    @RequestMapping("/permissionlist")
-    public String permissionlist(HttpServletRequest request,URole role){
+    @RequestMapping("/permissionList")
+    public String permissionList(HttpServletRequest request,URole role){
         UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
         URole uRole = userService.getRole(user);
         List<UPermission> perList = userService.getAllPermission();//获取所有权限
@@ -120,14 +116,37 @@ public class ConsoleController {
         }
         return "删除角色失败";
     }
-    @RequestMapping("/userlist")
-    public String userlist(HttpServletRequest request){
-        return "console/userlist";
+    @RequestMapping("/userList")
+    public String userList(HttpServletRequest request){
+        return "console/userList";
     }
-    @RequestMapping("/userdatalist")
+
+
+    @RequestMapping("/userDataList")
     @ResponseBody
-    public Page<UUser> userdatalist(HttpServletRequest request, Page<UUser> page, UUser user){
+    public Page<UUser> userDataList(HttpServletRequest request, Page<UUser> page, UUser user){
         page = userService.getUserPage(page,user);
         return  page;
     }
+
+    @RequestMapping("/addUser")
+    @ResponseBody
+    public String addUser(HttpServletRequest request, UUser user,Long roleId){
+        String result = userService.insertUser(user,roleId);
+        return result;
+    }
+
+    @RequestMapping("/deleteUser")
+    @ResponseBody
+    public String deleteUser(HttpServletRequest request){
+        UUser user = new UUser();
+        user.setId(Long.parseLong(request.getParameter("id")));
+        if(user == null || user.getId() == null){
+            return "删除用户失败";
+        }
+        userService.deleteUser(user);
+        return "成功删除用户‘"+user.getUserName()+"’！";
+    }
+
+
 }

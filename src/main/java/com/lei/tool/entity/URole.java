@@ -13,6 +13,11 @@ public class URole {
     private String name;
 
     /**
+     * 角色等级
+     */
+    private Integer level;
+
+    /**
      * 角色类型
      */
     private String type;
@@ -47,6 +52,24 @@ public class URole {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * 获取角色等级
+     *
+     * @return level - 角色等级
+     */
+    public Integer getLevel() {
+        return level;
+    }
+
+    /**
+     * 设置角色等级
+     *
+     * @param level 角色等级
+     */
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 
     /**
