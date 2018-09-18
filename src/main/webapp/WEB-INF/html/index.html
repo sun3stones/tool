@@ -25,8 +25,8 @@
                     <font th:text="${user.userName}"></font>
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="#" data-method="offset" data-type="info">基本资料</a></dd>
-                    <dd><a href="#" data-method="offset" data-type="password">安全设置</a></dd>
+                    <dd><a href="#" data-method="inspectInfo">基本资料</a></dd>
+                    <dd><a href="#" data-method="changePassword">安全设置</a></dd>
                 </dl>
             </li>
             <li class="layui-nav-item"><a href="">注销</a></li>
@@ -64,11 +64,11 @@
     </div>
 
     <div class="layui-hide">
-        <div id="info" layui-btn-fluid>
-            <div class="layui-form-item layui-inline" style="margin:4% 30%">
-                <a href="#"><img src="http://t.cn/RCzsdCq" class="layui-circle"></a>
+        <div id="info" layui-btn-fluid >
+            <div class="layui-form-item layui-inline" style="margin:4% 33%">
+                <a href="#"><img src="/images/myimg/head.jpg" class="layui-circle" style="width:100px;height:100px;"></a>
             </div>
-            <form class="layui-form layui-form-pane" action="">
+            <form class="layui-form layui-form-pane layui-site-20" action="">
                 <div class="layui-form-item">
                     <label class="layui-form-label">用户名</label>
                     <div class="layui-input-block">
@@ -79,6 +79,30 @@
                     <label class="layui-form-label">角色</label>
                     <div class="layui-input-block">
                         <input type="text" name="title" autocomplete="off" th:value="${role.name}" class="layui-input" disabled>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="layui-hide">
+        <div id="password" layui-btn-fluid >
+            <form class="layui-form layui-form-pane layui-site-20" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">输入原密码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title"  class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item ">
+                    <label class="layui-form-label">输入新密码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item ">
+                    <label class="layui-form-label">确认新密码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="newPassword" class="layui-input">
                     </div>
                 </div>
             </form>
@@ -118,7 +142,7 @@
         });
         //触发事件
         var active = {
-            offset: function (othis) {
+            inspectInfo: function (othis) {
                 var type = othis.data('type')
                     , text = othis.text();
                 layer.open({
@@ -130,8 +154,28 @@
                     ,btnAlign: 'c' //按钮居中
                     ,shade: 0.3 //不显示遮罩
                     ,anim:1
-                    ,area: ['300px', '350px']
                     ,yes: function(){
+                        layer.closeAll();
+                    }
+                });
+            },
+            changePassword: function (othis) {
+                var type = othis.data('type')
+                    , text = othis.text();
+                layer.open({
+                    type: 1
+                    ,title:'修改密码'
+                    ,offset: type
+                    ,id: 'layerDemo'+type //防止重复弹出
+                    ,content: $("#password").html()
+                    ,btn: ['保存','取消']
+                    ,btnAlign: 'c' //按钮居中
+                    ,shade: 0.3 //不显示遮罩
+                    ,anim:1
+                    ,yes: function(){
+                        layer.closeAll();
+                    }
+                    ,no: function(){
                         layer.closeAll();
                     }
                 });
