@@ -129,11 +129,18 @@ public class ConsoleController {
         return  page;
     }
 
-    @RequestMapping("/addUser")
+    @RequestMapping("/updateUser")
     @ResponseBody
-    public String addUser(HttpServletRequest request, UUser user,Long roleId){
-        String result = userService.insertUser(user,roleId);
-        return result;
+    public String addUser(HttpServletRequest request, UUser user,Long roleId,Long userId){
+        String result = "";
+        if(userId == null){//新增用户
+            userService.insertUser(user,roleId);
+            return "新增用户成功！";
+        }else{//修改用户
+            user.setId(userId);
+            userService.updateUser(user,roleId);
+            return "修改用户成功！";
+        }
     }
 
     @RequestMapping("/deleteUser")
@@ -146,6 +153,13 @@ public class ConsoleController {
         }
         userService.deleteUser(user);
         return "成功删除用户‘"+user.getUserName()+"’！";
+    }
+
+    @RequestMapping("/updateUserStatus")
+    @ResponseBody
+    public String updateUserStatus(HttpServletRequest request,UUser user){
+        userService.updateUser(user,null);
+        return "更新状态成功！";
     }
 
 

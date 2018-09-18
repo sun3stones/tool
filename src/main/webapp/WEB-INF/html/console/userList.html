@@ -22,7 +22,7 @@
                 </div>
                 <div class="layui-inline">
                     <button class="layui-btn" data-type="reload" id="userSearch"><i class="layui-icon layui-icon-search"></i></button>
-                    <button class="layui-btn" data-type="reload" id="adduser"><i class="layui-icon layui-icon-add-1"></i></button>
+                    <button class="layui-btn" data-type="reload" id="addUser"><i class="layui-icon layui-icon-add-1"></i></button>
                 </div>
             </div>
         </div>
@@ -43,11 +43,11 @@
 </script>
 <script type="text/html" id="statusSwitch">
     {{#  if(d.id != 1){ }}
-    <input type="checkbox" name="status" value="{{d.status}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="sexDemo" {{ d.status == 1 ? 'checked' : '' }}>
+    <input type="checkbox" name="status" value="{{d.status}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="userStatus" {{ d.status == 1 ? 'checked' : '' }}>
     {{#  } }}
 </script>
 <div id="addUserBar" hidden>
-    <form class="layui-form layui-form-pane" id="adduserForm">
+    <form class="layui-form layui-form-pane" id="addUserForm">
         <div class="layui-site-20">
             <div class="layui-form-item">
                 <label class="layui-form-label">用户名称</label>
@@ -69,7 +69,7 @@
                     </select>
                 </div>
             </div>
-
+            <input type="hidden" name="userId">
         </div>
         <div class="layui-btn-container" style="margin-top: 10px;margin-left: 110px">
             <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="subBtn">保存</button>
@@ -92,6 +92,7 @@
             ,cols: [
                 [ //表头
                     {type: 'numbers', title: '序号',width:60},
+                    {field: 'id',hide:true},
                     {field: 'userName', title: '用户名',unresize:true},
                     {field: 'email', title: '联系方式',unresize:true},
                     {field: 'status', title: '用户状态',unresize:true,templet: '#statusSwitch'},
@@ -149,6 +150,7 @@
                 });
                 $("input[name='userName']").val(obj.data.userName);
                 $("input[name='email']").val(obj.data.email);
+                $("input[name='userId']").val(obj.data.id);
                 $("#roleId option").each(function() {
                     if ($(this).val() == 4) {
                         $(this).attr("selected", "selected");
@@ -158,7 +160,7 @@
             }
         });
 
-        $("#adduser").click(function(){
+        $("#addUser").click(function(){
             layer.open({
                 type: 1
                 ,offset: 'auto'
@@ -193,10 +195,9 @@
 
         //监听提交
         form.on('submit(subBtn)', function(data){
-            //ajax 提交
-            $.post('/console/adduser',data.field,function(data){
-                layer.closeAll();
+            $.post('/console/updateUser',data.field,function(data){
                 layer.msg(data);
+                layer.closeAll();
                 $("#userSearch").click();
             });
             return false;
@@ -206,8 +207,18 @@
             layer.closeAll();
         });
 
-        form.on('switch(sexDemo)', function(obj){
-            layer.tips(obj.elem.checked?"已启用":"已禁用", obj.othis);
+        form.on('switch(userStatus)', function(obj){
+            var status = obj.elem.checked?1:0;
+            // 获取当前控件
+            var selectIfKey=obj.othis;
+            // 获取当前所在行
+            var parentTr = selectIfKey.parents("tr");
+            //eq(1): 代表的是表头字段位置    .layui-table-cell: 这个元素是我找表格div找出来的..[失望]
+            var userId = $(parentTr).find("td:eq(1)").find(".layui-table-cell").text();
+            $.post('/console/updateUserStatus',{'id':userId,'status':status},function(result){
+                layer.tips(obj.elem.checked?"已启用":"已禁用", obj.othis);
+            });
+
         });
 
         initSelect("[[@{/comm/initRoleSelect}]]",$("#roleId"),null);

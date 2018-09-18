@@ -43,4 +43,6 @@ public interface UserService {
     String insertUser(UUser user,Long roleId);
 
     int deleteUser(UUser user);
+
+    int updateUser(UUser user,Long roleId);
 }

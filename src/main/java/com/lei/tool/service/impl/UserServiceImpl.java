@@ -172,5 +172,18 @@ public class UserServiceImpl implements UserService {
         return userMapper.delete(user);
     }
 
+    @Override
+    public int updateUser(UUser user, Long roleId) {
+        Example exUserRole = new Example(UUserRole.class);
+        exUserRole.createCriteria().andEqualTo("uid",user.getId());
+        UUserRole userRole = new UUserRole();
+        userRole.setUid(user.getId());
+        if(roleId != null){
+            userRole.setRid(roleId);
+            userRoleMapper.updateByExampleSelective(userRole,exUserRole);
+        }
+        return userMapper.updateByPrimaryKeySelective(user);
+    }
+
 
 }
