@@ -6,6 +6,7 @@ import com.lei.tool.entity.UUser;
 import com.lei.tool.service.UserService;
 import com.lei.tool.utils.Page;
 import com.lei.tool.utils.StringUtils;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/console")
@@ -160,6 +163,24 @@ public class ConsoleController {
     public String updateUserStatus(HttpServletRequest request,UUser user){
         userService.updateUser(user,null);
         return "更新状态成功！";
+    }
+
+    @RequestMapping("/changePassword")
+    @ResponseBody
+    public Map<String,Object> changePassword(HttpServletRequest request, String password, String newPassword){
+        Map<String,Object> result = new HashMap<>();
+        UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
+        password = DigestUtils.md5Hex(password);
+        if(!user.getPassword().equals(password)){
+            result.put("errcode",1);
+            result.put("msg","修改失败：密码输入错误！");
+            return result;
+        }
+        user.setPassword(DigestUtils.md5Hex(newPassword));
+        userService.updateUser(user,null);
+        result.put("errcode",0);
+        result.put("msg","修改密码成功！");
+        return result;
     }
 
 
