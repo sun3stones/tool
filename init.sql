@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50721
 File Encoding         : 65001
 
-Date: 2018-09-09 23:06:10
+Date: 2018-09-20 21:42:23
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -48,24 +48,23 @@ DROP TABLE IF EXISTS `u_role`;
 CREATE TABLE `u_role` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) DEFAULT NULL COMMENT '角色名称',
+  `level` int(2) DEFAULT NULL COMMENT '角色等级',
   `type` varchar(10) DEFAULT NULL COMMENT '角色类型',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of u_role
 -- ----------------------------
-INSERT INTO `u_role` VALUES ('1', '管理员', null);
-INSERT INTO `u_role` VALUES ('4', '小组长', null);
-INSERT INTO `u_role` VALUES ('5', 'aaa', null);
-INSERT INTO `u_role` VALUES ('6', 'bbb', null);
-INSERT INTO `u_role` VALUES ('7', '踩踩踩', null);
-INSERT INTO `u_role` VALUES ('8', 'ddd', null);
-INSERT INTO `u_role` VALUES ('9', '11111vcv', null);
-INSERT INTO `u_role` VALUES ('10', '阿瑟东', null);
-INSERT INTO `u_role` VALUES ('11', '持续', null);
-INSERT INTO `u_role` VALUES ('12', '宝宝v', null);
-INSERT INTO `u_role` VALUES ('13', '复古风格', null);
+INSERT INTO `u_role` VALUES ('1', '管理员', null, null);
+INSERT INTO `u_role` VALUES ('4', '小组长', null, null);
+INSERT INTO `u_role` VALUES ('5', 'aaa', null, null);
+INSERT INTO `u_role` VALUES ('6', 'bbb', null, null);
+INSERT INTO `u_role` VALUES ('7', '踩踩踩', null, null);
+INSERT INTO `u_role` VALUES ('8', 'ddd', null, null);
+INSERT INTO `u_role` VALUES ('9', '11111vcv', null, null);
+INSERT INTO `u_role` VALUES ('10', '阿瑟东', null, null);
+INSERT INTO `u_role` VALUES ('11', '持续', null, null);
 
 -- ----------------------------
 -- Table structure for u_role_permission
@@ -87,6 +86,7 @@ INSERT INTO `u_role_permission` VALUES ('4', '1');
 INSERT INTO `u_role_permission` VALUES ('4', '3');
 INSERT INTO `u_role_permission` VALUES ('4', '4');
 INSERT INTO `u_role_permission` VALUES ('4', '5');
+INSERT INTO `u_role_permission` VALUES ('1', '2');
 
 -- ----------------------------
 -- Table structure for u_user
@@ -100,15 +100,15 @@ CREATE TABLE `u_user` (
   `status` bigint(1) DEFAULT '1' COMMENT '1:有效，0:禁止登录',
   `login_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of u_user
 -- ----------------------------
-INSERT INTO `u_user` VALUES ('1', '管理员', 'admin', 'df655ad8d3229f3269fad2a8bab59b6c', '1', '2018-07-21 17:12:06');
-INSERT INTO `u_user` VALUES ('2', 'admin', '2554353621@qq.com', 'e10adc3949ba59abbe56e057f20f883e', '1', '2018-07-24 23:37:38');
-INSERT INTO `u_user` VALUES ('11', 'soso', '8446666@qq.com', 'd57ffbe486910dd5b26d0167d034f9ad', '1', '2018-07-21 17:12:06');
-INSERT INTO `u_user` VALUES ('12', '8446666', '8446666', '4afdc875a67a55528c224ce088be2ab8', '1', '2018-07-21 17:12:06');
+INSERT INTO `u_user` VALUES ('1', 'admin', null, 'e10adc3949ba59abbe56e057f20f883e', '1', '2018-09-16 01:44:32');
+INSERT INTO `u_user` VALUES ('15', '孙磊', '18271691804', 'e10adc3949ba59abbe56e057f20f883e', '1', '2018-09-16 01:45:06');
+INSERT INTO `u_user` VALUES ('19', 'dddd', '', 'e10adc3949ba59abbe56e057f20f883e', '1', '2018-09-16 01:57:43');
+INSERT INTO `u_user` VALUES ('20', '跌多', '', 'e10adc3949ba59abbe56e057f20f883e', '1', '2018-09-18 22:35:58');
 
 -- ----------------------------
 -- Table structure for u_user_role
@@ -122,4 +122,7 @@ CREATE TABLE `u_user_role` (
 -- ----------------------------
 -- Records of u_user_role
 -- ----------------------------
-INSERT INTO `u_user_role` VALUES ('2', '1');
+INSERT INTO `u_user_role` VALUES ('1', '1');
+INSERT INTO `u_user_role` VALUES ('15', '4');
+INSERT INTO `u_user_role` VALUES ('19', '7');
+INSERT INTO `u_user_role` VALUES ('20', '4');
