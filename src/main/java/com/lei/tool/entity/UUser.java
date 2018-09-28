@@ -1,12 +1,11 @@
 package com.lei.tool.entity;
 
-import javax.persistence.*;
 import java.util.Date;
+import javax.persistence.*;
 
 @Table(name = "u_user")
 public class UUser {
     @Id
-    @GeneratedValue(generator = "JDBC")
     private Long id;
 
     /**
@@ -29,6 +28,12 @@ public class UUser {
      * 1:有效，0:禁止登录
      */
     private Long status;
+
+    /**
+     * 头像
+     */
+    @Column(name = "head_img")
+    private String headImg;
 
     @Column(name = "login_time")
     private Date loginTime;
@@ -117,6 +122,24 @@ public class UUser {
      */
     public void setStatus(Long status) {
         this.status = status;
+    }
+
+    /**
+     * 获取头像
+     *
+     * @return head_img - 头像
+     */
+    public String getHeadImg() {
+        return headImg;
+    }
+
+    /**
+     * 设置头像
+     *
+     * @param headImg 头像
+     */
+    public void setHeadImg(String headImg) {
+        this.headImg = headImg;
     }
 
     /**

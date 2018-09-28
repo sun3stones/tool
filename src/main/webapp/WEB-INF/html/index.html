@@ -21,7 +21,7 @@
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <a href="javascript:;">
-                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    <img th:src="${user.headImg}" class="layui-nav-img">
                     <font th:text="${user.userName}"></font>
                 </a>
                 <dl class="layui-nav-child">
@@ -37,19 +37,20 @@
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="menu2">
-                <li class="layui-nav-item"  th:each="menu2,meanuSta:${menuList2}" th:parentid="${menu2.parentId}">
-                    <a href="#"  th:name="${menu2.content}" th:utext="${menu2.content}"  th:id="${menu2.id}" th:url="${menu2.url}"></a>
+                <li class="layui-nav-item" th:each="menu2,meanuSta:${menuList2}" th:parentid="${menu2.parentId}">
+                    <a href="#" th:name="${menu2.content}" th:utext="${menu2.content}" th:id="${menu2.id}"
+                       th:url="${menu2.url}"></a>
                 </li>
             </ul>
         </div>
     </div>
 
     <div class="layui-body">
-        <div class="layui-tab layui-tab-brief" lay-filter="tab" lay-allowclose="true" >
+        <div class="layui-tab layui-tab-brief" lay-filter="tab" lay-allowclose="true">
             <ul class="layui-tab-title">
                 <li class="layui-this" lay-id="0">网站设置</li>
             </ul>
-            <div class="layui-tab-content layui-bg-gray" >
+            <div class="layui-tab-content layui-bg-gray">
                 <div class="layui-tab-item layui-show " style="background-color: #01AAED">
                     <table border="1" height="600Px"></table>
                 </div>
@@ -58,34 +59,34 @@
 
     </div>
 
-    <div class="layui-footer" >
+    <div class="layui-footer">
         <!-- 底部固定区域 -->
         © layui.com - 底部固定区域
     </div>
 
     <div class="layui-hide">
-        <div id="info" layui-btn-fluid >
+        <div id="info" layui-btn-fluid>
             <div class="layui-form-item layui-inline" style="margin:4% 33%">
-                <a href="#"><img src="/images/head/head16.png" class="layui-circle" style="width:100px;height:100px;"></a>
+                <img th:src="${user.headImg}" class="layui-circle" style="width:100px;height:100px;">
             </div>
             <form class="layui-form layui-form-pane layui-site-20" action="">
                 <div class="layui-form-item">
                     <label class="layui-form-label">用户名</label>
                     <div class="layui-input-block">
-                        <input type="text" name="title" autocomplete="off" th:value="${user.userName}" class="layui-input" disabled>
+                        <input type="text" name="title" autocomplete="off" th:value="${user.userName}"
+                               class="layui-input" disabled>
                     </div>
                 </div>
                 <div class="layui-form-item ">
                     <label class="layui-form-label">角色</label>
                     <div class="layui-input-block">
-                        <input type="text" name="title" autocomplete="off" th:value="${role.name}" class="layui-input" disabled>
+                        <input type="text" name="title" autocomplete="off" th:value="${role.name}" class="layui-input"
+                               disabled>
                     </div>
                 </div>
             </form>
         </div>
-    </div>
-    <div class="layui-hide">
-        <div id="passwordDiv" layui-btn-fluid >
+        <div id="passwordDiv" layui-btn-fluid>
             <form id="passwordForm" class="layui-form layui-form-pane layui-site-20" action="">
                 <div class="layui-form-item">
                     <label class="layui-form-label">输入原密码</label>
@@ -107,13 +108,44 @@
                 </div>
             </form>
         </div>
+
     </div>
 </div>
+<script id="headImgDiv" type="text/html">
+    <form id="headImgForm" class="layui-form layui-form-pane layui-site-20" action="">
+        <div class="layui-upload">
+            <button type="button" class="layui-btn" id="test1">上传图片</button>
+            <div class="layui-upload-list">
+                <img class="layui-upload-img" id="demo1">
+                <p id="demoText"></p>
+            </div>
+        </div>
+        <div class="site-demo-flow">
+            <img style="width: 60px;height: 60px" src="/images/head/head1.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head2.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head3.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head4.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head5.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head6.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head7.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head8.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head9.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head10.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head11.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head12.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head13.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head14.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head15.png"/>
+            <img style="width: 60px;height: 60px" src="/images/head/head16.png"/>
+        </div>
+    </form>
+</script>
+
 <script>
     //JavaScript代码区域
-    layui.use(['jquery', 'layer', 'element','form'], function () {
+    layui.use(['jquery', 'layer', 'element', 'form'], function () {
         var $ = jQuery = layui.$;
-        var element = layui.element, layer = layui.layer,form = layui.form;
+        var element = layui.element, layer = layui.layer, form = layui.form;
         element.init();
         element.render('nav');
 
@@ -121,24 +153,24 @@
         //监听菜单
         element.on('nav(menu1)', function (elem) {
             $(".layui-nav-tree").children("li").each(function (i, n) {
-                if(elem.attr("id") == $(n).attr("parentid")){
+                if (elem.attr("id") == $(n).attr("parentid")) {
                     $(n).show();
-                }else{
+                } else {
                     $(n).hide();
                 }
             });
         });
         element.on('nav(menu2)', function (elem) {
-            if($("li[lay-id='"+elem.attr("id")+"']").length==0){
+            if ($("li[lay-id='" + elem.attr("id") + "']").length == 0) {
                 element.tabAdd('tab', {
                     title: elem.attr("name")
-                    ,content: '<iframe data-frameid="' + elem.attr("id") + '"  src="' + elem.attr("url") + '"  ' +
+                    , content: '<iframe data-frameid="' + elem.attr("id") + '"  src="' + elem.attr("url") + '"  ' +
                     'scrolling="yes" frameborder="0"  class="layui-admin-iframe" ></iframe>'
-                    ,id: elem.attr("id")
+                    , id: elem.attr("id")
                 });
                 FrameWH();
             }
-            element.tabChange('tab',elem.attr("id"));
+            element.tabChange('tab', elem.attr("id"));
         });
         //触发事件
         var active = {
@@ -147,14 +179,19 @@
                     , text = othis.text();
                 layer.open({
                     type: 1
-                    ,offset: type
-                    ,id: 'layerDemo'+type //防止重复弹出
-                    ,content: $("#info").html()
-                    ,btn: '确定'
-                    ,btnAlign: 'c' //按钮居中
-                    ,shade: 0.3 //不显示遮罩
-                    ,anim:1
-                    ,yes: function(){
+                    , offset: type
+                    , id: 'layerDemo' + type //防止重复弹出
+                    , content: $("#info").html()
+                    , btn: '确定'
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0.3 //不显示遮罩
+                    , anim: 1
+                    , success: function (layero, index) {
+                        layero.addClass("layui-form");
+                        layero.find('img').attr('id', 'headImg');
+                        form.render();
+                    }
+                    , yes: function (index, layero) {
                         layer.closeAll();
                     }
                 });
@@ -164,20 +201,20 @@
                     , text = othis.text();
                 layer.open({
                     type: 1
-                    ,title:'修改密码'
-                    ,offset: type
-                    ,id: 'layerDemo'+type //防止重复弹出
-                    ,content: $("#passwordDiv").html()
-                    ,btn: ['保存','取消']
-                    ,btnAlign: 'c' //按钮居中
-                    ,shade: 0.3 //不显示遮罩
-                    ,anim:1
-                    ,success:function(layero,index){
+                    , title: '修改密码'
+                    , offset: type
+                    , id: 'layerDemo' + type //防止重复弹出
+                    , content: $("#passwordDiv").html()
+                    , btn: ['保存', '取消']
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0.3 //不显示遮罩
+                    , anim: 1
+                    , success: function (layero, index) {
                         layero.addClass("layui-form");
                         layero.find('.layui-layer-btn0').attr('lay-filter', 'passwordForm').attr('lay-submit', '');//将按钮弄成能提交的
                         form.render();
                     }
-                    ,yes: function(){
+                    , yes: function () {
                         form.on('submit(passwordForm)', function (data) {
                             $.post("console/changePassword", data.field, function (result) {
                                 layer.msg(result.msg);
@@ -185,7 +222,7 @@
                             return false;
                         });
                     }
-                    ,no: function(){
+                    , no: function () {
                         layer.closeAll();
                     }
                 });
@@ -197,15 +234,19 @@
                 /^[\S]{6,12}$/
                 , '密码必须6到12位，且不能出现空格'
             ],
-            password1:function(value,item){
-                if(value != $("input[name='newPassword1']")[1].value){
+            password1: function (value, item) {
+                if (value != $("input[name='newPassword1']")[1].value) {
                     return "新密码输入不一致";
                 }
             }
         });
 
 
-        $('.layui-nav-child a').on('click', function(){
+        $('a').on('click', function () {
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+        $('img').on('click', function () {
             var othis = $(this), method = othis.data('method');
             active[method] ? active[method].call(this, othis) : '';
         });
@@ -213,17 +254,46 @@
         //初始化点击第一个菜单
         $("ul li:first").addClass("layui-this");
         $(".layui-nav-tree").children("li").each(function (i, n) {
-            if($("ul li:first").find("a").attr("id") == $(n).attr("parentid")){
+            if ($("ul li:first").find("a").attr("id") == $(n).attr("parentid")) {
                 $(n).show();
-            }else{
+            } else {
                 $(n).hide();
             }
         });
 
+        $(document).on('click', '#headImg', function () {
+            layer.open({
+                type: 1
+                , title: '修改头像'
+                , id: 'layerHeadImg' //防止重复弹出
+                , content: $("#headImgDiv").html()
+                , btn: ['保存', '取消']
+                , btnAlign: 'c' //按钮居中
+                , shade: 0.3 //不显示遮罩
+                , anim: 1
+                , success: function (layero, index) {
+                    layero.addClass("layui-form");
+                    layero.find('.layui-layer-btn0').attr('lay-filter', 'passwordForm').attr('lay-submit', '');//将按钮弄成能提交的
+                    form.render();
+                }
+                , yes: function (index, layero) {
+                    form.on('submit(passwordForm)', function (data) {
+                        $.post("console/changePassword", data.field, function (result) {
+                            layer.msg(result.msg);
+                        });
+                        return false;
+                    });
+                }
+                , no: function (index, layero) {
+                    layer.close(index);
+                }
+            });
+        });
+
         //iframe高度设置
         function FrameWH() {
-            var h = $(".layui-side").height()-$(".layui-footer").height()-$(".layui-tab-title").height()-44;
-            $("iframe").css("height",h+"px");
+            var h = $(".layui-side").height() - $(".layui-footer").height() - $(".layui-tab-title").height() - 44;
+            $("iframe").css("height", h + "px");
         }
 
         $(window).resize(function () {
