@@ -115,37 +115,37 @@
     <form id="headImgForm" class="layui-form layui-form-pane layui-site-20" action="">
         <div class="layui-upload">
             <button type="button" class="layui-btn" id="test1">上传图片</button>
-            <div class="layui-upload-list">
-                <img class="layui-upload-img" id="demo1">
+            <img class="layui-upload-img" id="uploadImg">
                 <p id="demoText"></p>
-            </div>
+
+
         </div>
         <div class="site-demo-flow">
-            <img style="width: 60px;height: 60px" src="/images/head/head1.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head2.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head3.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head4.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head5.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head6.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head7.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head8.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head9.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head10.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head11.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head12.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head13.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head14.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head15.png"/>
-            <img style="width: 60px;height: 60px" src="/images/head/head16.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head1.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head2.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head3.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head4.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head5.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head6.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head7.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head8.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head9.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head10.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head11.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head12.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head13.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head14.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head15.png"/>
+            <img name="head" style="width: 60px;height: 60px" src="/images/head/head16.png"/>
         </div>
     </form>
 </script>
 
 <script>
     //JavaScript代码区域
-    layui.use(['jquery', 'layer', 'element', 'form'], function () {
+    layui.use(['jquery', 'layer', 'element', 'form','upload'], function () {
         var $ = jQuery = layui.$;
-        var element = layui.element, layer = layui.layer, form = layui.form;
+        var element = layui.element, layer = layui.layer, form = layui.form,upload = layui.upload;
         element.init();
         element.render('nav');
 
@@ -246,10 +246,6 @@
             var othis = $(this), method = othis.data('method');
             active[method] ? active[method].call(this, othis) : '';
         });
-        $('img').on('click', function () {
-            var othis = $(this), method = othis.data('method');
-            active[method] ? active[method].call(this, othis) : '';
-        });
 
         //初始化点击第一个菜单
         $("ul li:first").addClass("layui-this");
@@ -288,6 +284,19 @@
                     layer.close(index);
                 }
             });
+        });
+
+        $(document).on('click', 'img[name=head]', function () {
+            $("#uploadImg").attr('src',this.src);
+        });
+
+        //图片上传
+        var uploadInst = upload.render({
+            elem: '#1' //绑定元素
+            ,url: '/uploadHeadImg' //上传接口
+            ,done: function(res){
+                $("#uploadImg").attr('src',res);
+            }
         });
 
         //iframe高度设置
