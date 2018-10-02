@@ -24,7 +24,8 @@ class GlobalExceptionHandler {
         UUser user = (UUser) subject.getPrincipal();
         if (user == null) {
             return "login";
+        }else{
+            return "index";
         }
-        return "login";
     }
 }

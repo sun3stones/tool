@@ -290,14 +290,6 @@
             $("#uploadImg").attr('src',this.src);
         });
 
-        //图片上传
-        var uploadInst = upload.render({
-            elem: '#1' //绑定元素
-            ,url: '/uploadHeadImg' //上传接口
-            ,done: function(res){
-                $("#uploadImg").attr('src',res);
-            }
-        });
 
         //iframe高度设置
         function FrameWH() {

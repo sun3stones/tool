@@ -22,7 +22,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/login")
+    @RequestMapping(value={"/login"})
     public String login(HttpServletRequest request, UUser user, @RequestParam(value = "rememberMe", required = false) boolean rememberMe) {
         if (user == null) {
             return "login";
@@ -32,7 +32,7 @@ public class UserController {
         return "forward:/index";
     }
 
-    @RequestMapping("/index")
+    @RequestMapping(value={"/index",""})
     public String index(HttpServletRequest request) {
         UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
         URole role = userService.getRole(user);
