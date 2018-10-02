@@ -11,13 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class UserController {
@@ -54,22 +51,6 @@ public class UserController {
         request.setAttribute("user",user);
         request.setAttribute("role",role);
         return "index";
-    }
-
-    @RequestMapping("changeHeadImg")
-    @ResponseBody
-    public Map<String,String> changeHeadImg(HttpServletRequest request, String img){
-        Map<String,String> result = new HashMap<>();
-        UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
-        String path = "http://"+request.getServerName()+":"+request.getServerPort();
-        if(img.contains(path)){
-           img = img.replace(path,"");
-        }
-        user.setHeadImg(img);
-        userService.updateUser(user,null);
-        result.put("img",img);
-        result.put("msg","修改头像成功！");
-        return result;
     }
 
 
