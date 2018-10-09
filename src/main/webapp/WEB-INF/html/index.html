@@ -52,7 +52,7 @@
             </ul>
             <div class="layui-tab-content layui-bg-gray">
                 <div class="layui-tab-item layui-show " style="background-color: #01AAED">
-                    <table border="1" height="600Px"></table>
+                    <table border="1" height="700Px"></table>
                 </div>
             </div>
         </div>
@@ -114,29 +114,25 @@
 <script id="headImgDiv" type="text/html">
     <form id="headImgForm" class="layui-form layui-form-pane layui-site-20" action="">
         <div class="layui-upload">
-            <button type="button" class="layui-btn" id="test1">上传图片</button>
-            <img class="layui-upload-img" id="uploadImg">
-                <p id="demoText"></p>
-
-
+            <img class="layui-upload-img" style="margin-left:33%" id="uploadImg" th:src="${user.headImg}">
         </div>
         <div class="site-demo-flow">
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head1.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head2.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head3.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head4.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head5.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head6.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head7.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head8.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head9.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head10.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head11.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head12.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head13.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head14.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head15.png"/>
-            <img name="head" style="width: 60px;height: 60px" src="/images/head/head16.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head1.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head2.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head3.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head4.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head5.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head6.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head7.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head8.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head9.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head10.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head11.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head12.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head13.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head14.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head15.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head16.png"/>
         </div>
     </form>
 </script>
@@ -188,7 +184,7 @@
                     , anim: 1
                     , success: function (layero, index) {
                         layero.addClass("layui-form");
-                        layero.find('img').attr('id', 'headImg');
+                        layero.find('img').attr('id', 'headImg').attr('src',$('.layui-nav-img').attr('src'));
                         form.render();
                     }
                     , yes: function (index, layero) {
@@ -273,11 +269,12 @@
                     form.render();
                 }
                 , yes: function (index, layero) {
-                    form.on('submit(passwordForm)', function (data) {
-                        $.post("console/changePassword", data.field, function (result) {
-                            layer.msg(result.msg);
-                        });
-                        return false;
+                    var img = layero.find(".layui-upload-img").attr('src');
+                    $.post("changeHeadImg", {img:img}, function (result) {
+                        $(".layui-nav-img").attr('src', result.img);
+                        $("#headImg").attr('src', result.img);
+                        layer.closeAll();
+                        layer.msg(result.msg);
                     });
                 }
                 , no: function (index, layero) {

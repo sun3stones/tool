@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Table(name = "u_user")
 public class UUser {
     @Id
+    @GeneratedValue(generator = "JDBC")
     private Long id;
 
     /**

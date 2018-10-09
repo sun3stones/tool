@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Table(name = "project_group")
 public class ProjectGroup {
     @Id
+    @GeneratedValue(generator = "JDBC")
     private Long id;
 
     /**

@@ -1,8 +1,10 @@
 package com.lei.tool.controller;
 
+import com.lei.tool.entity.ProjectGroup;
 import com.lei.tool.entity.UPermission;
 import com.lei.tool.entity.URole;
 import com.lei.tool.entity.UUser;
+import com.lei.tool.service.ProjectTaskService;
 import com.lei.tool.service.UserService;
 import com.lei.tool.utils.Page;
 import com.lei.tool.utils.StringUtils;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -25,6 +28,8 @@ public class ConsoleController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private ProjectTaskService projectTaskService;
 
     @RequestMapping("/roleList")
     public String roleList(HttpServletRequest request){
@@ -181,6 +186,26 @@ public class ConsoleController {
         result.put("errcode",0);
         result.put("msg","修改密码成功！");
         return result;
+    }
+
+    @RequestMapping("/projectList")
+    public String projectList(){
+        return "console/projectList";
+    }
+
+    @RequestMapping("/projectDataList")
+    @ResponseBody
+    public Page<ProjectGroup> projectDataList(HttpServletRequest request, Page<ProjectGroup> page,ProjectGroup projectGroup){
+        UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
+        page = projectTaskService.getProjectPage(page,projectGroup,user);
+        return  page;
+    }
+    @RequestMapping("/addProject")
+    @ResponseBody
+    public Map<String,Object> addProject(HttpServletRequest request, Page<ProjectGroup> page,ProjectGroup projectGroup){
+        Map<String,Object> map = new HashMap<>();
+        UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
+        return projectTaskService.addProject(projectGroup,user);
     }
 
 

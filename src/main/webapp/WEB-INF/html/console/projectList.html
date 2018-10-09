@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>项目管理</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
+    <script th:src="@{/layui/layui.all.js}"></script>
+</head>
+<body style="overflow-y: scroll;">
+<div>
+
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layui-border-auto">
+            <div class="layui-form-item">
+                项目编号：
+                <div class="layui-inline">
+                    <input class="layui-input" name="id" id="projectNo" autocomplete="off">
+                </div>
+                项目名称：
+                <div class="layui-inline">
+                    <input class="layui-input" name="id" id="projectName" autocomplete="off">
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" data-type="reload" id="projectSearch"><i
+                            class="layui-icon layui-icon-search"></i></button>
+                    <button class="layui-btn" data-type="reload" id="addProject"><i
+                            class="layui-icon layui-icon-add-1"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-form-item" id="projectList" lay-filter="projectList"></table>
+        </div>
+
+    </div>
+
+
+</div>
+</body>
+<script type="text/html" id="projectBar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i></a>
+</script>
+<script type="text/html" id="addProjectBar">
+
+    <form class="layui-form layui-form-pane" id="addprojectForm">
+        <div class="layui-site-20">
+            <div class="layui-form-item">
+                <label class="layui-form-label">项目编号</label>
+                <div class="layui-inline">
+                    <input type="text" name="projectNo" required lay-verify="no" placeholder="请输入项目编号"
+                           autocomplete="off" class="layui-input"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">项目名称</label>
+                <div class="layui-inline">
+                    <input type="text" name="projectName" required lay-verify="name" placeholder="请输入项目名称"
+                           autocomplete="off" class="layui-input"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <textarea name="remark" placeholder="请输入项目描述" class="layui-textarea"></textarea>
+            </div>
+
+        </div>
+        <div class="layui-btn-container" style="margin-top: 10px;margin-left: 110px">
+            <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="subBtn">保存</button>
+            <button class="layui-btn layui-btn-sm layui-btn-primary" id="cancalBtn">取消</button>
+        </div>
+    </form>
+
+
+</script>
+<script>
+    layui.use(['jquery', 'layer', 'element', 'table', 'form'], function () {
+        var $ = jQuery = layui.$;
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        //方法级渲染
+        table.render({
+            elem: '#projectList'
+            , id: 'projectTable'
+            , url: '/console/projectDataList/' //数据接口
+            , page: true //开启分页
+            , cols: [
+                [ //表头
+                    {type: 'numbers', title: '序号', width: 60},
+                    {field: 'projectNo', title: '项目编号', unresize: true},
+                    {field: 'projectName', title: '项目名称', unresize: true},
+                    {field: 'remark', title: '项目描述', unresize: true},
+                    {
+                        field: 'createTime', title: '创建时间', unresize: true, templet: function (d) {
+                            return parseTime(d.createTime);
+                        }
+                    },
+                    {fixed: 'right', title: '操作', unresize: true, toolbar: '#projectBar', width: 150}
+                ]
+            ]
+        });
+
+
+        var $ = layui.$, active = {
+            reload: function () {
+                var projectNo = $('#projectNo');
+                var projectName = $('#projectName');
+
+                //执行重载
+                table.reload('projectTable', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    , where: {
+                        projectNo: projectNo.val(),
+                        projectName: projectName.val()
+                    }
+                });
+            }
+        };
+
+        $('#projectSearch').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        table.on('tool(projectList)', function (obj) {
+            var data = obj.data;
+            //console.log(obj)
+            if (obj.event === 'del') {
+                layer.confirm('确定删除‘' + data.name + '’项目吗？', function (index) {
+                    $.post('/console/deleteProject', data, function (data) {
+                        layer.closeAll();
+                        layer.msg(data);
+                        obj.del();
+                    });
+                    return false;
+
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                layer.open({
+                    type: 2
+                    , offset: 'auto'
+                    , title: data.name + '-权限信息'
+                    , id: 'layerDemo'
+                    , content: '/console/permissionList?id=' + data.id
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0.3 //不显示遮罩
+                    , anim: 1
+                    , area: ['90%', '80%']
+                    , btn: ['保存', '取消']
+                    , yes: function (index, layero) {
+                        var body = layer.getChildFrame('body', index);//通过该对象可以获取iframe中的dom元素
+                        var perIds = "";
+                        body.find("input[type='checkbox']:checked").each(function () {//获取选中的权限id
+                            perIds += "," + $(this).attr("id");
+                        });
+                        if (perIds.length > 0) {
+                            perIds = perIds.substr(1);
+                        }
+                        $.post("/console/savePermission", {perIds: perIds, projectId: data.id}, function (result) {
+                            layer.msg(result);
+                        });
+
+                    }, no: function () {
+                        layer.closeAll();
+                    }
+                });
+            }
+        });
+
+        $("#addProject").click(function () {
+            layer.open({
+                type: 1
+                , offset: 'auto'
+                , title: '新增项目'
+                , id: 'layerProject'
+                , content: $('#addProjectBar').html()
+                , btnAlign: 'c' //按钮居中
+                , shade: 0.3 //不显示遮罩
+                , anim: 1
+                , resize: false
+            });
+            form.render();
+        });
+
+        form.verify({
+            name: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "项目名不能为空";
+                }
+                if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                    return '项目名不能有特殊字符';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '项目名首尾不能出现下划线\'_\'';
+                }
+                if (/^\d+\d+\d$/.test(value)) {
+                    return '项目名不能全为数字';
+                }
+            },
+            no: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "项目编号不能为空";
+                }
+                if (!new RegExp("^[A-Z0-9_\\s·]+$").test(value)) {
+                    return '项目编号只能为大写英文和数字';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '项目编号首尾不能出现下划线\'_\'';
+                }
+                if (/^\d+\d+\d$/.test(value)) {
+                    return '项目编号不能全为数字';
+                }
+            }
+
+        });
+
+        //监听提交
+        form.on('submit(subBtn)', function (data) {
+            //ajax 提交
+            $.post('/console/addProject', data.field, function (data) {
+                if(data.errcode == 0){
+                    layer.closeAll();
+                }
+                layer.msg(data.msg);
+                $("#projectSearch").click();
+            });
+            return false;
+        });
+
+        $(document).on('click', '#cancalBtn', function () {
+            layer.closeAll();
+        });
+
+        function parseTime(v) {
+            var date = new Date(v);
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            m = m < 10 ? '0' + m : m;
+            var d = date.getDate();
+            d = d < 10 ? ("0" + d) : d;
+            var h = date.getHours();
+            h = h < 10 ? ("0" + h) : h;
+            var M = date.getMinutes();
+            M = M < 10 ? ("0" + M) : M;
+            var str = y + "-" + m + "-" + d + " " + h + ":" + M;
+            return str;
+        }
+
+
+    });
+
+</script>
+</html>

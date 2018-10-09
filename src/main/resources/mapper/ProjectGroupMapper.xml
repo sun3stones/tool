@@ -11,4 +11,33 @@
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
+
+  <select id="selectByUser" resultMap="BaseResultMap">
+    select a.* from project_group a left join project_group_user b on a.id = b.gid left join u_user c on c.id = b.uid
+    <where>
+      <if test="project.projectName != null and project.projectName != ''">
+        and a.project_name = #{project.projectName}
+      </if>
+      <if test="project.projectNo != null and project.projectNo != ''">
+        and a.project_no = #{project.projectNo}
+      </if>
+      <if test="user.id != null and user.id !=''">
+        and c.id = #{user.id}
+      </if>
+    </where>
+  </select>
+  <select id="selectByUserCount" resultType="java.lang.Integer">
+    select count(1) from project_group a left join project_group_user b on a.id = b.gid left join u_user c on c.id = b.uid
+    <where>
+      <if test="project.projectName != null and project.projectName != ''">
+        and a.project_name = #{project.projectName}
+      </if>
+      <if test="project.projectNo != null and project.projectNo != ''">
+        and a.project_no = #{project.projectNo}
+      </if>
+      <if test="user.id != null and user.id !=''">
+        and c.id = #{user.id}
+      </if>
+    </where>
+  </select>
 </mapper>
