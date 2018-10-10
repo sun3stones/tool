@@ -1,6 +1,7 @@
 package com.lei.tool.filter;
 
 import com.lei.tool.entity.UPermission;
+import com.lei.tool.entity.URole;
 import com.lei.tool.entity.UUser;
 import com.lei.tool.service.UserService;
 import com.lei.tool.utils.StringUtils;
@@ -31,7 +32,9 @@ public class MyShiroRealm extends AuthorizingRealm {
         //把用户所有拥有的角色及权限放入
         if (user != null) {
             SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-
+            //角色
+            URole role = userService.getRole(user);
+            info.addRole(role.getName());
             //权限
             List<UPermission> permissions = userService.getPermission(user);
             for (UPermission p : permissions) {

@@ -92,11 +92,7 @@
                     {field: 'projectNo', title: '项目编号', unresize: true},
                     {field: 'projectName', title: '项目名称', unresize: true},
                     {field: 'remark', title: '项目描述', unresize: true},
-                    {
-                        field: 'createTime', title: '创建时间', unresize: true, templet: function (d) {
-                            return parseTime(d.createTime);
-                        }
-                    },
+                    {field: 'createTime', title: '创建时间', unresize: true},
                     {fixed: 'right', title: '操作', unresize: true, toolbar: '#projectBar', width: 150}
                 ]
             ]
@@ -144,29 +140,16 @@
                 layer.open({
                     type: 2
                     , offset: 'auto'
-                    , title: data.name + '-权限信息'
+                    , title: data.projectName + '-项目信息'
                     , id: 'layerDemo'
-                    , content: '/console/permissionList?id=' + data.id
+                    , content: '/console/projectGroupList?id=' + data.id
                     , btnAlign: 'c' //按钮居中
                     , shade: 0.3 //不显示遮罩
                     , anim: 1
                     , area: ['90%', '80%']
-                    , btn: ['保存', '取消']
+                    , btn: ['确定']
                     , yes: function (index, layero) {
-                        var body = layer.getChildFrame('body', index);//通过该对象可以获取iframe中的dom元素
-                        var perIds = "";
-                        body.find("input[type='checkbox']:checked").each(function () {//获取选中的权限id
-                            perIds += "," + $(this).attr("id");
-                        });
-                        if (perIds.length > 0) {
-                            perIds = perIds.substr(1);
-                        }
-                        $.post("/console/savePermission", {perIds: perIds, projectId: data.id}, function (result) {
-                            layer.msg(result);
-                        });
-
-                    }, no: function () {
-                        layer.closeAll();
+                        layer.close(index);
                     }
                 });
             }

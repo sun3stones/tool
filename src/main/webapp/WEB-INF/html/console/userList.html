@@ -69,7 +69,14 @@
                     </select>
                 </div>
             </div>
-
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属项目</label>
+                <div class="layui-inline">
+                    <select name="projectId" id="projectId" >
+                        <option value="">请选择项目</option>
+                    </select>
+                </div>
+            </div>
         </div>
         <div class="layui-btn-container" style="margin-top: 10px;margin-left: 110px">
             <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="subBtn">保存</button>
@@ -211,6 +218,7 @@
         });
 
         initSelect("[[@{/comm/initRoleSelect}]]",$("#roleId"),null);
+        initSelect("[[@{/comm/initProjectSelect}]]",$("#projectId"),null);
         form.render();
     });
 

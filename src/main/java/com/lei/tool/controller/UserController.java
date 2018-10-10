@@ -4,6 +4,7 @@ import com.lei.tool.entity.UPermission;
 import com.lei.tool.entity.URole;
 import com.lei.tool.entity.UUser;
 import com.lei.tool.service.UserService;
+import com.lei.tool.utils.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -27,7 +28,7 @@ public class UserController {
 
     @RequestMapping(value={"/login"})
     public String login(HttpServletRequest request, UUser user, @RequestParam(value = "rememberMe", required = false) boolean rememberMe) {
-        if (user == null) {
+        if (user == null || StringUtils.isEmpty(user.getUserName())) {
             return "login";
         }
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(), DigestUtils.md5Hex(user.getPassword()), rememberMe);

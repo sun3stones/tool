@@ -27,6 +27,8 @@ public class UserServiceImpl implements UserService {
     private URolePermissionMapper rolePermissionMapper;
     @Autowired
     private UUserRoleMapper userRoleMapper;
+    @Autowired
+    private ProjectGroupUserMapper projectGroupUserMapper;
 
     @Override
     public UUser selectUser(UUser user) {
@@ -149,7 +151,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String insertUser(UUser user, Long roleId) {
+    public String insertUser(UUser user, Long roleId,Long projectId) {
         UUser verify = new UUser();
         verify.setUserName(user.getUserName());
         if(userMapper.selectCount(verify)>0){
@@ -161,6 +163,10 @@ public class UserServiceImpl implements UserService {
         ur.setUid(user.getId());
         ur.setRid(roleId);
         userRoleMapper.insert(ur);
+        ProjectGroupUser pgu = new ProjectGroupUser();
+        pgu.setGid(projectId);
+        pgu.setUid(user.getId());
+        projectGroupUserMapper.insertSelective(pgu);
         return "新增用户成功！";
     }
 

@@ -38,6 +38,16 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     }
 
     @Override
+    public List<ProjectGroup> getInitProject(UUser user) {
+        if(user == null){
+            return projectGroupMapper.selectAll();
+        }else{
+            return projectGroupMapper.selectByUser(null,user);
+        }
+
+    }
+
+    @Override
     public Map<String,Object> addProject(ProjectGroup projectGroup, UUser uUser) {
         Map<String,Object> map = new HashMap<>();
         Example ex = new Example(ProjectGroup.class);

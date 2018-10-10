@@ -30,7 +30,7 @@ public interface UserService {
 
     List<UPermission> getAllPermission();
 
-    int updateRolePermission(String perIds,Long id);
+    int updateRolePermission(String perIds,Long roleId);
 
     int insertRole(URole uRole);
 
@@ -40,7 +40,7 @@ public interface UserService {
 
     List<URole> getInitRole(UUser user);
 
-    String insertUser(UUser user,Long roleId);
+    String insertUser(UUser user,Long roleId,Long projectId);
 
     int deleteUser(UUser user);
 

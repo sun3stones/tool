@@ -139,10 +139,10 @@ public class ConsoleController {
 
     @RequestMapping("/updateUser")
     @ResponseBody
-    public String addUser(HttpServletRequest request, UUser user,Long roleId,Long userId){
+    public String addUser(HttpServletRequest request, UUser user,Long roleId,Long userId,Long projectId){
         String result = "";
         if(userId == null){//新增用户
-            userService.insertUser(user,roleId);
+            userService.insertUser(user,roleId,projectId);
             return "新增用户成功！";
         }else{//修改用户
             user.setId(userId);
@@ -207,6 +207,12 @@ public class ConsoleController {
         UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
         return projectTaskService.addProject(projectGroup,user);
     }
+
+    @RequestMapping("/projectGroupList")
+    public String projectGroupList(){
+        return "console/projectDetail";
+    }
+
 
 
 }
