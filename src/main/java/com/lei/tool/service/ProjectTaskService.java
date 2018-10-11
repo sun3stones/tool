@@ -13,12 +13,14 @@ public interface ProjectTaskService {
 
     Page<ProjectGroup> getProjectPage(Page<ProjectGroup> page,ProjectGroup projectGroup, UUser user);
 
+    List<ProjectGroup> getProject(ProjectGroup projectGroup);
+
     List<ProjectGroup> getInitProject(UUser user);
 
     Map<String,Object> addProject(ProjectGroup projectGroup, UUser uUser);
 
     int deleteProject(ProjectGroup projectGroup);
 
-    int updateProject(ProjectGroup projectGroup,UUser uUser);
+    Map<String,Object> updateProject(ProjectGroup projectGroup,UUser uUser);
 
 }

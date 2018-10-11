@@ -38,6 +38,11 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     }
 
     @Override
+    public List<ProjectGroup> getProject(ProjectGroup projectGroup) {
+        return  projectGroupMapper.select(projectGroup);
+    }
+
+    @Override
     public List<ProjectGroup> getInitProject(UUser user) {
         if(user == null){
             return projectGroupMapper.selectAll();
@@ -63,7 +68,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
         projectGroupUser.setUid(uUser.getId());
         projectGroupUser.setGid(projectGroup.getId());
         projectGroupUserMapper.insert(projectGroupUser);
-        map.put("errcode",1);
+        map.put("errcode",0 );
         map.put("msg","新增项目组成功!");
         return map;
     }
@@ -74,7 +79,13 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     }
 
     @Override
-    public int updateProject(ProjectGroup projectGroup,UUser uUser) {
-        return 0;
+    public Map<String,Object> updateProject(ProjectGroup projectGroup,UUser uUser) {
+        Map<String,Object> map = new HashMap<>();
+        Example ex = new Example(ProjectGroup.class);
+        ex.createCriteria().andEqualTo("projectNo",projectGroup.getProjectNo());
+        projectGroupMapper.updateByPrimaryKeySelective(projectGroup);
+        map.put("errcode",0);
+        map.put("msg","修改项目组成功!");
+        return map;
     }
 }

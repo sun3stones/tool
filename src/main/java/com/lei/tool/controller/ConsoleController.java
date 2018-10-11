@@ -204,12 +204,18 @@ public class ConsoleController {
     @ResponseBody
     public Map<String,Object> addProject(HttpServletRequest request, Page<ProjectGroup> page,ProjectGroup projectGroup){
         Map<String,Object> map = new HashMap<>();
-        UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
-        return projectTaskService.addProject(projectGroup,user);
+        if(projectGroup.getId() == null){//新增
+            UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
+            return projectTaskService.addProject(projectGroup,user);
+        }else{//修改
+            return projectTaskService.updateProject(projectGroup,null);
+        }
     }
 
-    @RequestMapping("/projectGroupList")
-    public String projectGroupList(){
+    @RequestMapping("/projectGroupDetail")
+    public String projectGroupList(HttpServletRequest request,ProjectGroup projectGroup){
+        projectGroup = projectTaskService.getProject(projectGroup).get(0);
+        request.setAttribute("pg",projectGroup);
         return "console/projectDetail";
     }
 

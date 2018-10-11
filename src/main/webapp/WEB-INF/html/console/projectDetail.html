@@ -11,18 +11,43 @@
 <body style="background-color: #f2f2f2">
 <div style="padding: 10px;" class="layui-fluid">
     <div class="layui-row layui-col-space10">
-        <div class="layui-col-md7">
+        <div class="layui-col-md3">
             <div class="layui-card">
-                <div class="layui-card-header">卡片面板</div>
+                <div class="layui-card-header">项目信息</div>
                 <div class="layui-card-body">
-                    卡片式面板面板通常用于非白色背景色的主体内<br>
-                    从而映衬出边框投影
+                    <form class="layui-form layui-form-pane" id="addprojectForm">
+                        <input type="hidden" name="id" th:value="${pg.id}">
+                        <div class="layui-site-20">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">项目编号</label>
+                                <div class="layui-inline">
+                                    <input type="text" name="projectNo" required lay-verify="no" placeholder="请输入项目编号"
+                                           autocomplete="off" class="layui-input" readonly="readonly" th:value="${pg.projectNo}"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">项目名称</label>
+                                <div class="layui-inline">
+                                    <input type="text" name="projectName" required lay-verify="name" placeholder="请输入项目名称"
+                                           autocomplete="off" class="layui-input" th:value="${pg.projectName}"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <textarea name="remark" placeholder="请输入项目描述" class="layui-textarea" th:utext="${pg.remark}"></textarea>
+                            </div>
+
+                        </div>
+                        <div class="layui-btn-container" style="margin-top: 10px;margin-left: 33%">
+                            <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="subBtn">保存</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" type="reset">重置</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-        <div class="layui-col-md5">
+        <div class="layui-col-md9">
             <div class="layui-card">
-                <div class="layui-card-header">卡片面板</div>
+                <div class="layui-card-header">项目成员</div>
                 <div class="layui-card-body">
                     结合 layui 的栅格系统<br>
                     轻松实现响应式布局
@@ -37,6 +62,50 @@
         var $ = jQuery = layui.$;
         var form = layui.form;
 
+        //监听提交
+        form.on('submit(subBtn)', function (data) {
+            //ajax 提交
+            $.post('/console/addProject', data.field, function (data) {
+                if(data.errcode == 0){
+                    layer.closeAll();
+                }
+                layer.msg(data.msg);
+                $("#projectSearch").click();
+            });
+            return false;
+        });
+
+        form.verify({
+            name: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "项目名不能为空";
+                }
+                if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                    return '项目名不能有特殊字符';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '项目名首尾不能出现下划线\'_\'';
+                }
+                if (/^\d+\d+\d$/.test(value)) {
+                    return '项目名不能全为数字';
+                }
+            },
+            no: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "项目编号不能为空";
+                }
+                if (!new RegExp("^[A-Z0-9_\\s·]+$").test(value)) {
+                    return '项目编号只能为大写英文和数字';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '项目编号首尾不能出现下划线\'_\'';
+                }
+                if (/^\d+\d+\d$/.test(value)) {
+                    return '项目编号不能全为数字';
+                }
+            }
+
+        });
 
 
     });
