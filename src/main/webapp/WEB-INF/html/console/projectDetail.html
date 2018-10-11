@@ -9,7 +9,7 @@
     <script th:src="@{/layui/layui.all.js}"></script>
 </head>
 <body style="background-color: #f2f2f2">
-<div style="padding: 20px;" class="layui-fluid">
+<div style="padding: 10px;" class="layui-fluid">
     <div class="layui-row layui-col-space10">
         <div class="layui-col-md7">
             <div class="layui-card">
@@ -37,31 +37,6 @@
         var $ = jQuery = layui.$;
         var form = layui.form;
 
-
-        $("input[type='checkbox']").each(function(){
-            if(!$(this).attr('operable')==2 || $("#roleId").val() == 1){
-                $(this).attr("disabled","disabled");
-            }
-        });
-        form.render();
-
-        form.on('checkbox(roleCheck)', function(data){
-            var obj = data.elem;
-            if(obj.attributes.level.value == 1){//一级菜单选中下面三级权限
-                $("input[type='checkbox'][grandId='"+obj.id+"']").prop("checked",obj.checked);
-            }
-            if(obj.attributes.level.value <3){//一二级菜单选中下级权限
-                $("input[type='checkbox'][parentId='"+obj.id+"']").prop("checked",obj.checked);
-            }
-            if(obj.attributes.level.value ==3 && obj.checked){//三级选中父权限
-                $("#"+obj.attributes.grandId.value).prop("checked",true);
-                $("#"+obj.attributes.parentId.value).prop("checked",true);
-            }
-            if(obj.attributes.level.value ==2 && obj.checked){//二级选中父权限
-                $("#"+obj.attributes.parentId.value).prop("checked",true);
-            }
-            form.render();
-        });
 
 
     });

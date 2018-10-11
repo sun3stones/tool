@@ -63,12 +63,15 @@ public class UserServiceImpl implements UserService {
     public Page<URole> getRolePage(Page<URole> page, URole uRole) {
         PageHelper.startPage(page.getPage(),page.getLimit());
         List<URole> list = new ArrayList<>();
+        int count = 0;
         if(StringUtils.isEmpty(uRole.getName())){
             list = roleMapper.selectAll();
+            count = roleMapper.selectCount(null);
         }else{
             list = roleMapper.select(uRole);
+            count = roleMapper.selectCount(uRole);
         }
-        page.setCount(roleMapper.selectCount(uRole));
+        page.setCount(count);
         page.setData(list);
         page.setCode(0);
         page.setMsg("成功");
@@ -130,12 +133,15 @@ public class UserServiceImpl implements UserService {
     public Page<UUser> getUserPage(Page<UUser> page, UUser user) {
         PageHelper.startPage(page.getPage(),page.getLimit());
         List<UUser> list = new ArrayList<>();
+        int count = 0;
         if(StringUtils.isEmpty(user.getUserName())){
             list = userMapper.selectAll();
+            count = userMapper.selectCount(null);
         }else{
             list = userMapper.select(user);
+            count = userMapper.selectCount(user);
         }
-        page.setCount(userMapper.selectCount(user));
+        page.setCount(count);
         page.setData(list);
         page.setCode(0);
         page.setMsg("成功");
