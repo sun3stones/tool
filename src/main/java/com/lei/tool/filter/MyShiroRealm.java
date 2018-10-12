@@ -1,5 +1,6 @@
 package com.lei.tool.filter;
 
+import com.lei.tool.dto.UserDto;
 import com.lei.tool.entity.UPermission;
 import com.lei.tool.entity.URole;
 import com.lei.tool.entity.UUser;
@@ -62,14 +63,14 @@ public class MyShiroRealm extends AuthorizingRealm {
         }
         UUser user = new UUser();
         user.setUserName(userName);
-        user = userService.selectUser(user);
-        if (user == null) {
+        UserDto userDto = userService.selectUser(user);
+        if (userDto == null) {
             throw new AccountException("账户不存在");
         }
-        if (user.getStatus() == 0) {
+        if (userDto.getStatus() == 0) {
             throw new DisabledAccountException("账号已经禁止登录");
         } else {
-            return new SimpleAuthenticationInfo(user, user.getPassword(), getName());
+            return new SimpleAuthenticationInfo(userDto, userDto.getPassword(), getName());
         }
     }
 }

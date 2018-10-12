@@ -14,6 +14,11 @@
     <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
   </resultMap>
 
+    <select id="login" resultType="com.lei.tool.dto.UserDto">
+      select a.*,c.id as roleId,c.name as roleName from u_user a left join u_user_role b on a.id=b.uid left join u_role c on b.rid=c.id
+         where a.user_name = #{userName}
+    </select>
+
     <select id="getUserCount" resultType="java.lang.Integer">
         select count(1) from u_user
     </select>

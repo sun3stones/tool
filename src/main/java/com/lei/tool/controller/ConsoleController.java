@@ -24,7 +24,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/console")
-public class ConsoleController {
+public class ConsoleController extends BaseController{
 
     @Autowired
     private UserService userService;
@@ -46,7 +46,7 @@ public class ConsoleController {
 
     @RequestMapping("/permissionList")
     public String permissionList(HttpServletRequest request,URole role){
-        UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
+        UUser user = getUser();
         URole uRole = userService.getRole(user);
         List<UPermission> perList = userService.getAllPermission();//获取所有权限
         List<UPermission> editList = userService.getRolePermission(uRole);//获取用户的操作权限
@@ -174,7 +174,7 @@ public class ConsoleController {
     @ResponseBody
     public Map<String,Object> changePassword(HttpServletRequest request, String password, String newPassword){
         Map<String,Object> result = new HashMap<>();
-        UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
+        UUser user = getUser();
         password = DigestUtils.md5Hex(password);
         if(!user.getPassword().equals(password)){
             result.put("errcode",1);
@@ -196,7 +196,7 @@ public class ConsoleController {
     @RequestMapping("/projectDataList")
     @ResponseBody
     public Page<ProjectGroup> projectDataList(HttpServletRequest request, Page<ProjectGroup> page,ProjectGroup projectGroup){
-        UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
+        UUser user = getUser();
         page = projectTaskService.getProjectPage(page,projectGroup,user);
         return  page;
     }
@@ -205,7 +205,7 @@ public class ConsoleController {
     public Map<String,Object> addProject(HttpServletRequest request, Page<ProjectGroup> page,ProjectGroup projectGroup){
         Map<String,Object> map = new HashMap<>();
         if(projectGroup.getId() == null){//新增
-            UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
+            UUser user = getUser();
             return projectTaskService.addProject(projectGroup,user);
         }else{//修改
             return projectTaskService.updateProject(projectGroup,null);

@@ -1,5 +1,6 @@
 package com.lei.tool.controller;
 
+import com.lei.tool.dto.UserDto;
 import com.lei.tool.entity.UPermission;
 import com.lei.tool.entity.URole;
 import com.lei.tool.entity.UUser;
@@ -8,6 +9,7 @@ import com.lei.tool.utils.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class UserController {
+public class UserController extends BaseController{
 
     @Autowired
     private UserService userService;
@@ -38,7 +40,8 @@ public class UserController {
 
     @RequestMapping(value={"/index",""})
     public String index(HttpServletRequest request) {
-        UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
+        UUser user = getUser();
+        UserDto userDto = getUserDto();
         URole role = userService.getRole(user);
         List<UPermission> mlist = userService.getMenu(user);
         List<UPermission> mlist1 = new ArrayList<>();
@@ -52,7 +55,7 @@ public class UserController {
         }
         request.setAttribute("menuList1", mlist1);
         request.setAttribute("menuList2", mlist2);
-        request.setAttribute("user",user);
+        request.setAttribute("user",userDto);
         request.setAttribute("role",role);
         return "index";
     }
@@ -61,7 +64,7 @@ public class UserController {
     @ResponseBody
     public Map<String,String> changeHeadImg(HttpServletRequest request, String img){
         Map<String,String> result = new HashMap<>();
-        UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
+        UUser user = getUser();
         String path = "http://"+request.getServerName()+":"+request.getServerPort();
         if(img.contains(path)){
             img = img.replace(path,"");

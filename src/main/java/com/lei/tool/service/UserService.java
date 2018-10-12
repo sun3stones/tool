@@ -1,6 +1,7 @@
 package com.lei.tool.service;
 
 
+import com.lei.tool.dto.UserDto;
 import com.lei.tool.entity.UPermission;
 import com.lei.tool.entity.URole;
 import com.lei.tool.entity.UUser;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public interface UserService {
 
-    UUser selectUser(UUser user);
+    UserDto selectUser(UUser user);
 
     int getUserCount();
 

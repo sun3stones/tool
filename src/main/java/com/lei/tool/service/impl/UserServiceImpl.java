@@ -1,6 +1,7 @@
 package com.lei.tool.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.lei.tool.dto.UserDto;
 import com.lei.tool.entity.*;
 import com.lei.tool.mapper.*;
 import com.lei.tool.service.UserService;
@@ -31,9 +32,9 @@ public class UserServiceImpl implements UserService {
     private ProjectGroupUserMapper projectGroupUserMapper;
 
     @Override
-    public UUser selectUser(UUser user) {
-        user = userMapper.selectOne(user);
-        return user;
+    public UserDto selectUser(UUser user) {
+        UserDto userDto = userMapper.login(user);
+        return userDto;
     }
 
     @Override
