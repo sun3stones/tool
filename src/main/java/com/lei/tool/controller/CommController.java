@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/comm")
-public class CommController {
+public class CommController extends BaseController{
 
     @Autowired
     private UserService userService;
@@ -31,7 +31,7 @@ public class CommController {
     public Map<String, Object> roleDataList(HttpServletRequest request) {
         Map<String, Object> result = new HashMap<>();
         try {
-            UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
+            UUser user = getUser();
             List<URole> list = userService.getInitRole(user);
             result.put("errcode","0");
             result.put("data",list);
@@ -47,9 +47,9 @@ public class CommController {
     public Map<String, Object> projectDataList(HttpServletRequest request) {
         Map<String, Object> result = new HashMap<>();
         try {
-            UUser user = (UUser) SecurityUtils.getSubject().getPrincipal();
+            UUser user = getUser();
             List<ProjectGroup> list = new ArrayList<>();
-            if(SecurityUtils.getSubject().hasRole("管理员")){
+            if(isAdmin()){
                 list = projectTaskService.getInitProject(null);
             }else{
                 list = projectTaskService.getInitProject(user);

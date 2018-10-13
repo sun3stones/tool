@@ -37,7 +37,7 @@ public interface UserService {
 
     int deleteRole(URole uRole);
 
-    Page<UUser> getUserPage(Page<UUser> page,UUser user);
+    Page<UserDto> getUserPage(Page<UserDto> page,UserDto user);
 
     List<URole> getInitRole(UUser user);
 

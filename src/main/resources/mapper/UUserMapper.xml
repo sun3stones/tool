@@ -19,7 +19,44 @@
          where a.user_name = #{userName}
     </select>
 
-    <select id="getUserCount" resultType="java.lang.Integer">
+  <select id="selectUserList"  resultType="com.lei.tool.dto.UserDto" parameterType="com.lei.tool.dto.UserDto">
+      select a.*,c.id as roleId,c.name as roleName
+    <if test="projectId != null and projectId != ''">
+      ,d.is_admin as isAdmin
+    </if>
+    from u_user a left join u_user_role b on a.id=b.uid left join u_role c on b.rid=c.id
+    <if test="projectId != null and projectId != ''">
+      LEFT JOIN project_group_user d on d.uid = a.id left join project_group e on e.id =d.gid
+    </if>
+    <where>
+      <if test="userName != null and userName != ''">
+        and a.user_name = #{userName}
+      </if>
+      <if test="projectId != null and projectId != ''">
+        and e.id = #{projectId}
+      </if>
+    </where>
+    <if test="projectId != null and projectId != ''">
+      order by d.is_admin
+    </if>
+  </select>
+
+  <select id="selectUserCount" resultType="java.lang.Integer" parameterType="com.lei.tool.dto.UserDto">
+      select count(1) from u_user a left join u_user_role b on a.id=b.uid left join u_role c on b.rid=c.id
+    <if test="projectId != null and projectId != ''">
+      LEFT JOIN project_group_user d on d.uid = a.id left join project_group e on e.id =d.gid
+    </if>
+    <where>
+      <if test="userName != null and userName != ''">
+        and a.user_name = #{userName}
+      </if>
+      <if test="projectId != null and projectId != ''">
+        and e.id = #{projectId}
+      </if>
+    </where>
+  </select>
+
+    <select id="getUserCount" resultType="java.lang.Integer" >
         select count(1) from u_user
     </select>
 

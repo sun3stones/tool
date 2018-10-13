@@ -34,6 +34,7 @@ public class UserDto implements Serializable {
     private Long roleId;
     private String roleName;
 
+    private Long projectId;
     private Integer isAdmin;
 
     public String getPassword() {
@@ -114,5 +115,13 @@ public class UserDto implements Serializable {
 
     public void setIsAdmin(Integer isAdmin) {
         this.isAdmin = isAdmin;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 }

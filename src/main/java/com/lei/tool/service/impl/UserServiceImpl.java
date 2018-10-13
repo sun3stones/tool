@@ -131,17 +131,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UUser> getUserPage(Page<UUser> page, UUser user) {
+    public Page<UserDto> getUserPage(Page<UserDto> page, UserDto user) {
         PageHelper.startPage(page.getPage(),page.getLimit());
-        List<UUser> list = new ArrayList<>();
-        int count = 0;
-        if(StringUtils.isEmpty(user.getUserName())){
-            list = userMapper.selectAll();
-            count = userMapper.selectCount(null);
-        }else{
-            list = userMapper.select(user);
-            count = userMapper.selectCount(user);
-        }
+        List<UserDto> list = userMapper.selectUserList(user);
+        int count = userMapper.selectUserCount(user);
         page.setCount(count);
         page.setData(list);
         page.setCode(0);

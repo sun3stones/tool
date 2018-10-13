@@ -6,11 +6,13 @@ import com.lei.tool.entity.URole;
 import com.lei.tool.entity.UUser;
 import com.lei.tool.service.UserService;
 import com.lei.tool.utils.StringUtils;
+import org.apache.catalina.User;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -29,7 +31,9 @@ public class MyShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        UUser user = (UUser) principalCollection.getPrimaryPrincipal();
+        UserDto userDto = (UserDto) principalCollection.getPrimaryPrincipal();
+        UUser user = new UUser();
+        BeanUtils.copyProperties(userDto,user);
         //把用户所有拥有的角色及权限放入
         if (user != null) {
             SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();

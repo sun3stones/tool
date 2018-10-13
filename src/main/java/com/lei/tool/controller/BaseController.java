@@ -17,4 +17,8 @@ public class BaseController {
         BeanUtils.copyProperties(userDto,user);
         return user;
     }
+
+    boolean isAdmin(){
+        return SecurityUtils.getSubject().hasRole("管理员");
+    }
 }

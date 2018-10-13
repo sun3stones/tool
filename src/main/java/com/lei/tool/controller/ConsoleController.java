@@ -1,5 +1,6 @@
 package com.lei.tool.controller;
 
+import com.lei.tool.dto.UserDto;
 import com.lei.tool.entity.ProjectGroup;
 import com.lei.tool.entity.UPermission;
 import com.lei.tool.entity.URole;
@@ -132,7 +133,14 @@ public class ConsoleController extends BaseController{
 
     @RequestMapping("/userDataList")
     @ResponseBody
-    public Page<UUser> userDataList(HttpServletRequest request, Page<UUser> page, UUser user){
+    public Page<UserDto> userDataList(HttpServletRequest request, Page<UserDto> page, UserDto user){
+        page = userService.getUserPage(page,user);
+        return  page;
+    }
+
+    @RequestMapping("/projectUserList")
+    @ResponseBody
+    public Page<UserDto> projectUserList(HttpServletRequest request, Page<UserDto> page, UserDto user){
         page = userService.getUserPage(page,user);
         return  page;
     }
@@ -197,6 +205,9 @@ public class ConsoleController extends BaseController{
     @ResponseBody
     public Page<ProjectGroup> projectDataList(HttpServletRequest request, Page<ProjectGroup> page,ProjectGroup projectGroup){
         UUser user = getUser();
+        if(isAdmin()){//管理员可查询所有的项目
+            user = null;
+        }
         page = projectTaskService.getProjectPage(page,projectGroup,user);
         return  page;
     }

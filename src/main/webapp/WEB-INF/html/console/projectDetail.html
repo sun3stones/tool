@@ -16,7 +16,7 @@
                 <div class="layui-card-header">项目信息</div>
                 <div class="layui-card-body">
                     <form class="layui-form layui-form-pane" id="addprojectForm">
-                        <input type="hidden" name="id" th:value="${pg.id}">
+                        <input type="hidden" id="projectId" name="id" th:value="${pg.id}">
                         <div class="layui-site-20">
                             <div class="layui-form-item">
                                 <label class="layui-form-label">项目编号</label>
@@ -51,7 +51,7 @@
                 <div class="layui-card-body">
                     <div class="layui-form layui-card-header layui-border-auto">
                         <div class="layui-form-item">
-                            用户名称：
+                            成员名称：
                             <div class="layui-inline">
                                 <input class="layui-input" name="id" id="userName" autocomplete="off">
                             </div>
@@ -68,26 +68,51 @@
     </div>
 </div>
 </body>
+<script type="text/html" id="projectRoleBar">
+    {{#  if(d.isAdmin == 1){ }}
+    <i class="layui-icon layui-icon-friends" style="font-size: 20px; color: #1E9FFF;" ></i>管理员
+    {{#  }
+    else { }}
+    <i class="layui-icon layui-icon-friends" style="font-size: 20px; " ></i>项目组员
+    {{#  } }}
+</script>
+<script type="text/html" id="operateBar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit" ><i class="layui-icon layui-icon-add-1"></i></a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i></a>
+</script>
 <script>
     layui.use(['jquery', 'layer', 'element','form','table'], function(){
         var $ = jQuery = layui.$;
         var form = layui.form;
         var table = layui.table;
 
+        var projectId = $("#projectId").val();
+
         table.render({
             elem: '#userlist'
             ,id:'userTable'
-            ,url: '/console/userDataList/' //数据接口
+            ,url: '/console/projectUserList?projectId='+projectId //数据接口
             ,page: true //开启分页
             ,cols: [
                 [ //表头
                     {type: 'numbers', title: '序号',width:60},
-                    {field: 'userName', title: '用户名',unresize:true},
+                    {field: 'userName', title: '成员名',unresize:true},
                     {field: 'email', title: '联系方式',unresize:true},
-                    {field: 'status', title: '用户状态',unresize:true,templet: '#statusSwitch'},
-                    {fixed: 'right', title:'操作',unresize:true, toolbar: '#userBar', width:150}
+                    {fixed: 'right', title:'成员角色',unresize:true, toolbar: '#projectRoleBar', width:120},
+                    {fixed: 'right', title:'操作',unresize:true, toolbar: '#operateBar', width:150}
                 ]
             ]
+            ,done: function(res, curr, count){
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                console.log(res);
+
+                //得到当前页码
+                console.log(curr);
+
+                //得到数据总量
+                console.log(count);
+            }
         });
 
         //监听提交
