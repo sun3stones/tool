@@ -13,7 +13,7 @@
   </resultMap>
 
   <select id="selectByUser" resultMap="BaseResultMap">
-    select a.* from project_group a left join project_group_user b on a.id = b.gid left join u_user c on c.id = b.uid
+    select distinct  a.* from project_group a left join project_group_user b on a.id = b.gid left join u_user c on c.id = b.uid
     <where>
       <if test="project != null and project.projectName != null and project.projectName != ''">
         and a.project_name = #{project.projectName}

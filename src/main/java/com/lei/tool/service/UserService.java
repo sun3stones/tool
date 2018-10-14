@@ -41,9 +41,9 @@ public interface UserService {
 
     List<URole> getInitRole(UUser user);
 
-    String insertUser(UUser user,Long roleId,Long projectId);
+    String insertUser(UserDto userDto);
 
     int deleteUser(UUser user);
 
-    int updateUser(UUser user,Long roleId);
+    int updateUser(UserDto userDto);
 }

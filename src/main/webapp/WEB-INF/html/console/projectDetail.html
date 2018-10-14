@@ -7,6 +7,7 @@
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
     <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
     <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
 </head>
 <body style="background-color: #f2f2f2">
 <div style="padding: 10px;" class="layui-fluid">
@@ -57,7 +58,7 @@
                             </div>
                             <div class="layui-inline">
                                 <button class="layui-btn" data-type="reload" id="userSearch"><i class="layui-icon layui-icon-search"></i></button>
-                                <button class="layui-btn" data-type="reload" id="adduser"><i class="layui-icon layui-icon-add-1"></i></button>
+                                <button class="layui-btn" data-type="reload" id="addProjectUser" title="添加组员"><i class="layui-icon layui-icon-add-1"></i></button>
                             </div>
                         </div>
                     </div>
@@ -70,16 +71,16 @@
 </body>
 <script type="text/html" id="projectRoleBar">
     {{#  if(d.isAdmin == 1){ }}
-    <i class="layui-icon layui-icon-friends" style="font-size: 20px; color: #1E9FFF;" ></i>管理员
+    <i class="layui-icon layui-icon-friends" style="font-size: 20px; color: #009688;" ></i>组长
     {{#  }
     else { }}
-    <i class="layui-icon layui-icon-friends" style="font-size: 20px; " ></i>项目组员
+    <i class="layui-icon layui-icon-friends" style="font-size: 20px; " ></i>组员
     {{#  } }}
 </script>
 <script type="text/html" id="operateBar">
-    <a class="layui-btn layui-btn-xs" lay-event="edit" ><i class="layui-icon layui-icon-add-1"></i></a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i></a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" title="移除成员"><i class="layui-icon layui-icon-delete"></i></a>
 </script>
+
 <script>
     layui.use(['jquery', 'layer', 'element','form','table'], function(){
         var $ = jQuery = layui.$;
@@ -99,20 +100,8 @@
                     {field: 'userName', title: '成员名',unresize:true},
                     {field: 'email', title: '联系方式',unresize:true},
                     {fixed: 'right', title:'成员角色',unresize:true, toolbar: '#projectRoleBar', width:120},
-                    {fixed: 'right', title:'操作',unresize:true, toolbar: '#operateBar', width:150}
                 ]
             ]
-            ,done: function(res, curr, count){
-                //如果是异步请求数据方式，res即为你接口返回的信息。
-                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
-                console.log(res);
-
-                //得到当前页码
-                console.log(curr);
-
-                //得到数据总量
-                console.log(count);
-            }
         });
 
         //监听提交
@@ -149,6 +138,37 @@
             active[type] ? active[type].call(this) : '';
         });
 
+        $('#addProjectUser').on('click', function(){
+            layer.open({
+                type: 2
+                ,offset: 'auto'
+                ,title: '新增组员'
+                ,id: 'layerProjectUser'
+                ,content: '/console/addProjectUser?projectId=' + projectId
+                ,btnAlign: 'c' //按钮居中
+                ,shade: 0.3 //不显示遮罩
+                ,anim:1
+                ,resize: false
+                , area: ['50%', '50%']
+                ,btn: ['保存', '取消']
+                ,yes: function(index, layero){
+                    var body = layer.getChildFrame('body', index);//通过该对象可以获取iframe中的dom元素
+                    var userIds = body.find("#userIds").val();
+                    console.log(userIds);
+                    if(userIds.length>0){
+                        userIds = userIds.substr(1);
+                    }
+                    $.post("/console/addProjectUserSave",{userIds:userIds,projectId:projectId},function(result){
+                        layer.msg(result);
+                    });
+                    $('#userSearch').click();
+                },no:function(){
+                    layer.closeAll();
+                }
+            });
+            form.render();
+        });
+
         form.verify({
             name: function (value, item) { //value：表单的值、item：表单的DOM对象
                 if ("" == value) {
@@ -180,7 +200,6 @@
             }
 
         });
-
 
     });
 

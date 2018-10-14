@@ -88,4 +88,9 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
         map.put("msg","修改项目组成功!");
         return map;
     }
+
+    @Override
+    public int addProjectUser(ProjectGroupUser projectGroupUser) {
+        return  projectGroupUserMapper.insertSelective(projectGroupUser);
+    }
 }

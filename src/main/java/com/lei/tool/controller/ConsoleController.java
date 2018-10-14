@@ -1,10 +1,7 @@
 package com.lei.tool.controller;
 
 import com.lei.tool.dto.UserDto;
-import com.lei.tool.entity.ProjectGroup;
-import com.lei.tool.entity.UPermission;
-import com.lei.tool.entity.URole;
-import com.lei.tool.entity.UUser;
+import com.lei.tool.entity.*;
 import com.lei.tool.service.ProjectTaskService;
 import com.lei.tool.service.UserService;
 import com.lei.tool.utils.Page;
@@ -145,16 +142,15 @@ public class ConsoleController extends BaseController{
         return  page;
     }
 
-    @RequestMapping("/updateUser")
+    @RequestMapping("/addUser")
     @ResponseBody
-    public String addUser(HttpServletRequest request, UUser user,Long roleId,Long userId,Long projectId){
+    public String addUser(HttpServletRequest request, UserDto userDto){
         String result = "";
-        if(userId == null){//新增用户
-            userService.insertUser(user,roleId,projectId);
+        if(userDto.getId() == null){//新增用户
+            userService.insertUser(userDto);
             return "新增用户成功！";
         }else{//修改用户
-            user.setId(userId);
-            userService.updateUser(user,roleId);
+            userService.updateUser(userDto);
             return "修改用户成功！";
         }
     }
@@ -173,8 +169,8 @@ public class ConsoleController extends BaseController{
 
     @RequestMapping("/updateUserStatus")
     @ResponseBody
-    public String updateUserStatus(HttpServletRequest request,UUser user){
-        userService.updateUser(user,null);
+    public String updateUserStatus(HttpServletRequest request,UserDto userDto){
+        userService.updateUser(userDto);
         return "更新状态成功！";
     }
 
@@ -182,15 +178,15 @@ public class ConsoleController extends BaseController{
     @ResponseBody
     public Map<String,Object> changePassword(HttpServletRequest request, String password, String newPassword){
         Map<String,Object> result = new HashMap<>();
-        UUser user = getUser();
+        UserDto userDto = getUserDto();
         password = DigestUtils.md5Hex(password);
-        if(!user.getPassword().equals(password)){
+        if(!userDto.getPassword().equals(password)){
             result.put("errcode",1);
             result.put("msg","修改失败：密码输入错误！");
             return result;
         }
-        user.setPassword(DigestUtils.md5Hex(newPassword));
-        userService.updateUser(user,null);
+        userDto.setPassword(DigestUtils.md5Hex(newPassword));
+        userService.updateUser(userDto);
         result.put("errcode",0);
         result.put("msg","修改密码成功！");
         return result;
@@ -228,6 +224,41 @@ public class ConsoleController extends BaseController{
         projectGroup = projectTaskService.getProject(projectGroup).get(0);
         request.setAttribute("pg",projectGroup);
         return "console/projectDetail";
+    }
+
+    @RequestMapping("/addProjectUser")
+    public String addProjectUser(HttpServletRequest request,UserDto userDto){
+        Page<UserDto> page = new Page<>();
+        page.setLimit(100);
+        page.setPage(1);
+        page = userService.getUserPage(page,null);
+        List<UserDto> list = page.getData();
+        List<UserDto> userList = userService.getUserPage(page,userDto).getData();
+        for (UserDto user:list) {
+            for (UserDto user1:userList) {
+                if(user1.getId() == user.getId()){
+                    user.setProjectId(userDto.getProjectId());
+                    break;
+                }
+            }
+        }
+        request.setAttribute("userList",list);
+        return "console/addProjectUser";
+    }
+
+    @RequestMapping("/addProjectUserSave")
+    @ResponseBody
+    public String addProjectUserSave(HttpServletRequest request,String userIds,Long projectId){
+        if(StringUtils.isNotEmpty(userIds)){
+            ProjectGroupUser pgu = new ProjectGroupUser();
+            pgu.setGid(projectId);
+            String[] ids = userIds.split(",");
+            for (String id:ids) {
+                pgu.setUid(Long.parseLong(id));
+                projectTaskService.addProjectUser(pgu);
+            }
+        }
+        return "添加成员成功！";
     }
 
 

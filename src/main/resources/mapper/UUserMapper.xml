@@ -37,7 +37,7 @@
       </if>
     </where>
     <if test="projectId != null and projectId != ''">
-      order by d.is_admin
+      order by d.is_admin  desc
     </if>
   </select>
 

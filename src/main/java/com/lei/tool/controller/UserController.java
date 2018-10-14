@@ -9,7 +9,6 @@ import com.lei.tool.utils.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,13 +63,13 @@ public class UserController extends BaseController{
     @ResponseBody
     public Map<String,String> changeHeadImg(HttpServletRequest request, String img){
         Map<String,String> result = new HashMap<>();
-        UUser user = getUser();
+        UserDto userDto = getUserDto();
         String path = "http://"+request.getServerName()+":"+request.getServerPort();
         if(img.contains(path)){
             img = img.replace(path,"");
         }
-        user.setHeadImg(img);
-        userService.updateUser(user,null);
+        userDto.setHeadImg(img);
+        userService.updateUser(userDto);
         result.put("img",img);
         result.put("msg","修改头像成功！");
         return result;

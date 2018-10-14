@@ -18,7 +18,7 @@
             <div class="layui-form-item">
                 用户名称：
                 <div class="layui-inline">
-                    <input class="layui-input" name="id" id="userName" autocomplete="off">
+                    <input class="layui-input" id="userName" autocomplete="off">
                 </div>
                 <div class="layui-inline">
                     <button class="layui-btn" data-type="reload" id="userSearch"><i class="layui-icon layui-icon-search"></i></button>
@@ -48,6 +48,7 @@
 </script>
 <div id="addUserBar" hidden>
     <form class="layui-form layui-form-pane" id="adduserForm">
+        <input type="hidden" name="id">
         <div class="layui-site-20">
             <div class="layui-form-item">
                 <label class="layui-form-label">用户名称</label>
@@ -69,14 +70,14 @@
                     </select>
                 </div>
             </div>
-            <div class="layui-form-item">
+           <!-- <div class="layui-form-item">
                 <label class="layui-form-label">所属项目</label>
                 <div class="layui-inline">
                     <select name="projectId" id="projectId" >
                         <option value="">请选择项目</option>
                     </select>
                 </div>
-            </div>
+            </div>-->
         </div>
         <div class="layui-btn-container" style="margin-top: 10px;margin-left: 110px">
             <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="subBtn">保存</button>
@@ -157,8 +158,14 @@
                 });
                 $("input[name='userName']").val(obj.data.userName);
                 $("input[name='email']").val(obj.data.email);
+                $("input[name='id']").val(obj.data.id);
                 $("#roleId option").each(function() {
-                    if ($(this).val() == 4) {
+                    if ($(this).val() == obj.data.roleId) {
+                        $(this).attr("selected", "selected");
+                    }
+                });
+                $("#projectId option").each(function() {
+                    if ($(this).val() == obj.data.projectId) {
                         $(this).attr("selected", "selected");
                     }
                 });
@@ -219,7 +226,7 @@
         });
 
         initSelect("[[@{/comm/initRoleSelect}]]",$("#roleId"),null);
-        initSelect("[[@{/comm/initProjectSelect}]]",$("#projectId"),null);
+        //initSelect("[[@{/comm/initProjectSelect}]]",$("#projectId"),null);
         form.render();
     });
 

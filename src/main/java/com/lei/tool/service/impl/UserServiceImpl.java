@@ -8,6 +8,7 @@ import com.lei.tool.service.UserService;
 import com.lei.tool.utils.Page;
 import com.lei.tool.utils.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tk.mybatis.mapper.entity.Example;
@@ -151,20 +152,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String insertUser(UUser user, Long roleId,Long projectId) {
-        UUser verify = new UUser();
-        verify.setUserName(user.getUserName());
-        if(userMapper.selectCount(verify)>0){
+    public String insertUser(UserDto userDto) {
+        UUser user = new UUser();
+        BeanUtils.copyProperties(userDto,user);
+        if(userMapper.selectCount(user)>0){
             return "新增用户失败：用户名已存在！";
         }
         user.setPassword(DigestUtils.md5Hex("123456"));
         userMapper.insertSelective(user);
         UUserRole ur = new UUserRole();
         ur.setUid(user.getId());
-        ur.setRid(roleId);
+        ur.setRid(userDto.getRoleId());
         userRoleMapper.insert(ur);
         ProjectGroupUser pgu = new ProjectGroupUser();
-        pgu.setGid(projectId);
+        pgu.setGid(userDto.getProjectId());
         pgu.setUid(user.getId());
         projectGroupUserMapper.insertSelective(pgu);
         return "新增用户成功！";
@@ -179,15 +180,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int updateUser(UUser user, Long roleId) {
+    public int updateUser(UserDto userDto) {
         Example exUserRole = new Example(UUserRole.class);
-        exUserRole.createCriteria().andEqualTo("uid",user.getId());
+        exUserRole.createCriteria().andEqualTo("uid",userDto.getId());
         UUserRole userRole = new UUserRole();
-        userRole.setUid(user.getId());
-        if(roleId != null){
-            userRole.setRid(roleId);
+        userRole.setUid(userDto.getId());
+        if(userDto.getRoleId() != null){
+            userRole.setRid(userDto.getRoleId());
             userRoleMapper.updateByExampleSelective(userRole,exUserRole);
         }
+        UUser user = new UUser();
+        BeanUtils.copyProperties(userDto,user);
         return userMapper.updateByPrimaryKeySelective(user);
     }
 
