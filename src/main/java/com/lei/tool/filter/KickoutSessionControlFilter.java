@@ -126,8 +126,8 @@ public class KickoutSessionControlFilter extends AccessControlFilter {
             Map<String, String> resultMap = new HashMap<String, String>();
             //判断是不是Ajax请求
             if ("XMLHttpRequest".equalsIgnoreCase(((HttpServletRequest) request).getHeader("X-Requested-With"))) {
-                resultMap.put("user_status", "300");
-                resultMap.put("message", "您已经在其他地方登录，请重新登录！");
+                resultMap.put("errcode", "300");
+                resultMap.put("msg", "您已经在其他地方登录，请重新登录！");
                 //输出json串
                 out(response, resultMap);
             }else{

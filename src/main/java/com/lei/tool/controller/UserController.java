@@ -30,6 +30,9 @@ public class UserController extends BaseController{
     @RequestMapping(value={"/login"})
     public String login(HttpServletRequest request, UUser user, @RequestParam(value = "rememberMe", required = false) boolean rememberMe) {
         if (user == null || StringUtils.isEmpty(user.getUserName())) {
+            if(request.getAttribute("msg")==null){
+                request.setAttribute("msg","");
+            }
             return "login";
         }
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(), DigestUtils.md5Hex(user.getPassword()), rememberMe);

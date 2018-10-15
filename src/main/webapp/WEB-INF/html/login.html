@@ -44,14 +44,16 @@
     <!--//end-main-->
 </div>
 </body>
-
-<script>
-    //一般直接写在一个js文件中
+<script th:inline="javascript">
+    var msg = [[${msg}]];
+</script>
+<script type="text/javascript" >
     layui.use(['layer', 'form'], function () {
         var layer = layui.layer, form = layui.form;
         form.render();
-        //layer.msg('Hello World');
-
+        if(msg != null && msg != ""){
+            layer.msg(msg);
+        }
         form.verify({
             userName: function (value, item) { //value：表单的值、item：表单的DOM对象
                 if ("" == value) {
