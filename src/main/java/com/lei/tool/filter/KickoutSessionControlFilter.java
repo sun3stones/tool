@@ -132,6 +132,7 @@ public class KickoutSessionControlFilter extends AccessControlFilter {
                 out(response, resultMap);
             }else{
                 //重定向
+                request.setAttribute("msg","您已经在其他地方登录，请重新登录！");
                 WebUtils.issueRedirect(request, response, kickoutUrl);
             }
             return false;

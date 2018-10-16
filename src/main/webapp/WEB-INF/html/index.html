@@ -27,9 +27,9 @@
                 <dl class="layui-nav-child">
                     <dd><a href="#" data-method="inspectInfo">基本资料</a></dd>
                     <dd><a href="#" data-method="changePassword">安全设置</a></dd>
+                    <dd><a href="#" data-method="loginOut">注销账户</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item"><a href="">注销</a></li>
         </ul>
     </div>
 
@@ -222,6 +222,16 @@
                         layer.closeAll();
                     }
                 });
+            },
+            loginOut:function(othis){
+                layer.msg('确定注销当前账户吗？', {
+                    time: 10000, //20s后自动关闭
+                    btn: ['确定', '取消'],
+                    yes: function () {
+                        location.href="/logout";
+                    }
+                });
+
             }
         }
 
