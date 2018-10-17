@@ -12,7 +12,6 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,14 +27,14 @@ public class UserController extends BaseController{
     private UserService userService;
 
     @RequestMapping(value={"/login"})
-    public String login(HttpServletRequest request, UUser user, @RequestParam(value = "rememberMe", required = false) boolean rememberMe) {
+    public String login(HttpServletRequest request, UUser user) {
         if (user == null || StringUtils.isEmpty(user.getUserName())) {
             if(request.getAttribute("msg")==null){
                 request.setAttribute("msg","");
             }
             return "login";
         }
-        UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(), DigestUtils.md5Hex(user.getPassword()), rememberMe);
+        UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(), DigestUtils.md5Hex(user.getPassword()));
         SecurityUtils.getSubject().login(token);
         return "forward:/index";
     }

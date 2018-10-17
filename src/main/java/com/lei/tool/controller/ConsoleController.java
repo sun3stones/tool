@@ -261,6 +261,11 @@ public class ConsoleController extends BaseController{
         return "添加成员成功！";
     }
 
+    @RequestMapping("/timeLine")
+    public String timeLine(HttpServletRequest request,String userIds,Long projectId){
+        return "console/timeLine";
+    }
+
 
 
 }

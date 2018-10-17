@@ -48,12 +48,8 @@
     <div class="layui-body">
         <div class="layui-tab layui-tab-brief" lay-filter="tab" lay-allowclose="true">
             <ul class="layui-tab-title" lay-filter="tab">
-                <li class="layui-this" lay-id="0">网站设置</li>
             </ul>
             <div class="layui-tab-content layui-bg-gray">
-                <div class="layui-tab-item layui-show " style="background-color: #01AAED">
-                    <table border="1" height="700Px"></table>
-                </div>
             </div>
         </div>
 
@@ -166,6 +162,7 @@
                 });
                 FrameWH();
             }
+            element.tabDelete('tab', 'timeLine');//增加新选项卡时删除时间线
             element.tabChange('tab', elem.attr("id"));
         });
         //触发事件
@@ -262,18 +259,24 @@
                 $(n).hide();
             }
         });
+        initTab();
 
         element.on('tabDelete(tab)', function(data){
             if($(".layui-tab-item").length == 0){
-                debugger
-                element.tabAdd('tab', {
-                    title: '项目进度'
-                    , content: '<iframe data-frameid="' + elem.attr("id") + '"  src="' + elem.attr("url") + '"  ' +
-                    'scrolling="yes" frameborder="0"  class="layui-admin-iframe" ></iframe>'
-                    , id: elem.attr("id")
-                });
+                initTab();
             }
         });
+
+        function initTab(){
+            element.tabAdd('tab', {
+                title: '项目时间线'
+                , content: '<iframe data-frameid="timeLine"  src="console/timeLine"  ' +
+                'scrolling="yes" frameborder="0"  class="layui-admin-iframe" ></iframe>'
+                , id: 'timeLine'
+            });
+            FrameWH();
+            element.tabChange('tab', 'timeLine');
+        }
 
         $(document).on('click', '#headImg', function () {
             layer.open({
