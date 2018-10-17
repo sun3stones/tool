@@ -47,7 +47,7 @@
 
     <div class="layui-body">
         <div class="layui-tab layui-tab-brief" lay-filter="tab" lay-allowclose="true">
-            <ul class="layui-tab-title">
+            <ul class="layui-tab-title" lay-filter="tab">
                 <li class="layui-this" lay-id="0">网站设置</li>
             </ul>
             <div class="layui-tab-content layui-bg-gray">
@@ -263,6 +263,18 @@
             }
         });
 
+        element.on('tabDelete(tab)', function(data){
+            if($(".layui-tab-item").length == 0){
+                debugger
+                element.tabAdd('tab', {
+                    title: '项目进度'
+                    , content: '<iframe data-frameid="' + elem.attr("id") + '"  src="' + elem.attr("url") + '"  ' +
+                    'scrolling="yes" frameborder="0"  class="layui-admin-iframe" ></iframe>'
+                    , id: elem.attr("id")
+                });
+            }
+        });
+
         $(document).on('click', '#headImg', function () {
             layer.open({
                 type: 1
@@ -291,10 +303,6 @@
                     layer.close(index);
                 }
             });
-        });
-
-        $(document).on('click', 'img[name=head]', function () {
-            $("#uploadImg").attr('src',this.src);
         });
 
         //iframe高度设置
