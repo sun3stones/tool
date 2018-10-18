@@ -8,6 +8,8 @@ import com.lei.tool.utils.Page;
 import com.lei.tool.utils.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.crypto.hash.Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -144,27 +146,36 @@ public class ConsoleController extends BaseController{
 
     @RequestMapping("/addUser")
     @ResponseBody
-    public String addUser(HttpServletRequest request, UserDto userDto){
-        String result = "";
+    public Map<String,Object> addUser(HttpServletRequest request, UserDto userDto){
+        Map<String,Object> result= new HashMap<>();
+        result.put("errcode",0);
         if(userDto.getId() == null){//新增用户
             userService.insertUser(userDto);
-            return "新增用户成功！";
+            result.put("msg","新增用户成功！");
+            return result;
         }else{//修改用户
             userService.updateUser(userDto);
-            return "修改用户成功！";
+            result.put("msg","修改用户成功！");
+            return result;
         }
     }
 
+    @RequiresPermissions("deleteUserUser")
     @RequestMapping("/deleteUser")
     @ResponseBody
-    public String deleteUser(HttpServletRequest request){
+    public Map<String,Object> deleteUser(HttpServletRequest request){
+        Map<String,Object> result= new HashMap<>();
         UUser user = new UUser();
         user.setId(Long.parseLong(request.getParameter("id")));
         if(user == null || user.getId() == null){
-            return "删除用户失败";
+            result.put("errcode",1);
+            result.put("msg","删除用户失败");
+            return result;
         }
-        userService.deleteUser(user);
-        return "成功删除用户‘"+user.getUserName()+"’！";
+        //userService.deleteUser(user);
+        result.put("errcode",0);
+        result.put("msg","成功删除用户‘"+user.getUserName()+"’！");
+        return result;
     }
 
     @RequestMapping("/updateUserStatus")

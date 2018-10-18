@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -22,8 +23,13 @@
                 </div>
                 <div class="layui-inline">
                     <button class="layui-btn" data-type="reload" id="userSearch"><i class="layui-icon layui-icon-search"></i></button>
-                    <button class="layui-btn" data-type="reload" id="adduser"><i class="layui-icon layui-icon-add-1"></i></button>
                 </div>
+                <div class="layui-inline">
+                    <shiro:hasPermission name="addUser">　　
+                        <button class="layui-btn" data-type="reload" id="adduser"><i class="layui-icon layui-icon-add-1"></i></button>
+                    </shiro:hasPermission>
+                </div>
+
             </div>
         </div>
         <div class="layui-card-body">
@@ -37,8 +43,12 @@
 </body>
 <script type="text/html" id="userBar">
     {{#  if(d.id != 1){ }}
+    <shiro:hasPermission name="updateUser">　
     <a class="layui-btn layui-btn-xs" lay-event="edit" ><i class="layui-icon layui-icon-edit"></i></a>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="deleteUser">　
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i></a>
+    </shiro:hasPermission>
     {{#  } }}
 </script>
 <script type="text/html" id="statusSwitch">
@@ -138,7 +148,7 @@
                 layer.confirm('确定删除‘'+ data.userName+'’用户吗？', function(index){
                     $.post('/console/deleteUser',data,function(data){
                         layer.closeAll();
-                        layer.msg(data);
+                        layer.msg(data.msg);
                         obj.del();
                     });
                     layer.close(index);
@@ -211,7 +221,7 @@
             //ajax 提交
             $.post('/console/addUser',data.field,function(data){
                 layer.closeAll();
-                layer.msg(data);
+                layer.msg(data.msg);
                 $("#userSearch").click();
             });
             return false;
