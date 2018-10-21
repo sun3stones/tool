@@ -30,7 +30,7 @@
         <javaClientGenerator targetPackage="com.lei.tool.mapper"
                              targetProject="${targetJavaProject}" type="XMLMAPPER"/>
 
-        <table tableName="project_%"></table>
+        <table tableName="project_task"></table>
     </context>
 
 </generatorConfiguration>

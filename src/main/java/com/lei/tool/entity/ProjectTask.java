@@ -9,6 +9,16 @@ public class ProjectTask {
     private Long id;
 
     /**
+     * 项目id
+     */
+    private Long pid;
+
+    /**
+     * 所属用户id
+     */
+    private Long uid;
+
+    /**
      * 任务名称
      */
     @Column(name = "task_name")
@@ -21,7 +31,7 @@ public class ProjectTask {
     private Integer taskType;
 
     /**
-     * 任务类型（0待审核；1待处理；2处理完成待测；3测试完成；4已上线；5挂起；6作废）
+     * 任务类型（0待审核；1待处理；2处理完成待测；3测试中；4测试完成；5已上线；6挂起；7作废）
      */
     @Column(name = "task_status")
     private Integer taskStatus;
@@ -61,6 +71,12 @@ public class ProjectTask {
     private Date endTime;
 
     /**
+     * 更新时间
+     */
+    @Column(name = "update_time")
+    private Date updateTime;
+
+    /**
      * @return id
      */
     public Long getId() {
@@ -72,6 +88,42 @@ public class ProjectTask {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * 获取项目id
+     *
+     * @return pid - 项目id
+     */
+    public Long getPid() {
+        return pid;
+    }
+
+    /**
+     * 设置项目id
+     *
+     * @param pid 项目id
+     */
+    public void setPid(Long pid) {
+        this.pid = pid;
+    }
+
+    /**
+     * 获取所属用户id
+     *
+     * @return uid - 所属用户id
+     */
+    public Long getUid() {
+        return uid;
+    }
+
+    /**
+     * 设置所属用户id
+     *
+     * @param uid 所属用户id
+     */
+    public void setUid(Long uid) {
+        this.uid = uid;
     }
 
     /**
@@ -111,18 +163,18 @@ public class ProjectTask {
     }
 
     /**
-     * 获取任务类型（0待审核；1待处理；2处理完成待测；3测试完成；4已上线；5挂起；6作废）
+     * 获取任务类型（0待审核；1待处理；2处理完成待测；3测试中；4测试完成；5已上线；6挂起；7作废）
      *
-     * @return task_status - 任务类型（0待审核；1待处理；2处理完成待测；3测试完成；4已上线；5挂起；6作废）
+     * @return task_status - 任务类型（0待审核；1待处理；2处理完成待测；3测试中；4测试完成；5已上线；6挂起；7作废）
      */
     public Integer getTaskStatus() {
         return taskStatus;
     }
 
     /**
-     * 设置任务类型（0待审核；1待处理；2处理完成待测；3测试完成；4已上线；5挂起；6作废）
+     * 设置任务类型（0待审核；1待处理；2处理完成待测；3测试中；4测试完成；5已上线；6挂起；7作废）
      *
-     * @param taskStatus 任务类型（0待审核；1待处理；2处理完成待测；3测试完成；4已上线；5挂起；6作废）
+     * @param taskStatus 任务类型（0待审核；1待处理；2处理完成待测；3测试中；4测试完成；5已上线；6挂起；7作废）
      */
     public void setTaskStatus(Integer taskStatus) {
         this.taskStatus = taskStatus;
@@ -234,5 +286,23 @@ public class ProjectTask {
      */
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    /**
+     * 获取更新时间
+     *
+     * @return update_time - 更新时间
+     */
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    /**
+     * 设置更新时间
+     *
+     * @param updateTime 更新时间
+     */
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

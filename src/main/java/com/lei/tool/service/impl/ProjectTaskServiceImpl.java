@@ -1,11 +1,14 @@
 package com.lei.tool.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.lei.tool.dto.TaskDto;
 import com.lei.tool.entity.ProjectGroup;
 import com.lei.tool.entity.ProjectGroupUser;
+import com.lei.tool.entity.ProjectTask;
 import com.lei.tool.entity.UUser;
 import com.lei.tool.mapper.ProjectGroupMapper;
 import com.lei.tool.mapper.ProjectGroupUserMapper;
+import com.lei.tool.mapper.ProjectTaskMapper;
 import com.lei.tool.service.ProjectTaskService;
 import com.lei.tool.utils.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,8 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     private ProjectGroupMapper projectGroupMapper;
     @Autowired
     private ProjectGroupUserMapper projectGroupUserMapper;
+    @Autowired
+    private ProjectTaskMapper projectTaskMapper;
 
     @Override
     public Page<ProjectGroup> getProjectPage(Page<ProjectGroup> page,ProjectGroup projectGroup, UUser user) {
@@ -92,5 +97,14 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     @Override
     public int addProjectUser(ProjectGroupUser projectGroupUser) {
         return  projectGroupUserMapper.insertSelective(projectGroupUser);
+    }
+
+    @Override
+    public Page<TaskDto> getTaskPage(Page<TaskDto> page, TaskDto taskDto) {
+        PageHelper.startPage(page.getPage(),page.getLimit());
+        List<TaskDto> list = projectTaskMapper.selectTasks(taskDto);
+        page.setData(list);
+        page.setCount(projectTaskMapper.selectTasksCount(taskDto));
+        return null;
     }
 }

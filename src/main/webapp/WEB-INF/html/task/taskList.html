@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>任务管理</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
+    <script th:src="@{/layui/layui.all.js}"></script>
+</head>
+<body style="overflow-y: scroll;">
+<div>
+
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layui-border-auto">
+            <div class="layui-form-item">
+                任务编号：
+                <div class="layui-inline">
+                    <input class="layui-input" name="id" id="taskNo" autocomplete="off">
+                </div>
+                任务名称：
+                <div class="layui-inline">
+                    <input class="layui-input" name="id" id="taskName" autocomplete="off">
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" data-type="reload" id="taskSearch"><i
+                            class="layui-icon layui-icon-search"></i></button>
+                    <shiro:hasPermission name="addTask">
+                    <button class="layui-btn" data-type="reload" id="addTask"><i
+                            class="layui-icon layui-icon-add-1"></i></button>
+                    </shiro:hasPermission>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-form-item" id="taskList" lay-filter="taskList"></table>
+        </div>
+
+    </div>
+
+
+</div>
+</body>
+<script type="text/html" id="taskBar">
+    <shiro:hasPermission name="updateTask">
+    <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></a>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="deleteTask">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i></a>
+    </shiro:hasPermission>
+</script>
+<script type="text/html" id="addTaskBar">
+
+    <form class="layui-form layui-form-pane" id="addtaskForm">
+        <div class="layui-site-20">
+            <div class="layui-form-item">
+                <label class="layui-form-label">任务编号</label>
+                <div class="layui-inline">
+                    <input type="text" name="taskNo" required lay-verify="no" placeholder="请输入任务编号"
+                           autocomplete="off" class="layui-input"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">任务名称</label>
+                <div class="layui-inline">
+                    <input type="text" name="taskName" required lay-verify="name" placeholder="请输入任务名称"
+                           autocomplete="off" class="layui-input"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <textarea name="remark" placeholder="请输入任务描述" class="layui-textarea"></textarea>
+            </div>
+
+        </div>
+        <div class="layui-btn-container" style="margin-top: 10px;margin-left: 110px">
+            <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="subBtn">保存</button>
+            <button class="layui-btn layui-btn-sm layui-btn-primary" id="cancalBtn">取消</button>
+        </div>
+    </form>
+
+
+</script>
+<script>
+    layui.use(['jquery', 'layer', 'element', 'table', 'form'], function () {
+        var $ = jQuery = layui.$;
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        //方法级渲染
+        table.render({
+            elem: '#taskList'
+            , id: 'taskTable'
+            , url: '/task/taskDataList/' //数据接口
+            , page: true //开启分页
+            , cols: [
+                [ //表头
+                    {type: 'numbers', title: '序号', width: 60},
+                    {field: 'taskName', title: '任务名称', unresize: true},
+                    {field: 'remark', title: '任务描述', unresize: true},
+                    {field: 'createTime', title: '创建时间', unresize: true},
+                    {fixed: 'right', title: '操作', unresize: true, toolbar: '#taskBar', width: 150}
+                ]
+            ]
+        });
+
+
+        var $ = layui.$, active = {
+            reload: function () {
+                var taskNo = $('#taskNo');
+                var taskName = $('#taskName');
+
+                //执行重载
+                table.reload('taskTable', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    , where: {
+                        taskNo: taskNo.val(),
+                        taskName: taskName.val()
+                    }
+                });
+            }
+        };
+
+        $('#taskSearch').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        table.on('tool(taskList)', function (obj) {
+            var data = obj.data;
+            //task.log(obj)
+            if (obj.event === 'del') {
+                layer.confirm('确定删除‘' + data.name + '’任务吗？', function (index) {
+                    $.post('/task/deleteTask', data, function (data) {
+                        layer.closeAll();
+                        layer.msg(data);
+                        obj.del();
+                    });
+                    return false;
+
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                layer.open({
+                    type: 2
+                    , offset: 'auto'
+                    , title: data.taskName + '-任务信息'
+                    , id: 'layerDemo'
+                    , content: '/task/taskGroupDetail?id=' + data.id
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0.3 //不显示遮罩
+                    , anim: 1
+                    , area: ['95%', '90%']
+                });
+            }
+        });
+
+        $("#addTask").click(function () {
+            layer.open({
+                type: 1
+                , offset: 'auto'
+                , title: '新增任务'
+                , id: 'layerTask'
+                , content: $('#addTaskBar').html()
+                , btnAlign: 'c' //按钮居中
+                , shade: 0.3 //不显示遮罩
+                , anim: 1
+                , resize: false
+            });
+            form.render();
+        });
+
+        form.verify({
+            name: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "任务名不能为空";
+                }
+                if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                    return '任务名不能有特殊字符';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '任务名首尾不能出现下划线\'_\'';
+                }
+                if (/^\d+\d+\d$/.test(value)) {
+                    return '任务名不能全为数字';
+                }
+            },
+            no: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "任务编号不能为空";
+                }
+                if (!new RegExp("^[A-Z0-9_\\s·]+$").test(value)) {
+                    return '任务编号只能为大写英文和数字';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '任务编号首尾不能出现下划线\'_\'';
+                }
+                if (/^\d+\d+\d$/.test(value)) {
+                    return '任务编号不能全为数字';
+                }
+            }
+
+        });
+
+        //监听提交
+        form.on('submit(subBtn)', function (data) {
+            //ajax 提交
+            $.post('/task/addTask', data.field, function (data) {
+                if(data.errcode == 0){
+                    layer.closeAll();
+                }
+                layer.msg(data.msg);
+                $("#taskSearch").click();
+            });
+            return false;
+        });
+
+        $(document).on('click', '#cancalBtn', function () {
+            layer.closeAll();
+        });
+
+        function parseTime(v) {
+            var date = new Date(v);
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            m = m < 10 ? '0' + m : m;
+            var d = date.getDate();
+            d = d < 10 ? ("0" + d) : d;
+            var h = date.getHours();
+            h = h < 10 ? ("0" + h) : h;
+            var M = date.getMinutes();
+            M = M < 10 ? ("0" + M) : M;
+            var str = y + "-" + m + "-" + d + " " + h + ":" + M;
+            return str;
+        }
+
+
+    });
+
+</script>
+</html>
