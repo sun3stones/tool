@@ -1,5 +1,6 @@
 package com.lei.tool.filter;
 
+import com.lei.tool.controller.BaseController;
 import com.lei.tool.entity.UUser;
 import com.lei.tool.test.Student;
 import org.apache.shiro.SecurityUtils;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
-class GlobalExceptionHandler {
+class GlobalExceptionHandler extends BaseController {
 
     @Autowired
     private Student student;
@@ -25,7 +26,7 @@ class GlobalExceptionHandler {
         reqest.setAttribute("exception", e);
         reqest.setAttribute("url", reqest.getRequestURL());
         Subject subject = SecurityUtils.getSubject();
-        UUser user = (UUser) subject.getPrincipal();
+        UUser user = getUser();
         if (user == null) {
             return "login";
         }else{

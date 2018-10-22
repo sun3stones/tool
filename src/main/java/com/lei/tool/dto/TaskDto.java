@@ -4,10 +4,9 @@ import java.util.Date;
 
 public class TaskDto {
 
-    public class ProjectTask {
         private Long id;
         private String userName;
-        private String projectNo;
+        private String projectName;
 
         private Date time;
 
@@ -91,6 +90,14 @@ public class TaskDto {
 
         public void setUserName(String userName) {
             this.userName = userName;
+        }
+
+        public String getProjectName() {
+            return projectName;
+        }
+
+        public void setProjectName(String projectName) {
+            this.projectName = projectName;
         }
 
         /**
@@ -309,13 +316,6 @@ public class TaskDto {
             this.updateTime = updateTime;
         }
 
-        public String getProjectNo() {
-            return projectNo;
-        }
-
-        public void setProjectNo(String projectNo) {
-            this.projectNo = projectNo;
-        }
 
         public Date getTime() {
             return time;
@@ -324,5 +324,4 @@ public class TaskDto {
         public void setTime(Date time) {
             this.time = time;
         }
-    }
 }

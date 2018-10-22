@@ -7,11 +7,11 @@ import org.springframework.beans.BeanUtils;
 
 public class BaseController {
 
-    UserDto getUserDto(){
+    public UserDto getUserDto(){
         return (UserDto) SecurityUtils.getSubject().getPrincipal();
     }
 
-    UUser getUser(){
+    public UUser getUser(){
         UserDto userDto = (UserDto) SecurityUtils.getSubject().getPrincipal();
         UUser user = new UUser();
         BeanUtils.copyProperties(userDto,user);

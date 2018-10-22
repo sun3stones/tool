@@ -8,6 +8,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="pid" jdbcType="BIGINT" property="pid" />
     <result column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="task_no" jdbcType="VARCHAR" property="taskNo" />
     <result column="task_name" jdbcType="VARCHAR" property="taskName" />
     <result column="task_type" jdbcType="INTEGER" property="taskType" />
     <result column="task_status" jdbcType="INTEGER" property="taskStatus" />
@@ -20,14 +21,13 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
 
-
   <sql id="query">
     <where>
       <if test="pid != null">
         and a.pid = #{pid}
       </if>
       <if test="uid != null">
-        and a.pid = #{uid}
+        and a.uid = #{uid}
       </if>
       <if test="parentId != null">
         and a.parent_id = #{parentId}
@@ -44,11 +44,13 @@
     </where>
   </sql>
 
-  <select id="selectTasks" resultType="com.lei.tool.dto.TaskDto" parameterType="com.lei.tool.dto.TaskDto">
-    select a.*,b.project_no as projectNo,c.user_name as userName from project_task a left join project_group b on a.pid = b.id left join u_user c on a.uid = c.id
+  <select id="selectTasks" parameterType="com.lei.tool.dto.TaskDto" resultType="com.lei.tool.dto.TaskDto">
+    select a.*,b.project_name as projectName,c.user_name as userName from project_task a left join project_group b on a.pid = b.id left join u_user c on a.uid = c.id
+    <include  refid="query"></include>
   </select>
 
-  <select id="selectTasksCount">
+  <select id="selectTasksCount" parameterType="com.lei.tool.dto.TaskDto" resultType="int">
     select count(1) from project_task a left join project_group b on a.pid = b.id left join u_user c on a.uid = c.id
+    <include  refid="query"></include>
   </select>
 </mapper>

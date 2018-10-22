@@ -19,6 +19,12 @@ public class ProjectTask {
     private Long uid;
 
     /**
+     * 任务编号
+     */
+    @Column(name = "task_no")
+    private String taskNo;
+
+    /**
      * 任务名称
      */
     @Column(name = "task_name")
@@ -124,6 +130,24 @@ public class ProjectTask {
      */
     public void setUid(Long uid) {
         this.uid = uid;
+    }
+
+    /**
+     * 获取任务编号
+     *
+     * @return task_no - 任务编号
+     */
+    public String getTaskNo() {
+        return taskNo;
+    }
+
+    /**
+     * 设置任务编号
+     *
+     * @param taskNo 任务编号
+     */
+    public void setTaskNo(String taskNo) {
+        this.taskNo = taskNo;
     }
 
     /**

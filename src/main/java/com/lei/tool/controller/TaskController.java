@@ -1,6 +1,7 @@
 package com.lei.tool.controller;
 
 import com.lei.tool.dto.TaskDto;
+import com.lei.tool.dto.UserDto;
 import com.lei.tool.service.ProjectTaskService;
 import com.lei.tool.utils.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class TaskController extends BaseController {
     @RequestMapping("/taskDataList")
     @ResponseBody
     public Page<TaskDto> taskDataList(Page<TaskDto> page,TaskDto taskDto){
+        UserDto userDto = getUserDto();
+        taskDto.setUid(userDto.getId());
         return taskService.getTaskPage(page,taskDto);
     }
 }
