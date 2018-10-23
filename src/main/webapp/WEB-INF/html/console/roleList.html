@@ -14,7 +14,7 @@
 
    <div class="layui-card" >
      <div class="layui-form layui-card-header layui-border-auto">
-        <div class="layui-form-item">
+         <blockquote class="layui-elem-quote layui-quote-nm">
             角色名称：
             <div class="layui-inline">
                 <input class="layui-input" name="id" id="roleReload" autocomplete="off">
@@ -25,7 +25,7 @@
                     <button class="layui-btn" data-type="reload" id="addRole"><i class="layui-icon layui-icon-add-1"></i></button>
                 </shiro:hasPermission >
             </div>
-        </div>
+         </blockquote>
      </div>
        <div class="layui-card-body">
            <table class="layui-form-item"  id="roleList" lay-filter="roleList"></table>

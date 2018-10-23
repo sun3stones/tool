@@ -40,7 +40,7 @@
             <ul class="layui-nav layui-nav-tree" lay-filter="menu2">
                 <li class="layui-nav-item" th:each="menu2,meanuSta:${menuList2}" th:parentid="${menu2.parentId}">
                     <a href="#" th:name="${menu2.content}" th:utext="${menu2.content}" th:id="${menu2.id}"
-                       th:url="${menu2.url}"></a>
+                       th:url="${menu2.url}" th:parentid="${menu2.parentId}"></a>
                 </li>
             </ul>
         </div>
@@ -261,6 +261,23 @@
             }
         });
         initTab();
+
+        element.on('tab(tab)', function(data){
+            var id = $(".layui-tab-title").find(".layui-this").attr("lay-id");
+            var parentid = $("#"+id).attr("parentid");
+            $(".layui-nav").find("*").removeClass("layui-this");
+            $("#"+id).addClass("layui-this");
+            $("#"+id).parent().addClass("layui-this");
+            $("#"+parentid).addClass("layui-this");
+            $("#"+parentid).parent().addClass("layui-this");
+            $(".layui-nav-tree").children("li").each(function (i, n) {
+                if (parentid == $(n).attr("parentid")) {
+                    $(n).show();
+                } else {
+                    $(n).hide();
+                }
+            });
+        });
 
         element.on('tabDelete(tab)', function(data){
             if($(".layui-tab-item").length == 0){

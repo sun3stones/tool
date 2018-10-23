@@ -53,7 +53,6 @@
 <script type="text/html" id="addTaskBar">
 
     <form class="layui-form layui-form-pane" id="addtaskForm">
-        <div class="layui-site-20">
             <div class="layui-form-item">
                 <label class="layui-form-label">任务编号</label>
                 <div class="layui-inline">
@@ -72,7 +71,6 @@
                 <textarea name="remark" placeholder="请输入任务描述" class="layui-textarea"></textarea>
             </div>
 
-        </div>
         <div class="layui-btn-container" style="margin-top: 10px;margin-left: 110px">
             <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="subBtn">保存</button>
             <button class="layui-btn layui-btn-sm layui-btn-primary" id="cancalBtn">取消</button>
@@ -82,11 +80,27 @@
 
 </script>
 <script>
-    layui.use(['jquery', 'layer', 'element', 'table', 'form'], function () {
+    layui.use(['jquery', 'layer', 'element', 'table', 'form','util'], function () {
         var $ = jQuery = layui.$;
         var element = layui.element;
         var table = layui.table;
         var form = layui.form;
+        var util = layui.util;
+
+        util.fixbar({
+            bar1: '&#xe654;'
+            ,bar2: false
+            ,css: {right: 30, bottom: 30}
+            ,bgcolor: '#009688'
+            ,click: function(type){
+                if(type === 'bar1'){
+                    layer.msg('icon是可以随便换的')
+                } else if(type === 'bar2') {
+                    layer.msg('两个bar都可以设定是否开启')
+                }
+            }
+        });
+
         //方法级渲染
         table.render({
             elem: '#taskList'

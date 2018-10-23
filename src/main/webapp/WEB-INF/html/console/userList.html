@@ -16,7 +16,7 @@
 
     <div class="layui-card" >
         <div class="layui-form layui-card-header layui-border-auto">
-            <div class="layui-form-item">
+            <blockquote class="layui-elem-quote layui-quote-nm">
                 用户名称：
                 <div class="layui-inline">
                     <input class="layui-input" id="userName" autocomplete="off">
@@ -27,8 +27,7 @@
                         <button class="layui-btn" data-type="reload" id="adduser"><i class="layui-icon layui-icon-add-1"></i></button>
                     </shiro:hasPermission>
                 </div>
-
-            </div>
+             </blockquote>
         </div>
         <div class="layui-card-body">
             <table class="layui-form-item"  id="userlist" lay-filter="userlist"></table>
