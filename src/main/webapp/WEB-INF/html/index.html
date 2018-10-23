@@ -47,10 +47,10 @@
     </div>
 
     <div class="layui-body">
-        <div class="layui-tab layui-tab-brief" lay-filter="tab" lay-allowclose="true">
+        <div class="layui-tab layui-tab-card" lay-filter="tab" lay-allowclose="true">
             <ul class="layui-tab-title" lay-filter="tab">
             </ul>
-            <div class="layui-tab-content layui-bg-gray">
+            <div class="layui-tab-content">
             </div>
         </div>
 
@@ -311,7 +311,7 @@
 
         //iframe高度设置
         function FrameWH() {
-            var h = $(".layui-side").height() - $(".layui-footer").height() - $(".layui-tab-title").height() - 44;
+            var h = $(".layui-side").height() - $(".layui-footer").height() - $(".layui-tab-title").height() - 28;
             $("iframe").css("height", h + "px");
         }
 
