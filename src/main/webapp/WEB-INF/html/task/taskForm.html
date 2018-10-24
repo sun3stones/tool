@@ -15,20 +15,20 @@
         <input type="hidden" name="pid">
         <div class="layui-form-item">
             <label class="layui-form-label">任务名称</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <input type="text" name="taskName" lay-verify="required" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
             </div>
         </div>
-        <div class="layui-form-item">
+        <div class="layui-form-item" pane>
             <label class="layui-form-label">任务类型</label>
-            <div class="layui-input-inline" style="border-style: solid;border-color: #e6e6e6;border-width: 1px;">
+            <div class="layui-input-block" >
                 <input type="radio" name="taskType" value="1" title="需求" checked>
                 <input type="radio" name="taskType" value="3" title="bug">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">任务对象</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-block">
                 <select xm-select="selectId" xm-select-search-type="title" xm-select-skin="primary" xm-select-radio xm-select-search>
                     <option value="1">1</option>
                     <option value="2">2</option>

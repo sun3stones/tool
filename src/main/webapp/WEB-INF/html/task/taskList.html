@@ -15,6 +15,14 @@
     <div class="layui-card">
         <div class="layui-form layui-card-header layui-border-auto">
             <div class="layui-form-item">
+                项目名称：
+               <div class="layui-inline">
+                    <select id="projectId" name="projectId" lay-verify="required" >
+                        <option value="" th:if="${#lists.size(projectList)} >1 ">所有项目</option>
+                        <option th:each="project,projectList:${projectList}" th:value="${project.id}"
+                                 th:utext="${project.projectName}"></option>
+                    </select>
+               </div>
                 任务编号：
                 <div class="layui-inline">
                     <input class="layui-input" name="id" id="taskNo" autocomplete="off">
@@ -86,6 +94,7 @@
         var table = layui.table;
         var form = layui.form;
         var util = layui.util;
+    form.render();
 
         util.fixbar({
             bar1: '&#xe654;'
@@ -94,12 +103,17 @@
             ,bgcolor: '#009688'
             ,click: function(type){
                 if(type === 'bar1'){
+                    var projectId = $("#projectId").val();
+                    if(projectId ==""){
+                        layer.msg("请先选择项目");
+                        return;
+                    }
                     layer.open({
                         type: 2
                         , offset: 'auto'
                         , title: '新增任务'
                         , id: 'layerDemo'
-                        , content: '/task/taskAdd'
+                        , content: '/task/taskAdd?projectId='+projectId
                         , btnAlign: 'c' //按钮居中
                         , shade: 0.3 //不显示遮罩
                         , anim: 1
