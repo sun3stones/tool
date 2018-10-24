@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>新建任务</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
+    <script th:src="@{/layui/layui.all.js}"></script>
+</head>
+<body>
+<div style="padding: 15px;">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="pid">
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="taskName" lay-verify="required" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务类型</label>
+            <div class="layui-input-inline" style="border-style: solid;border-color: #e6e6e6;border-width: 1px;">
+                <input type="radio" name="taskType" value="1" title="需求" checked>
+                <input type="radio" name="taskType" value="3" title="bug">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务对象</label>
+            <div class="layui-input-inline">
+                <select xm-select="selectId" xm-select-search-type="title" xm-select-skin="primary" xm-select-radio xm-select-search>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">任务描述</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入任务描述" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <div class="layui-upload">
+                <button type="button" class="layui-btn" id="test2">多图片上传</button>
+                <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                    预览图：
+                    <div class="layui-upload-list" id="demo2"></div>
+                </blockquote>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    layui.config({
+        base: '/js/' //此处路径请自行处理, 可以使用绝对路径
+    }).extend({
+        formSelects: 'formSelects-v4'
+    });
+
+    layui.use(['jquery', 'layer', 'element', 'table', 'form','formSelects','upload'], function () {
+        var $ = jQuery = layui.$;
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var upload = layui.upload;
+        var formSelects = layui.formSelects;
+        element.init();
+        form.render();
+        formSelects.render('selectId');
+
+        layui.formSelects.on('selectId', function(id, vals, val, isAdd, isDisabled){
+        });
+
+        var uploadInst = upload.render({
+            elem: '#test2' //绑定元素
+            ,url: '/upload/' //上传接口
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#demo2').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+                });
+            }
+            ,done: function(res){
+                //上传完毕回调
+            }
+            ,error: function(){
+                //请求异常回调
+            }
+        });
+
+    });
+
+</script>
+</body>
+</html>

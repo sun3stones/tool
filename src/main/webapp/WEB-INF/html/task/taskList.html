@@ -94,9 +94,17 @@
             ,bgcolor: '#009688'
             ,click: function(type){
                 if(type === 'bar1'){
-                    layer.msg('icon是可以随便换的')
-                } else if(type === 'bar2') {
-                    layer.msg('两个bar都可以设定是否开启')
+                    layer.open({
+                        type: 2
+                        , offset: 'auto'
+                        , title: '新增任务'
+                        , id: 'layerDemo'
+                        , content: '/task/taskAdd'
+                        , btnAlign: 'c' //按钮居中
+                        , shade: 0.3 //不显示遮罩
+                        , anim: 1
+                        , area: ['50%', '90%']
+                    });
                 }
             }
         });

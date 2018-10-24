@@ -28,4 +28,9 @@ public class TaskController extends BaseController {
         taskDto.setUid(userDto.getId());
         return taskService.getTaskPage(page,taskDto);
     }
+
+    @RequestMapping("/taskAdd")
+    public String taskAdd(){
+        return "task/taskForm";
+    }
 }
