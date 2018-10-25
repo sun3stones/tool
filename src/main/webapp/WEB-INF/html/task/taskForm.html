@@ -12,11 +12,12 @@
 <body>
 <div style="padding: 15px;">
     <form class="layui-form layui-form-pane" action="">
+        <button id="submited" class="layui-btn layui-hide" lay-submit lay-filter="go" ></button>
         <input type="hidden" name="pid">
         <div class="layui-form-item">
             <label class="layui-form-label">任务名称</label>
             <div class="layui-input-block">
-                <input type="text" name="taskName" lay-verify="required" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
+                <input type="text" name="taskName" lay-verify="name" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" pane>
@@ -29,7 +30,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">任务对象</label>
             <div class="layui-input-block">
-                <select xm-select="selectId" xm-select-search-type="title" xm-select-skin="primary" xm-select-radio xm-select-search>
+                <select xm-select="selectId" lay-verify="user" xm-select-search-type="title" xm-select-skin="primary" xm-select-radio xm-select-search>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -44,17 +45,14 @@
             </div>
         </div>
         <div class="layui-form-item ">
-            <button type="button" class="layui-btn layui-btn-fluid" id="uploadImg"><i class="layui-icon">&#xe64a;</i>上传图片</button>
+            <button type="button" class="layui-btn layui-btn-fluid" id="uploadImg"><i class="layui-icon">&#xe60d;</i>上传图片</button>
             <blockquote class="layui-elem-quote layui-quote-nm layui-hide" style="margin-top: 10px;">
                 <div class="layui-upload-list" id="previewImg"></div>
             </blockquote>
         </div>
         <div class="layui-form-item ">
-            <div class="layui-btn-group ">
-                <button type="button" class="layui-btn" id="selectFiles">选择文件</button>
-                <button type="button" class="layui-btn " id="selectFilesAction">开始上传</button>
-            </div>
-            <div class="layui-upload-list">
+            <button type="button" class="layui-btn layui-btn-fluid" id="selectFiles"><i class="layui-icon">&#xe60a;</i>上传文件</button>
+            <div class="layui-upload-list layui-hide" id="fileDiv">
                 <table class="layui-table">
                     <thead>
                     <tr><th>文件名</th>
@@ -93,12 +91,25 @@
 
         var uploadInst = upload.render({
             elem: '#uploadImg' //绑定元素
-            ,url: '/upload/' //上传接口
+            ,url: '/upload/uploadImg' //上传接口
+            ,size:2048
             ,before: function(obj){
                 //预读本地文件示例，不支持ie8
                 obj.preview(function(index, file, result){
-                    $(".layui-elem-quote").removeClass("layui-hide");
-                    $('#previewImg').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+                    var flag = true;
+                    $("#previewImg").find("img").each(function(){
+                            if(result == this.src){
+                                flag = false;
+                            }
+                        }
+                    );
+                    if(flag){
+                        $(".layui-elem-quote").removeClass("layui-hide");
+                        $('#previewImg').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">');
+                    }else{
+                        return false;
+                    }
+
                 });
             }
             ,done: function(res){
@@ -113,11 +124,10 @@
         var uploadFilesView = $('#uploadFiles')
             ,uploadListIns = upload.render({
             elem: '#selectFiles'
-            ,url: '/upload/'
+            ,url: '/upload/uploadImg'
             ,accept: 'file'
             ,multiple: true
-            ,auto: false
-            ,bindAction: '#selectFilesAction'
+            ,auto: true
             ,choose: function(obj){
                 var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
                 //读取本地文件
@@ -131,7 +141,7 @@
                         ,'<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
                         ,'</td>'
                         ,'</tr>'].join(''));
-
+                    $("#fileDiv").removeClass("layui-hide");
                     //单个重传
                     tr.find('.demo-reload').on('click', function(){
                         obj.upload(index, file);
@@ -164,6 +174,30 @@
                 tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
             }
         });
+
+        form.verify({
+            name: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "任务名不能为空";
+                }
+                if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                    return '任务名不能有特殊字符';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '任务名首尾不能出现下划线\'_\'';
+                }
+                if (/^\d+\d+\d$/.test(value)) {
+                    return '任务名不能全为数字';
+                }
+            },
+            user: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "请选择任务对象";
+                }
+            }
+
+        });
+
 
     });
 
