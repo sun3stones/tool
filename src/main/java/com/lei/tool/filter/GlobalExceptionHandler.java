@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
 class GlobalExceptionHandler extends BaseController {
@@ -22,15 +23,27 @@ class GlobalExceptionHandler extends BaseController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ExceptionHandler(value = Exception.class)
-    public String defaultErrorHandler(HttpServletRequest reqest, Exception e) throws Exception {
-        reqest.setAttribute("exception", e);
-        reqest.setAttribute("url", reqest.getRequestURL());
+    public String defaultErrorHandler(HttpServletRequest request, HttpServletResponse response, Exception e) throws Exception {
+        request.setAttribute("exception", e);
+        request.setAttribute("url", request.getRequestURL());
         Subject subject = SecurityUtils.getSubject();
+        if(isAjaxRequest(request)){
+        }
         UUser user = getUser();
         if (user == null) {
             return "login";
         }else{
-            return "index";
+            return "error";
         }
+    }
+
+    // 判断是否为ajax请求
+    public boolean isAjaxRequest(HttpServletRequest request){
+        boolean isAjaxRequest = false;
+        String requestType = request.getHeader("X-Requested-With");
+        if("XMLHttpRequest".equals(requestType)){
+            isAjaxRequest = true;
+        }
+        return isAjaxRequest;
     }
 }

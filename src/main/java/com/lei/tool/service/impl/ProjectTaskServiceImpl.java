@@ -1,7 +1,6 @@
 package com.lei.tool.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.lei.tool.dto.TaskDto;
 import com.lei.tool.entity.ProjectGroup;
 import com.lei.tool.entity.ProjectGroupUser;
 import com.lei.tool.entity.ProjectTask;
@@ -100,11 +99,11 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     }
 
     @Override
-    public Page<TaskDto> getTaskPage(Page<TaskDto> page, TaskDto taskDto) {
+    public Page<ProjectTask> getTaskPage(Page<ProjectTask> page, ProjectTask projectTask) {
         PageHelper.startPage(page.getPage(),page.getLimit());
-        List<TaskDto> list = projectTaskMapper.selectTasks(taskDto);
+        List<ProjectTask> list = projectTaskMapper.select(projectTask);
         page.setData(list);
-        page.setCount(projectTaskMapper.selectTasksCount(taskDto));
+        page.setCount(projectTaskMapper.selectCount(projectTask));
         return page;
     }
 }

@@ -141,7 +141,7 @@
                     {type: 'numbers', title: '序号', width: 60},
                     {field: 'taskNo', title: '任务名称', unresize: true},
                     {field: 'taskName', title: '任务名称', unresize: true},
-                    {field: 'remark', title: '任务描述', unresize: true},
+                    {field: 'taskRemark', title: '任务描述', unresize: true},
                     {field: 'createTime', title: '创建时间', unresize: true},
                     {fixed: 'right', title: '操作', unresize: true, toolbar: '#taskBar', width: 150}
                 ]
@@ -206,20 +206,6 @@
             layer.closeAll();
         });
 
-        function parseTime(v) {
-            var date = new Date(v);
-            var y = date.getFullYear();
-            var m = date.getMonth() + 1;
-            m = m < 10 ? '0' + m : m;
-            var d = date.getDate();
-            d = d < 10 ? ("0" + d) : d;
-            var h = date.getHours();
-            h = h < 10 ? ("0" + h) : h;
-            var M = date.getMinutes();
-            M = M < 10 ? ("0" + M) : M;
-            var str = y + "-" + m + "-" + d + " " + h + ":" + M;
-            return str;
-        }
 
 
     });

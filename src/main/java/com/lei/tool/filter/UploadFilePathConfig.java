@@ -25,8 +25,8 @@ public class UploadFilePathConfig extends WebMvcConfigurerAdapter {
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory config = new MultipartConfigFactory();
-        config.setMaxFileSize("2MB");
-        config.setMaxRequestSize("9000MB");
+        config.setMaxFileSize("20MB");
+        config.setMaxRequestSize("1024MB");
         return config.createMultipartConfig();
     }
 

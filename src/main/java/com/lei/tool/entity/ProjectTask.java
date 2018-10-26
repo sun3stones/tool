@@ -9,14 +9,16 @@ public class ProjectTask {
     private Long id;
 
     /**
-     * 项目id
+     * 项目编号
      */
-    private Long pid;
+    @Column(name = "project_no")
+    private String projectNo;
 
     /**
-     * 所属用户id
+     * 用户名称
      */
-    private Long uid;
+    @Column(name = "user_name")
+    private String userName;
 
     /**
      * 任务编号
@@ -37,7 +39,7 @@ public class ProjectTask {
     private Integer taskType;
 
     /**
-     * 任务类型（0待审核；1待处理；2处理完成待测；3测试中；4测试完成；5已上线；6挂起；7作废）
+     * 任务类型（0待审核；1待处理；2处理完成待测；3测试完成；4已上线；5挂起；6作废）
      */
     @Column(name = "task_status")
     private Integer taskStatus;
@@ -62,7 +64,7 @@ public class ProjectTask {
     /**
      * 任务附件
      */
-    private String docs;
+    private String files;
 
     /**
      * 任务开始时间
@@ -75,6 +77,12 @@ public class ProjectTask {
      */
     @Column(name = "end_time")
     private Date endTime;
+
+    /**
+     * 创建人
+     */
+    @Column(name = "create_name")
+    private String createName;
 
     /**
      * 更新时间
@@ -97,39 +105,39 @@ public class ProjectTask {
     }
 
     /**
-     * 获取项目id
+     * 获取项目编号
      *
-     * @return pid - 项目id
+     * @return project_no - 项目编号
      */
-    public Long getPid() {
-        return pid;
+    public String getProjectNo() {
+        return projectNo;
     }
 
     /**
-     * 设置项目id
+     * 设置项目编号
      *
-     * @param pid 项目id
+     * @param projectNo 项目编号
      */
-    public void setPid(Long pid) {
-        this.pid = pid;
+    public void setProjectNo(String projectNo) {
+        this.projectNo = projectNo;
     }
 
     /**
-     * 获取所属用户id
+     * 获取用户名称
      *
-     * @return uid - 所属用户id
+     * @return user_name - 用户名称
      */
-    public Long getUid() {
-        return uid;
+    public String getUserName() {
+        return userName;
     }
 
     /**
-     * 设置所属用户id
+     * 设置用户名称
      *
-     * @param uid 所属用户id
+     * @param userName 用户名称
      */
-    public void setUid(Long uid) {
-        this.uid = uid;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     /**
@@ -187,18 +195,18 @@ public class ProjectTask {
     }
 
     /**
-     * 获取任务类型（0待审核；1待处理；2处理完成待测；3测试中；4测试完成；5已上线；6挂起；7作废）
+     * 获取任务类型（0待审核；1待处理；2处理完成待测；3测试完成；4已上线；5挂起；6作废）
      *
-     * @return task_status - 任务类型（0待审核；1待处理；2处理完成待测；3测试中；4测试完成；5已上线；6挂起；7作废）
+     * @return task_status - 任务类型（0待审核；1待处理；2处理完成待测；3测试完成；4已上线；5挂起；6作废）
      */
     public Integer getTaskStatus() {
         return taskStatus;
     }
 
     /**
-     * 设置任务类型（0待审核；1待处理；2处理完成待测；3测试中；4测试完成；5已上线；6挂起；7作废）
+     * 设置任务类型（0待审核；1待处理；2处理完成待测；3测试完成；4已上线；5挂起；6作废）
      *
-     * @param taskStatus 任务类型（0待审核；1待处理；2处理完成待测；3测试中；4测试完成；5已上线；6挂起；7作废）
+     * @param taskStatus 任务类型（0待审核；1待处理；2处理完成待测；3测试完成；4已上线；5挂起；6作废）
      */
     public void setTaskStatus(Integer taskStatus) {
         this.taskStatus = taskStatus;
@@ -261,19 +269,19 @@ public class ProjectTask {
     /**
      * 获取任务附件
      *
-     * @return docs - 任务附件
+     * @return files - 任务附件
      */
-    public String getDocs() {
-        return docs;
+    public String getFiles() {
+        return files;
     }
 
     /**
      * 设置任务附件
      *
-     * @param docs 任务附件
+     * @param files 任务附件
      */
-    public void setDocs(String docs) {
-        this.docs = docs;
+    public void setFiles(String files) {
+        this.files = files;
     }
 
     /**
@@ -310,6 +318,24 @@ public class ProjectTask {
      */
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    /**
+     * 获取创建人
+     *
+     * @return create_name - 创建人
+     */
+    public String getCreateName() {
+        return createName;
+    }
+
+    /**
+     * 设置创建人
+     *
+     * @param createName 创建人
+     */
+    public void setCreateName(String createName) {
+        this.createName = createName;
     }
 
     /**

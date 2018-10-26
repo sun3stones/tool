@@ -56,10 +56,10 @@
 
     </div>
 
-    <div class="layui-footer">
-        <!-- 底部固定区域 -->
+    <!--<div class="layui-footer">
+        &lt;!&ndash; 底部固定区域 &ndash;&gt;
         © layui.com - 底部固定区域
-    </div>
+    </div>-->
 
     <div class="layui-hide">
         <div id="info" layui-btn-fluid>
@@ -328,7 +328,8 @@
 
         //iframe高度设置
         function FrameWH() {
-            var h = $(".layui-side").height() - $(".layui-footer").height() - $(".layui-tab-title").height() - 28;
+            var h = $(".layui-side").height()  - $(".layui-tab-title").height()-28 ;
+            $(".layui-body").css("height",$(".layui-side").height()+"px");
             $("iframe").css("height", h + "px");
         }
 

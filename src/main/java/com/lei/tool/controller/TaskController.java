@@ -1,10 +1,11 @@
 package com.lei.tool.controller;
 
-import com.lei.tool.dto.TaskDto;
 import com.lei.tool.dto.UserDto;
 import com.lei.tool.entity.ProjectGroup;
+import com.lei.tool.entity.ProjectTask;
 import com.lei.tool.entity.UUser;
 import com.lei.tool.service.ProjectTaskService;
+import com.lei.tool.service.UserService;
 import com.lei.tool.utils.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,8 @@ public class TaskController extends BaseController {
 
     @Autowired
     private ProjectTaskService taskService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping("/taskList")
     public String taskList(HttpServletRequest request){
@@ -31,14 +34,16 @@ public class TaskController extends BaseController {
 
     @RequestMapping("/taskDataList")
     @ResponseBody
-    public Page<TaskDto> taskDataList(Page<TaskDto> page,TaskDto taskDto){
+    public Page<ProjectTask> taskDataList(Page<ProjectTask> page, ProjectTask projectTask){
         UUser user = getUser();
-        taskDto.setUid(user.getId());
-        return taskService.getTaskPage(page,taskDto);
+        projectTask.setUserName(user.getUserName());
+        return taskService.getTaskPage(page,projectTask);
     }
 
     @RequestMapping("/taskAdd")
-    public String taskAdd(){
+    public String taskAdd(HttpServletRequest request){
+        List<UserDto> userList = userService.getUserList(getUserDto());
+        request.setAttribute("userList",userList);
         return "task/taskForm";
     }
 }

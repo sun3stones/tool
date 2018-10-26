@@ -6,8 +6,8 @@
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="pid" jdbcType="BIGINT" property="pid" />
-    <result column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="project_no" jdbcType="VARCHAR" property="projectNo" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="task_no" jdbcType="VARCHAR" property="taskNo" />
     <result column="task_name" jdbcType="VARCHAR" property="taskName" />
     <result column="task_type" jdbcType="INTEGER" property="taskType" />
@@ -15,42 +15,11 @@
     <result column="parent_id" jdbcType="BIGINT" property="parentId" />
     <result column="task_remark" jdbcType="VARCHAR" property="taskRemark" />
     <result column="images" jdbcType="VARCHAR" property="images" />
-    <result column="docs" jdbcType="VARCHAR" property="docs" />
+    <result column="files" jdbcType="VARCHAR" property="files" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
 
-  <sql id="query">
-    <where>
-      <if test="pid != null">
-        and a.pid = #{pid}
-      </if>
-      <if test="uid != null">
-        and a.uid = #{uid}
-      </if>
-      <if test="parentId != null">
-        and a.parent_id = #{parentId}
-      </if>
-      <if test="taskType != null and taskType != ''">
-        and a.task_type = #{taskType}
-      </if>
-      <if test="taskStatus != null and taskStatus != ''">
-        and a.task_status = #{taskStatus}
-      </if>
-      <if test="taskName != null and taskName != ''">
-        and a.task_name = #{taskName}
-      </if>
-    </where>
-  </sql>
-
-  <select id="selectTasks" parameterType="com.lei.tool.dto.TaskDto" resultType="com.lei.tool.dto.TaskDto">
-    select a.*,b.project_name as projectName,c.user_name as userName from project_task a left join project_group b on a.pid = b.id left join u_user c on a.uid = c.id
-    <include  refid="query"></include>
-  </select>
-
-  <select id="selectTasksCount" parameterType="com.lei.tool.dto.TaskDto" resultType="int">
-    select count(1) from project_task a left join project_group b on a.pid = b.id left join u_user c on a.uid = c.id
-    <include  refid="query"></include>
-  </select>
 </mapper>

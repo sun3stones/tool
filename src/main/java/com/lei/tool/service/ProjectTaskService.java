@@ -1,6 +1,5 @@
 package com.lei.tool.service;
 
-import com.lei.tool.dto.TaskDto;
 import com.lei.tool.entity.*;
 import com.lei.tool.utils.Page;
 
@@ -23,6 +22,6 @@ public interface ProjectTaskService {
 
     int addProjectUser(ProjectGroupUser projectGroupUser);
 
-    Page<TaskDto> getTaskPage(Page<TaskDto> page, TaskDto taskDto);
+    Page<ProjectTask> getTaskPage(Page<ProjectTask> page, ProjectTask projectTask);
 
 }

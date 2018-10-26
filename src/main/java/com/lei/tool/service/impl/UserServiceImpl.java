@@ -132,6 +132,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDto> getUserList(UserDto user) {
+        return userMapper.selectUserList(user);
+    }
+
+    @Override
     public Page<UserDto> getUserPage(Page<UserDto> page, UserDto user) {
         PageHelper.startPage(page.getPage(),page.getLimit());
         List<UserDto> list = userMapper.selectUserList(user);
