@@ -1,6 +1,9 @@
 package com.lei.tool.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
+import java.util.regex.Pattern;
 import javax.persistence.*;
 
 @Table(name = "project_task")
@@ -9,10 +12,9 @@ public class ProjectTask {
     private Long id;
 
     /**
-     * 项目编号
+     * 所属项目id
      */
-    @Column(name = "project_no")
-    private String projectNo;
+    private Long pid;
 
     /**
      * 用户名称
@@ -69,14 +71,16 @@ public class ProjectTask {
     /**
      * 任务开始时间
      */
-    @Column(name = "start_time")
-    private Date startTime;
+    @Column(name = "start_date")
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date startDate;
 
     /**
      * 任务截止期限
      */
-    @Column(name = "end_time")
-    private Date endTime;
+    @Column(name = "end_date")
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date endDate;
 
     /**
      * 创建人
@@ -88,6 +92,7 @@ public class ProjectTask {
      * 更新时间
      */
     @Column(name = "update_time")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private Date updateTime;
 
     /**
@@ -105,21 +110,21 @@ public class ProjectTask {
     }
 
     /**
-     * 获取项目编号
+     * 获取所属项目id
      *
-     * @return project_no - 项目编号
+     * @return pid - 所属项目id
      */
-    public String getProjectNo() {
-        return projectNo;
+    public Long getPid() {
+        return pid;
     }
 
     /**
-     * 设置项目编号
+     * 设置所属项目id
      *
-     * @param projectNo 项目编号
+     * @param pid 所属项目id
      */
-    public void setProjectNo(String projectNo) {
-        this.projectNo = projectNo;
+    public void setPid(Long pid) {
+        this.pid = pid;
     }
 
     /**
@@ -287,37 +292,37 @@ public class ProjectTask {
     /**
      * 获取任务开始时间
      *
-     * @return start_time - 任务开始时间
+     * @return start_date - 任务开始时间
      */
-    public Date getStartTime() {
-        return startTime;
+    public Date getStartDate() {
+        return startDate;
     }
 
     /**
      * 设置任务开始时间
      *
-     * @param startTime 任务开始时间
+     * @param startDate 任务开始时间
      */
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
     /**
      * 获取任务截止期限
      *
-     * @return end_time - 任务截止期限
+     * @return end_date - 任务截止期限
      */
-    public Date getEndTime() {
-        return endTime;
+    public Date getEndDate() {
+        return endDate;
     }
 
     /**
      * 设置任务截止期限
      *
-     * @param endTime 任务截止期限
+     * @param endDate 任务截止期限
      */
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     /**

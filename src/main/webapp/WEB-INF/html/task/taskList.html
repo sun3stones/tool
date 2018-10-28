@@ -17,7 +17,7 @@
             <div class="layui-form-item">
                 项目名称：
                <div class="layui-inline">
-                    <select id="projectId" name="projectId" lay-verify="required" >
+                    <select id="projectId" name="pid" lay-verify="required" >
                         <option value="" th:if="${#lists.size(projectList)} >1 ">所有项目</option>
                         <option th:each="project,projectList:${projectList}" th:value="${project.id}"
                                  th:utext="${project.projectName}"></option>
@@ -42,7 +42,7 @@
             </div>
         </div>
         <div class="layui-card-body">
-            <table class="layui-form-item" id="taskList" lay-filter="taskList"></table>
+            <table class="layui-form-item" id="taskList" lay-filter="taskList" ></table>
         </div>
 
     </div>
@@ -87,6 +87,34 @@
 
 
 </script>
+<script type="text/html" id="taskType">
+    {{#  if(d.taskType === 1){ }}
+    <span style="color: #58aee6;font-weight: bold">需求</span>
+    {{# } else if(d.taskType === 2) { }}
+    <span style="color: #8ef5d1;font-weight: bold">子需求</span>
+    {{#  } else { }}
+    <span style="color: #f55953;font-weight: bold">BUG</span>
+    {{#  } }}
+</script>
+<script type="text/html" id="taskStatus">
+    {{#  if(d.taskStatus === 0){ }}
+    <span class="layui-badge" style="background-color: #edc063;">待处理</span>
+    {{# } else if(d.taskStatus === 1) { }}
+    <span class="layui-badge" style="background-color: #52a9f5;">正在处理</span>
+    {{# } else if(d.taskStatus === 2) { }}
+    <span class="layui-badge" style="background-color: #5ed99f;">处理完成</span>
+    {{# } else if(d.taskStatus === 3) { }}
+    <span class="layui-badge" style="background-color: #52a9f5;">正在测试</span>
+    {{# } else if(d.taskStatus === 4) { }}
+    <span class="layui-badge" style="background-color: #5ed99f;">测试通过</span>
+    {{# } else if(d.taskStatus === 5) { }}
+    <span class="layui-badge" style="background-color: #19ad44">已上线</span>
+    {{# } else if(d.taskStatus === 6) { }}
+    <span class="layui-badge" style="background-color: #dcd43a">挂起</span>
+    {{# } else if(d.taskStatus === 7) { }}
+    <span class="layui-badge" style="background-color: #ff5459">作废</span>
+    {{#  } }}
+</script>
 <script>
     layui.use(['jquery', 'layer', 'element', 'table', 'form','util'], function () {
         var $ = jQuery = layui.$;
@@ -94,7 +122,7 @@
         var table = layui.table;
         var form = layui.form;
         var util = layui.util;
-    form.render();
+        form.render();
 
         util.fixbar({
             bar1: '&#xe654;'
@@ -134,15 +162,21 @@
         table.render({
             elem: '#taskList'
             , id: 'taskTable'
+            ,initSort: {field:'updateTime', type:'desc'}
             , url: '/task/taskDataList/' //数据接口
             , page: true //开启分页
             , cols: [
                 [ //表头
                     {type: 'numbers', title: '序号', width: 60},
-                    {field: 'taskNo', title: '任务名称', unresize: true},
+                    {field: 'taskNo', title: '任务编号',style:'font-weight: bold', unresize: true,sort: true},
                     {field: 'taskName', title: '任务名称', unresize: true},
-                    {field: 'taskRemark', title: '任务描述', unresize: true},
-                    {field: 'createTime', title: '创建时间', unresize: true},
+                    {field: 'taskType', title: '任务类型',templet: '#taskType', unresize: true},
+                    {field: 'taskStatus', title: '任务状态',templet: '#taskStatus', unresize: true,sort: true},
+                    //{field: 'taskRemark', title: '任务描述', unresize: true},
+                    {field: 'startDate', title: '开始时间', unresize: true,sort: true},
+                    {field: 'endDate', title: '结束时间  ', unresize: true,sort: true},
+                    {field: 'updateTime', title: '更新时间',width:150, unresize: true,sort: true},
+                    //{field: 'createName', title: '创建人', unresize: true},
                     {fixed: 'right', title: '操作', unresize: true, toolbar: '#taskBar', width: 150}
                 ]
             ]
@@ -153,6 +187,7 @@
             reload: function () {
                 var taskNo = $('#taskNo');
                 var taskName = $('#taskName');
+                var pid = $('#projectId');
 
                 //执行重载
                 table.reload('taskTable', {
@@ -160,6 +195,7 @@
                         curr: 1 //重新从第 1 页开始
                     }
                     , where: {
+                        pid: pid.val(),
                         taskNo: taskNo.val(),
                         taskName: taskName.val()
                     }

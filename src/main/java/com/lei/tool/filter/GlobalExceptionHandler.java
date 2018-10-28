@@ -24,6 +24,7 @@ class GlobalExceptionHandler extends BaseController {
 
     @ExceptionHandler(value = Exception.class)
     public String defaultErrorHandler(HttpServletRequest request, HttpServletResponse response, Exception e) throws Exception {
+        logger.error(e.getMessage());
         request.setAttribute("exception", e);
         request.setAttribute("url", request.getRequestURL());
         Subject subject = SecurityUtils.getSubject();

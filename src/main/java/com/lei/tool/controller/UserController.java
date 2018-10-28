@@ -8,7 +8,7 @@ import com.lei.tool.service.UserService;
 import com.lei.tool.utils.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,17 +26,35 @@ public class UserController extends BaseController{
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value={"/login"})
-    public String login(HttpServletRequest request, UUser user) {
-        if (user == null || StringUtils.isEmpty(user.getUserName())) {
-            if(request.getAttribute("msg")==null){
-                request.setAttribute("msg","");
-            }
-            return "login";
+    @RequestMapping("/login")
+    public String login(){
+        return "/login";
+    }
+
+    @RequestMapping(value={"/loginAction"})
+    @ResponseBody
+    public Map<String,Object> loginAction(HttpServletRequest request, UUser user) {
+        Map<String,Object> result = new HashMap<>();
+        Integer errcode = 1;
+        String msg = "";
+        try {
+            UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(), DigestUtils.md5Hex(user.getPassword()));
+            SecurityUtils.getSubject().login(token);
+            errcode = 0;
+            msg = "登录成功！";
+            return result;
+        } catch (UnknownAccountException  ua){
+            msg = "用户不存在！";
+        } catch (IncorrectCredentialsException ic){
+            msg = "密码错误！";
+        } catch (DisabledAccountException ic){
+            msg = "用户禁止登录！";
+        }finally {
+            result.put("errcode",errcode);
+            result.put("msg",msg);
+            return result;
         }
-        UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(), DigestUtils.md5Hex(user.getPassword()));
-        SecurityUtils.getSubject().login(token);
-        return "forward:/index";
+
     }
 
     @RequestMapping(value={"/index",""})

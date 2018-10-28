@@ -6,7 +6,7 @@
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="project_no" jdbcType="VARCHAR" property="projectNo" />
+    <result column="pid" jdbcType="BIGINT" property="pid" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="task_no" jdbcType="VARCHAR" property="taskNo" />
     <result column="task_name" jdbcType="VARCHAR" property="taskName" />
@@ -16,8 +16,8 @@
     <result column="task_remark" jdbcType="VARCHAR" property="taskRemark" />
     <result column="images" jdbcType="VARCHAR" property="images" />
     <result column="files" jdbcType="VARCHAR" property="files" />
-    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
-    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
     <result column="create_name" jdbcType="VARCHAR" property="createName" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>

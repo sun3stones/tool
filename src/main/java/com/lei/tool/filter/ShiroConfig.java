@@ -43,6 +43,7 @@ public class ShiroConfig {
         // 配置不会被拦截的链接 顺序判断
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/login", "anon");
+        filterChainDefinitionMap.put("/loginAction", "anon");
         //配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
         filterChainDefinitionMap.put("/logout", "logout");
         filterChainDefinitionMap.put("/webapp/**", "anon");
@@ -132,7 +133,7 @@ public class ShiroConfig {
         redisManager.setHost(host);
         redisManager.setPort(port);
         redisManager.setExpire(1800);// 配置缓存过期时间
-        redisManager.setTimeout(0);
+        redisManager.setTimeout(2000);
         // redisManager.setPassword(password);
         return redisManager;
     }

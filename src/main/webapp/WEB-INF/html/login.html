@@ -19,7 +19,7 @@
         <h1>Task Manager</h1>
         <div class="inset">
             <!--start-main-->
-            <form class="layui-form" action="/login" method="post">
+            <form class="layui-form" id="loginForm" method="post">
                 <div>
                     <span><input type="text" class="textbox" id="active" placeholder="用户名" name="userName"
                                  lay-verify="userName"></span>
@@ -48,7 +48,8 @@
     var msg = [[${msg}]];
 </script>
 <script type="text/javascript" >
-    layui.use(['layer', 'form'], function () {
+    layui.use(['jquery','layer', 'form'], function () {
+        var $ = jQuery = layui.$;
         var layer = layui.layer, form = layui.form;
         form.render();
         if(msg != null && msg != ""){
@@ -75,12 +76,32 @@
             ]
         });
 
-        /*//监听提交
+        //监听提交
         form.on('submit(subBtn)', function (data) {
-            data.field.password = hex_md5(data.field.password);
-            layer.msg(JSON.stringify(data.field));
-            //return false;
-        });*/
+            $.post('/loginAction',data.field,function(data){
+                layer.closeAll();
+                if(data.errcode == 0) {
+                    layer.msg(data.msg, {
+                        icon: 1,
+                        time: 1500 //2秒关闭（如果不配置，默认是3秒）
+                        , shade: [0.1, '#f5f5f5'],
+                        scrollbar: false,
+                        offset: 'auto'
+                    }, function () {
+                        window.location.href="/index";
+                    });
+                }else{
+                    layer.msg(data.msg, {
+                        icon: 2,
+                        time: 1500 //2秒关闭（如果不配置，默认是3秒）
+                        , shade: [0.1, '#f5f5f5'],
+                        scrollbar: false,
+                        offset: 'auto'
+                    });
+                }
+            });
+            return false;
+        });
 
     });
 

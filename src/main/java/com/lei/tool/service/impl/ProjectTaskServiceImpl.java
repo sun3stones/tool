@@ -106,4 +106,16 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
         page.setCount(projectTaskMapper.selectCount(projectTask));
         return page;
     }
+
+    @Override
+    public int addTask(ProjectTask projectTask) {
+        ProjectGroup project = projectGroupMapper.selectByPrimaryKey(projectTask.getPid());
+        //获取taskNo
+        ProjectTask pt = new ProjectTask();
+        pt.setPid(projectTask.getPid());
+        int num = projectTaskMapper.selectCount(pt);
+        String taskNo = project.getProjectNo()+"-"+String.format("%04d", num+1);
+        projectTask.setTaskNo(taskNo);
+        return projectTaskMapper.insertSelective(projectTask);
+    }
 }

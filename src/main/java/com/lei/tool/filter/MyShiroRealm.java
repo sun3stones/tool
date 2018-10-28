@@ -69,7 +69,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         user.setUserName(userName);
         UserDto userDto = userService.selectUser(user);
         if (userDto == null) {
-            throw new AccountException("账户不存在");
+            throw new UnknownAccountException ("账户不存在");
         }
         if (userDto.getStatus() == 0) {
             throw new DisabledAccountException("账号已经禁止登录");

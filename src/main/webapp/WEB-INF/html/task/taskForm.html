@@ -12,10 +12,13 @@
 <body>
 <div style="padding: 15px;">
     <form class="layui-form layui-form-pane" action="">
-        <button id="submited" class="layui-btn layui-hide" lay-submit lay-filter="go" ></button>
-        <input type="hidden" name="pid">
+        <button id="submited" class="layui-btn layui-hide" lay-submit lay-filter="subBtn" ></button>
+        <input type="hidden" name="pid" th:value="${projectId}">
+        <input type="hidden" name="startDate">
+        <input type="hidden" name="endDate">
         <input type="hidden" name="images">
         <input type="hidden" name="files">
+
         <div class="layui-form-item">
             <label class="layui-form-label">任务名称</label>
             <div class="layui-input-block">
@@ -32,21 +35,21 @@
         <div class="layui-form-item">
             <label class="layui-form-label">任务对象</label>
             <div class="layui-input-block">
-                <select xm-select="selectId" lay-verify="user" xm-select-search-type="title" xm-select-skin="primary" xm-select-radio xm-select-search>
-                    <option th:each="user,userList:${userList}" th:value="${user.id}" th:utext="${user.userName}"></option>
+                <select name="userName" xm-select="selectId" lay-verify="user" xm-select-search-type="title" xm-select-skin="primary" xm-select-radio xm-select-search>
+                    <option th:each="user,userList:${userList}" th:value="${user.userName}" th:utext="${user.userName}"></option>
                 </select>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">任务排期</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" id="test6" placeholder=" - ">
+                <input type="text" class="layui-input" lay-verify="date" id="laydate" placeholder=" - ">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">任务描述</label>
             <div class="layui-input-block">
-                <textarea placeholder="请输入任务描述" class="layui-textarea"></textarea>
+                <textarea name="taskRemark" placeholder="请输入任务描述" class="layui-textarea"></textarea>
             </div>
         </div>
         <div class="layui-form-item ">
@@ -95,18 +98,18 @@
 
         //日期范围
         laydate.render({
-            elem: '#test6'
+            elem: '#laydate'
             ,range: "~"
             ,min: parseTime()
             ,done: function(value, date, endDate){
-            console.log(value); //得到日期生成的值，如：2017-08-18
-            console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
-            console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+                $("input[name=startDate]").val(value.split("~")[0]);
+                $("input[name=endDate]").val(value.split("~")[1]);
             }
         });
 
         var load;
-        var images;
+        var imagesStr = "";
+        var filesStr = "";
         var uploadInst = upload.render({
             elem: '#uploadImg' //绑定元素
             ,url: '/upload/uploadFile?type=img' //上传接口
@@ -127,15 +130,12 @@
 
                 });
             }
-            ,before: function(obj){
-                load = showLoad();
-            }
             ,done: function(res){
-                closeLoad(load);
-                showSuccess(res.msg);
                 if(res.errcode == 0){
                     $(".layui-elem-quote").removeClass("layui-hide");
                     $('#previewImg').append('<img src="/static/img/'+ res.filename +'" alt="'+ res.filename +'" class="layui-upload-img">');
+                    imagesStr += res.filename+";";
+                    $("input[name=images]").val(imagesStr);
                 }
             }
             ,error: function(){
@@ -161,7 +161,7 @@
                         ,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
                         ,'<td>等待上传</td>'
                         ,'<td>'
-                        ,'<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+                        //,'<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
                         ,'<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
                         ,'</td>'
                         ,'</tr>'].join(''));
@@ -173,8 +173,12 @@
 
                     //删除
                     tr.find('.demo-delete').on('click', function(){
+                        debugger
                         delete files[index]; //删除对应的文件
                         tr.remove();
+                        var filename = tr.attr("filename");
+                        filesStr = filesStr.replace(filename+";","");
+                        $("input[name=files]").val(filesStr);
                         uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
                     });
 
@@ -185,8 +189,11 @@
                 if(res.errcode == 0){ //上传成功
                     var tr = uploadFilesView.find('tr#upload-'+ index)
                         ,tds = tr.children();
+                    tr.attr('filename',res.filename);
                     tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
-                    tds.eq(3).html(''); //清空操作
+                    //tds.eq(3).html(''); //清空操作
+                    filesStr += res.filename+";";
+                    $("input[name=files]").val(filesStr);
                     return delete this.files[index]; //删除文件队列已经上传成功的文件
                 }
                 this.error(index, upload);
@@ -218,8 +225,27 @@
                 if ("" == value) {
                     return "请选择任务对象";
                 }
+            },
+            date: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "请输入任务排期";
+                }
             }
 
+        });
+
+        //监听提交
+        form.on('submit(subBtn)', function(data){
+
+            $("input[name=files]").val(filesStr);
+            //ajax 提交
+            $.post('/task/addTaskSave',data.field,function(data){
+                layer.closeAll();
+                if(data.errcode == 0){
+                    layer.msg("新增任务成功")
+                }
+            });
+            return false;
         });
 
         function showLoad() {

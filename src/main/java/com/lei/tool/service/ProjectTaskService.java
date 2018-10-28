@@ -24,4 +24,5 @@ public interface ProjectTaskService {
 
     Page<ProjectTask> getTaskPage(Page<ProjectTask> page, ProjectTask projectTask);
 
+    int addTask(ProjectTask projectTask);
 }

@@ -120,6 +120,13 @@
             <version>2.4.2.1-RELEASE</version>
         </dependency>
 
+        <!--commons-lang-->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+
         <!--md5,base64-->
         <dependency>
             <groupId>commons-codec</groupId>
