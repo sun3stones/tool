@@ -1,6 +1,8 @@
 package com.lei.tool.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.lei.tool.dto.UserDto;
 import com.lei.tool.entity.ProjectGroup;
 import com.lei.tool.entity.ProjectGroupUser;
 import com.lei.tool.entity.ProjectTask;
@@ -33,8 +35,9 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     public Page<ProjectGroup> getProjectPage(Page<ProjectGroup> page,ProjectGroup projectGroup, UUser user) {
         PageHelper.startPage(page.getPage(),page.getLimit());
         List<ProjectGroup> list =  projectGroupMapper.selectByUser(projectGroup,user);
-        Integer count = projectGroupMapper.selectByUserCount(projectGroup,user);
-        page.setCount(count);
+        PageInfo<ProjectGroup> pageInfo = new PageInfo<ProjectGroup>(list);
+        //Integer count = projectGroupMapper.selectByUserCount(projectGroup,user);
+        page.setCount((int)pageInfo.getTotal());
         page.setData(list);
         page.setCode(0);
         page.setMsg("成功");
@@ -102,8 +105,9 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     public Page<ProjectTask> getTaskPage(Page<ProjectTask> page, ProjectTask projectTask) {
         PageHelper.startPage(page.getPage(),page.getLimit());
         List<ProjectTask> list = projectTaskMapper.select(projectTask);
+        PageInfo<ProjectTask> pageInfo = new PageInfo<ProjectTask>(list);
         page.setData(list);
-        page.setCount(projectTaskMapper.selectCount(projectTask));
+        page.setCount((int)pageInfo.getTotal());
         return page;
     }
 
@@ -117,5 +121,10 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
         String taskNo = project.getProjectNo()+"-"+String.format("%04d", num+1);
         projectTask.setTaskNo(taskNo);
         return projectTaskMapper.insertSelective(projectTask);
+    }
+
+    @Override
+    public ProjectTask getTaskById(Long id) {
+        return projectTaskMapper.selectByPrimaryKey(id);
     }
 }

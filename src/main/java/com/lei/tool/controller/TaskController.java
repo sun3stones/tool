@@ -65,4 +65,13 @@ public class TaskController extends BaseController {
         map.put("msg","新增任务成功");
         return map;
     }
+
+    @RequestMapping("taskDetail")
+    public String taskDetail(HttpServletRequest request,Long id){
+        ProjectTask projectTask = taskService.getTaskById(id);
+        List<UserDto> userList = userService.getUserList(getUserDto());
+        request.setAttribute("userList",userList);
+        request.setAttribute("task",projectTask);
+        return "task/taskForm";
+    }
 }

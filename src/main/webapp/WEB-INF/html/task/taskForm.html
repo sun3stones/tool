@@ -13,9 +13,10 @@
 <div style="padding: 15px;">
     <form class="layui-form layui-form-pane" action="">
         <button id="submited" class="layui-btn layui-hide" lay-submit lay-filter="subBtn" ></button>
+        <input type="hidden" name="id" th:if="${task}" th:value="${task.id}">
         <input type="hidden" name="pid" th:value="${projectId}">
-        <input type="hidden" name="startDate">
-        <input type="hidden" name="endDate">
+        <input type="hidden" name="startDate" th:value="${task != null}?${task.startDate}:''">
+        <input type="hidden" name="endDate" th:value="${task != null}?${task.endDate}:''">
         <input type="hidden" name="images">
         <input type="hidden" name="files">
 
@@ -28,15 +29,16 @@
         <div class="layui-form-item" pane>
             <label class="layui-form-label">任务类型</label>
             <div class="layui-input-block" >
-                <input type="radio" name="taskType" value="1" title="需求" checked>
-                <input type="radio" name="taskType" value="3" title="bug">
+                <input type="radio" name="taskType" value="1" lay-verify="type" title="需求" th:checked="${task != null and task.taskType == 1}?true:false">
+                <input type="radio" name="taskType" value="3" lay-verify="type" title="bug" th:checked="${task != null and task.taskType == 3}?true:false">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">任务对象</label>
             <div class="layui-input-block">
                 <select name="userName" xm-select="selectId" lay-verify="user" xm-select-search-type="title" xm-select-skin="primary" xm-select-radio xm-select-search>
-                    <option th:each="user,userList:${userList}" th:value="${user.userName}" th:utext="${user.userName}"></option>
+                    <option th:each="user,userList:${userList}" th:value="${user.userName}" th:utext="${user.userName}"
+                            th:selected="${task != null and task.userName == user.userName}?true:false"></option>
                 </select>
             </div>
         </div>
@@ -75,7 +77,6 @@
         </div>
     </form>
 </div>
-
 <script type="text/javascript">
     layui.config({
         base: '/js/' //此处路径请自行处理, 可以使用绝对路径
@@ -95,11 +96,14 @@
         form.render();
         formSelects.render('selectId');
 
-
+        var startDate = new Date($("input[name=startDate]").val()).format("yyyy-MM-dd");
+        var endDate = parseTime($("input[name=startDate]").val());
+        var dateRange = startDate==""?null:startDate+" ~ "+endDate;
         //日期范围
         laydate.render({
             elem: '#laydate'
             ,range: "~"
+            ,value:dateRange
             ,min: parseTime()
             ,done: function(value, date, endDate){
                 $("input[name=startDate]").val(value.split("~")[0]);
@@ -219,6 +223,11 @@
                 }
                 if (/^\d+\d+\d$/.test(value)) {
                     return '任务名不能全为数字';
+                }
+            },
+            type: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "请选择任务类型";
                 }
             },
             user: function (value, item) { //value：表单的值、item：表单的DOM对象

@@ -1,6 +1,7 @@
 package com.lei.tool.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.lei.tool.dto.UserDto;
 import com.lei.tool.entity.*;
 import com.lei.tool.mapper.*;
@@ -140,8 +141,9 @@ public class UserServiceImpl implements UserService {
     public Page<UserDto> getUserPage(Page<UserDto> page, UserDto user) {
         PageHelper.startPage(page.getPage(),page.getLimit());
         List<UserDto> list = userMapper.selectUserList(user);
-        int count = userMapper.selectUserCount(user);
-        page.setCount(count);
+        PageInfo<UserDto> pageInfo = new PageInfo<UserDto>(list);
+        //int count = userMapper.selectUserCount(user);
+        page.setCount((int)pageInfo.getTotal());
         page.setData(list);
         page.setCode(0);
         page.setMsg("成功");

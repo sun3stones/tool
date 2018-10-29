@@ -14,7 +14,7 @@
 
     <div class="layui-card">
         <div class="layui-form layui-card-header layui-border-auto">
-            <div class="layui-form-item">
+            <blockquote class="layui-elem-quote layui-quote-nm">
                 项目名称：
                <div class="layui-inline">
                     <select id="projectId" name="pid" lay-verify="required" >
@@ -39,7 +39,7 @@
                             class="layui-icon layui-icon-add-1"></i></button>
                     </shiro:hasPermission>
                 </div>
-            </div>
+            </blockquote>
         </div>
         <div class="layui-card-body">
             <table class="layui-form-item" id="taskList" lay-filter="taskList" ></table>
@@ -54,39 +54,9 @@
     <shiro:hasPermission name="updateTask">
     <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></a>
     </shiro:hasPermission>
-    <shiro:hasPermission name="deleteTask">
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i></a>
-    </shiro:hasPermission>
-</script>
-<script type="text/html" id="addTaskBar">
-
-    <form class="layui-form layui-form-pane" id="addtaskForm">
-            <div class="layui-form-item">
-                <label class="layui-form-label">任务编号</label>
-                <div class="layui-inline">
-                    <input type="text" name="taskNo" required lay-verify="no" placeholder="请输入任务编号"
-                           autocomplete="off" class="layui-input"/>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">任务名称</label>
-                <div class="layui-inline">
-                    <input type="text" name="taskName" required lay-verify="name" placeholder="请输入任务名称"
-                           autocomplete="off" class="layui-input"/>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <textarea name="remark" placeholder="请输入任务描述" class="layui-textarea"></textarea>
-            </div>
-
-        <div class="layui-btn-container" style="margin-top: 10px;margin-left: 110px">
-            <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="subBtn">保存</button>
-            <button class="layui-btn layui-btn-sm layui-btn-primary" id="cancalBtn">取消</button>
-        </div>
-    </form>
-
 
 </script>
+
 <script type="text/html" id="taskType">
     {{#  if(d.taskType === 1){ }}
     <span style="color: #58aee6;font-weight: bold">需求</span>
@@ -106,7 +76,7 @@
     {{# } else if(d.taskStatus === 3) { }}
     <span class="layui-badge" style="background-color: #52a9f5;">正在测试</span>
     {{# } else if(d.taskStatus === 4) { }}
-    <span class="layui-badge" style="background-color: #5ed99f;">测试通过</span>
+    <span class="layui-badge" style="background-color: #54cd7f;">测试通过</span>
     {{# } else if(d.taskStatus === 5) { }}
     <span class="layui-badge" style="background-color: #19ad44">已上线</span>
     {{# } else if(d.taskStatus === 6) { }}
@@ -125,35 +95,13 @@
         form.render();
 
         util.fixbar({
-            bar1: '&#xe654;'
+            bar1: '&#xe628;'
             ,bar2: false
             ,css: {right: 30, bottom: 30}
             ,bgcolor: '#009688'
             ,click: function(type){
                 if(type === 'bar1'){
-                    var projectId = $("#projectId").val();
-                    if(projectId ==""){
-                        layer.msg("请先选择项目");
-                        return;
-                    }
-                    layer.open({
-                        type: 2
-                        , offset: 'auto'
-                        , title: '新增任务'
-                        , id: 'layerDemo'
-                        , content: '/task/taskAdd?projectId='+projectId
-                        , btnAlign: 'c' //按钮居中
-                        , shade: 0.3 //不显示遮罩
-                        , anim: 1
-                        , area: ['50%', '90%']
-                        ,btn: ['保存', '取消']
-                        ,yes: function(index, layero){
-                            var body = layer.getChildFrame('body', index);//通过该对象可以获取iframe中的dom元素
-                            body.find("#submited").click();
-                        },no:function(index){
-                            layer.close(index);
-                        }
-                    });
+
                 }
             }
         });
@@ -162,7 +110,7 @@
         table.render({
             elem: '#taskList'
             , id: 'taskTable'
-            ,initSort: {field:'updateTime', type:'desc'}
+            //,initSort: {field:'updateTime', type:'desc'}
             , url: '/task/taskDataList/' //数据接口
             , page: true //开启分页
             , cols: [
@@ -174,7 +122,7 @@
                     {field: 'taskStatus', title: '任务状态',templet: '#taskStatus', unresize: true,sort: true},
                     //{field: 'taskRemark', title: '任务描述', unresize: true},
                     {field: 'startDate', title: '开始时间', unresize: true,sort: true},
-                    {field: 'endDate', title: '结束时间  ', unresize: true,sort: true},
+                    {field: 'endDate', title: '截止时间  ', unresize: true,sort: true},
                     {field: 'updateTime', title: '更新时间',width:150, unresize: true,sort: true},
                     //{field: 'createName', title: '创建人', unresize: true},
                     {fixed: 'right', title: '操作', unresize: true, toolbar: '#taskBar', width: 150}
@@ -208,27 +156,42 @@
             active[type] ? active[type].call(this) : '';
         });
 
+        $("#addTask").click(function () {
+            var projectId = $("#projectId").val();
+            if(projectId ==""){
+                layer.msg("请先选择项目");
+                return;
+            }
+            layer.open({
+                type: 2
+                , offset: 'auto'
+                , title: '新增任务'
+                , id: 'layerDemo'
+                , content: '/task/taskAdd?projectId='+projectId
+                , btnAlign: 'c' //按钮居中
+                , shade: 0.3 //不显示遮罩
+                , anim: 1
+                , area: ['50%', '90%']
+                ,btn: ['保存', '取消']
+                ,yes: function(index, layero){
+                    var body = layer.getChildFrame('body', index);//通过该对象可以获取iframe中的dom元素
+                    body.find("#submited").click();
+                },no:function(index){
+                    layer.close(index);
+                }
+            });
+        });
+
         table.on('tool(taskList)', function (obj) {
             var data = obj.data;
             //task.log(obj)
-            if (obj.event === 'del') {
-                layer.confirm('确定删除‘' + data.name + '’任务吗？', function (index) {
-                    $.post('/task/deleteTask', data, function (data) {
-                        layer.closeAll();
-                        layer.msg(data);
-                        obj.del();
-                    });
-                    return false;
-
-                    layer.close(index);
-                });
-            } else if (obj.event === 'edit') {
+            if (obj.event === 'edit') {
                 layer.open({
                     type: 2
                     , offset: 'auto'
                     , title: data.taskName + '-任务信息'
                     , id: 'layerDemo'
-                    , content: '/task/taskGroupDetail?id=' + data.id
+                    , content: '/task/taskDetail?id=' + data.id
                     , btnAlign: 'c' //按钮居中
                     , shade: 0.3 //不显示遮罩
                     , anim: 1
