@@ -92,7 +92,7 @@ public class ProjectTask {
      * 更新时间
      */
     @Column(name = "update_time")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm",timezone="GMT+8")
     private Date updateTime;
 
     /**

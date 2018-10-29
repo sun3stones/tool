@@ -15,8 +15,8 @@
         <button id="submited" class="layui-btn layui-hide" lay-submit lay-filter="subBtn" ></button>
         <input type="hidden" name="id" th:if="${task}" th:value="${task.id}">
         <input type="hidden" name="pid" th:value="${projectId}">
-        <input type="hidden" name="startDate" th:value="${task != null}?${task.startDate}:''">
-        <input type="hidden" name="endDate" th:value="${task != null}?${task.endDate}:''">
+        <input type="hidden" name="startDate" th:value="${startDate != null}?${startDate}:''">
+        <input type="hidden" name="endDate" th:value="${endDate != null}?${endDate}:''">
         <input type="hidden" name="images">
         <input type="hidden" name="files">
 
@@ -96,8 +96,8 @@
         form.render();
         formSelects.render('selectId');
 
-        var startDate = new Date($("input[name=startDate]").val()).format("yyyy-MM-dd");
-        var endDate = parseTime($("input[name=startDate]").val());
+        var startDate = $("input[name=startDate]").val();
+        var endDate = $("input[name=endDate]").val();
         var dateRange = startDate==""?null:startDate+" ~ "+endDate;
         //日期范围
         laydate.render({
@@ -134,8 +134,12 @@
 
                 });
             }
+            ,before:function(){
+                load = showLoad();
+            }
             ,done: function(res){
                 if(res.errcode == 0){
+                    closeLoad(load);
                     $(".layui-elem-quote").removeClass("layui-hide");
                     $('#previewImg').append('<img src="/static/img/'+ res.filename +'" alt="'+ res.filename +'" class="layui-upload-img">');
                     imagesStr += res.filename+";";
@@ -278,8 +282,29 @@
             h = h < 10 ? ("0" + h) : h;
             var M = date.getMinutes();
             M = M < 10 ? ("0" + M) : M;
-            var str = y + "-" + m + "-" + d + " " + h + ":" + M;
+            var str = y + "-" + m + "-" + d /*+ " " + h + ":" + M*/;
             return str;
+        }
+
+        Date.prototype.format = function(format) {
+            var date = {
+                "M+": this.getMonth() + 1,
+                "d+": this.getDate(),
+                "h+": this.getHours(),
+                "m+": this.getMinutes(),
+                "s+": this.getSeconds(),
+                "q+": Math.floor((this.getMonth() + 3) / 3),
+                "S+": this.getMilliseconds()
+            };
+            if (/(y+)/i.test(format)) {
+                format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+            }
+            for (var k in date) {
+                if (new RegExp("(" + k + ")").test(format)) {
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+                }
+            }
+            return format;
         }
     });
 

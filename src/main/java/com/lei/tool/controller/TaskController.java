@@ -1,5 +1,8 @@
 package com.lei.tool.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lei.tool.dto.UserDto;
 import com.lei.tool.entity.ProjectGroup;
 import com.lei.tool.entity.ProjectTask;
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -70,8 +75,14 @@ public class TaskController extends BaseController {
     public String taskDetail(HttpServletRequest request,Long id){
         ProjectTask projectTask = taskService.getTaskById(id);
         List<UserDto> userList = userService.getUserList(getUserDto());
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+        String startDate = df.format(projectTask.getStartDate());
+        String endDate = df.format(projectTask.getEndDate());
         request.setAttribute("userList",userList);
         request.setAttribute("task",projectTask);
+        request.setAttribute("startDate",startDate);
+        request.setAttribute("endDate",endDate);
         return "task/taskForm";
     }
 }
