@@ -26,5 +26,7 @@ public interface ProjectTaskService {
 
     int addTask(ProjectTask projectTask);
 
+    int updateTask(ProjectTask projectTask);
+
     ProjectTask getTaskById(Long id);
 }

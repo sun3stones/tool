@@ -17,13 +17,14 @@
         <input type="hidden" name="pid" th:value="${projectId}">
         <input type="hidden" name="startDate" th:value="${startDate != null}?${startDate}:''">
         <input type="hidden" name="endDate" th:value="${endDate != null}?${endDate}:''">
-        <input type="hidden" name="images">
-        <input type="hidden" name="files">
+        <input type="hidden" name="images" th:value="${task != null}?${task.images}:''">
+        <input type="hidden" name="files" th:value="${task != null}?${task.files}:''">
 
         <div class="layui-form-item">
             <label class="layui-form-label">任务名称</label>
             <div class="layui-input-block">
-                <input type="text" name="taskName" lay-verify="name" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
+                <input type="text" name="taskName" lay-verify="name" placeholder="请输入任务名称" autocomplete="off" class="layui-input"
+                       th:value="${task != null}?${task.taskName}:''">
             </div>
         </div>
         <div class="layui-form-item" pane>
@@ -51,13 +52,15 @@
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">任务描述</label>
             <div class="layui-input-block">
-                <textarea name="taskRemark" placeholder="请输入任务描述" class="layui-textarea"></textarea>
+                <textarea name="taskRemark" th:utext="${task == null}?'':${task.taskRemark}" placeholder="请输入任务描述" class="layui-textarea"></textarea>
             </div>
         </div>
         <div class="layui-form-item ">
             <button type="button" class="layui-btn layui-btn-fluid" id="uploadImg"><i class="layui-icon">&#xe60d;</i>上传图片</button>
             <blockquote class="layui-elem-quote layui-quote-nm layui-hide" style="margin-top: 10px;">
-                <div class="layui-upload-list" id="previewImg"></div>
+                <div class="layui-upload-list" id="previewImg">
+                    <img th:each="img,images:${images}" th:src="@{'/static/img/'+${img}}" th:alt="${img}" class="layui-upload-img">
+                </div>
             </blockquote>
         </div>
         <div class="layui-form-item ">
@@ -70,7 +73,14 @@
                         <th>状态</th>
                         <th>操作</th>
                     </tr></thead>
-                    <tbody id="uploadFiles"></tbody>
+                    <tbody id="uploadFiles">
+                        <tr th:each="file,files:${files}" th:filename="${file}">
+                            <td th:utext="${file}"></td>
+                            <td></td>
+                            <td>已保存</td>
+                            <td><button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button></td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
 
@@ -112,8 +122,16 @@
         });
 
         var load;
-        var imagesStr = "";
-        var filesStr = "";
+        var imagesStr = $("input[name=images]").val();
+        var filesStr = $("input[name=files]").val();
+        if(imagesStr != ""){
+            $(".layui-elem-quote").removeClass("layui-hide");
+        }
+        if(filesStr != ""){
+            $("#fileDiv").removeClass("layui-hide");
+        }
+
+
         var uploadInst = upload.render({
             elem: '#uploadImg' //绑定元素
             ,url: '/upload/uploadFile?type=img' //上传接口
@@ -179,17 +197,6 @@
                         obj.upload(index, file);
                     });
 
-                    //删除
-                    tr.find('.demo-delete').on('click', function(){
-                        debugger
-                        delete files[index]; //删除对应的文件
-                        tr.remove();
-                        var filename = tr.attr("filename");
-                        filesStr = filesStr.replace(filename+";","");
-                        $("input[name=files]").val(filesStr);
-                        uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
-                    });
-
                     uploadFilesView.append(tr);
                 });
             }
@@ -212,6 +219,17 @@
                 tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
                 tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
             }
+        });
+
+        //删除
+        $("tr").find('.demo-delete').on('click', function(){
+            //delete files[index]; //删除对应的文件
+            var tr = $(this).parent().parent();
+            tr.remove();
+            var filename = tr.attr("filename");
+            filesStr = filesStr.replace(filename+";","");
+            $("input[name=files]").val(filesStr);
+            uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
         });
 
         form.verify({
@@ -249,13 +267,23 @@
 
         //监听提交
         form.on('submit(subBtn)', function(data){
-
-            $("input[name=files]").val(filesStr);
-            //ajax 提交
-            $.post('/task/addTaskSave',data.field,function(data){
+            var url = '/task/addTaskSave';
+            if($("input[name=id]").length>0){
+                url= 'updateTaskSave';
+            }
+            $.post(url,data.field,function(data){
                 layer.closeAll();
                 if(data.errcode == 0){
-                    layer.msg("新增任务成功")
+                    layer.msg(data.msg, {
+                        icon: 1,
+                        time: 1200 //1.2秒关闭（如果不配置，默认是3秒）
+                        , shade: [0.1, '#f5f5f5']
+                    },function () {
+                        debugger
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    });
+
                 }
             });
             return false;
@@ -271,6 +299,10 @@
             layer.msg(msg,{time: 1000,offset: 'auto'});
         }
 
+        layer.photos({
+            photos: '#previewImg'
+        });
+
         function parseTime(v) {
             var date = new Date(v);
             var y = date.getFullYear();
@@ -284,27 +316,6 @@
             M = M < 10 ? ("0" + M) : M;
             var str = y + "-" + m + "-" + d /*+ " " + h + ":" + M*/;
             return str;
-        }
-
-        Date.prototype.format = function(format) {
-            var date = {
-                "M+": this.getMonth() + 1,
-                "d+": this.getDate(),
-                "h+": this.getHours(),
-                "m+": this.getMinutes(),
-                "s+": this.getSeconds(),
-                "q+": Math.floor((this.getMonth() + 3) / 3),
-                "S+": this.getMilliseconds()
-            };
-            if (/(y+)/i.test(format)) {
-                format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
-            }
-            for (var k in date) {
-                if (new RegExp("(" + k + ")").test(format)) {
-                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
-                }
-            }
-            return format;
         }
     });
 

@@ -124,6 +124,11 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     }
 
     @Override
+    public int updateTask(ProjectTask projectTask) {
+        return projectTaskMapper.updateByPrimaryKeySelective(projectTask);
+    }
+
+    @Override
     public ProjectTask getTaskById(Long id) {
         return projectTaskMapper.selectByPrimaryKey(id);
     }

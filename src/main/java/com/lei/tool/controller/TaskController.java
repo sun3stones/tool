@@ -62,12 +62,18 @@ public class TaskController extends BaseController {
     @ResponseBody
     public Map<String,Object> taskAddSave(HttpServletRequest request, ProjectTask projectTask){
         Map<String,Object> map = new HashMap<>();
-        UUser user = getUser();
-        projectTask.setCreateName(user.getUserName());
-        projectTask.setUpdateTime(new Date());
-        taskService.addTask(projectTask);
+        if(projectTask.getId() == null){//新增
+            projectTask.setUpdateTime(new Date());
+            UUser user = getUser();
+            projectTask.setCreateName(user.getUserName());
+            taskService.addTask(projectTask);
+            map.put("msg","新增任务成功");
+        }else{//修改
+            projectTask.setUpdateTime(new Date());
+            taskService.updateTask(projectTask);
+            map.put("msg","修改任务成功");
+        }
         map.put("errcode",0);
-        map.put("msg","新增任务成功");
         return map;
     }
 
@@ -76,9 +82,12 @@ public class TaskController extends BaseController {
         ProjectTask projectTask = taskService.getTaskById(id);
         List<UserDto> userList = userService.getUserList(getUserDto());
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-
         String startDate = df.format(projectTask.getStartDate());
         String endDate = df.format(projectTask.getEndDate());
+        String[] images = projectTask.getImages().split(";");
+        String[] files = projectTask.getFiles().split(";");
+        request.setAttribute("images",images);
+        request.setAttribute("files",files);
         request.setAttribute("userList",userList);
         request.setAttribute("task",projectTask);
         request.setAttribute("startDate",startDate);

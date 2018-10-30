@@ -196,17 +196,20 @@
                     , shade: 0.3 //不显示遮罩
                     , anim: 1
                     , area: ['95%', '90%']
+                    ,btn: ['保存', '取消']
+                    ,yes: function(index, layero){
+                        var body = layer.getChildFrame('body', index);//通过该对象可以获取iframe中的dom元素
+                        body.find("#submited").click();
+                        $("#taskSearch").trigger("click");
+                    },no:function(index){
+                        layer.close(index);
+                    }
                 });
             }
         });
-
-
         $(document).on('click', '#cancalBtn', function () {
             layer.closeAll();
         });
-
-
-
     });
 
 </script>
