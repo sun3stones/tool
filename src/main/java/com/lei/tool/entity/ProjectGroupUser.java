@@ -1,9 +1,11 @@
 package com.lei.tool.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Table(name = "project_group_user")
-public class ProjectGroupUser {
+public class ProjectGroupUser implements Serializable {
+    private static final long serialVersionUID = -5199020471704649709L;
     /**
      * 项目组id
      */

@@ -1,9 +1,11 @@
 package com.lei.tool.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Table(name = "u_permission")
-public class UPermission {
+public class UPermission implements Serializable {
+    private static final long serialVersionUID = -4940743571973127907L;
     @Id
     private Long id;
 

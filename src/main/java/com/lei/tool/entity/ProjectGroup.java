@@ -2,11 +2,13 @@ package com.lei.tool.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
 
 @Table(name = "project_group")
-public class ProjectGroup {
+public class ProjectGroup implements Serializable {
+    private static final long serialVersionUID = -285001716790253893L;
     @Id
     @GeneratedValue(generator = "JDBC")
     private Long id;

@@ -1,9 +1,11 @@
 package com.lei.tool.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Table(name = "u_user_role")
-public class UUserRole {
+public class UUserRole implements Serializable {
+    private static final long serialVersionUID = -7690338725271168229L;
     /**
      * 用户ID
      */

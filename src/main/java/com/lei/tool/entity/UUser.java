@@ -1,10 +1,12 @@
 package com.lei.tool.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
 
 @Table(name = "u_user")
-public class UUser {
+public class UUser implements Serializable {
+    private static final long serialVersionUID = 4931330387395941243L;
     @Id
     @GeneratedValue(generator = "JDBC")
     private Long id;

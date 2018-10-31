@@ -1,9 +1,11 @@
 package com.lei.tool.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Table(name = "u_role_permission")
-public class URolePermission {
+public class URolePermission implements Serializable {
+    private static final long serialVersionUID = -3834623107857963361L;
     /**
      * 角色ID
      */

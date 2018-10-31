@@ -1,4 +1,4 @@
-package com.lei.tool.socket;
+package com.lei.tool.utils.socket;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

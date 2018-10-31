@@ -2,12 +2,14 @@ package com.lei.tool.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.regex.Pattern;
 import javax.persistence.*;
 
 @Table(name = "project_task")
-public class ProjectTask {
+public class ProjectTask implements Serializable {
+    private static final long serialVersionUID = 1560625530288771415L;
     @Id
     private Long id;
 

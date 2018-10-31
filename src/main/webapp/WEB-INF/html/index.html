@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>首页</title>
+    <title>主页</title>
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
     <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
     <script th:src="@{/layui/layui.all.js}"></script>
@@ -21,15 +21,13 @@
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
+                <a href=""><i class="layui-icon" style="font-size: 23px;">&#xe667;</i><span class="layui-badge-dot"></span></a>
+            </li>
+            <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img th:src="${user.headImg}" class="layui-nav-img">
                     <font th:text="${user.userName}"></font>
                 </a>
-                <dl class="layui-nav-child">
-                    <dd><a href="#" data-method="inspectInfo">基本资料</a></dd>
-                    <dd><a href="#" data-method="changePassword">安全设置</a></dd>
-                    <dd><a href="#" data-method="loginOut">注销账户</a></dd>
-                </dl>
                 <dl class="layui-nav-child">
                     <dd><a href="#" data-method="inspectInfo">基本资料</a></dd>
                     <dd><a href="#" data-method="changePassword">安全设置</a></dd>
@@ -138,6 +136,9 @@
         </div>
     </form>
 </script>
+<script th:inline="javascript">
+    var userId = [[${user.id}]];
+</script>
 <script>
     //JavaScript代码区域
     layui.use(['jquery', 'layer', 'element', 'form','upload'], function () {
@@ -162,7 +163,7 @@
                 element.tabAdd('tab', {
                     title: elem.attr("name")
                     , content: '<iframe data-frameid="' + elem.attr("id") + '"  src="' + elem.attr("url") + '"  ' +
-                    'scrolling="no" frameborder="0"  class="layui-admin-iframe"  ></iframe>'
+                    'scrolling="yes" frameborder="0"  class="layui-admin-iframe"  ></iframe>'
                     , id: elem.attr("id")
                 });
                 FrameWH();
@@ -334,7 +335,7 @@
 
         //iframe高度设置
         function FrameWH() {
-            var h = $(".layui-side").height()  - $(".layui-tab-title").height()-28 ;
+            var h = $(".layui-side").height()  - $(".layui-tab-title").height()-10 ;
             $(".layui-body").css("height",$(".layui-side").height()+"px");
             $("iframe").css("height", h + "px");
         }
@@ -342,35 +343,34 @@
         $(window).resize(function () {
             FrameWH();
         });
+
+
+        var webSocket;
+        if (window.WebSocket)
+        {
+            webSocket = new WebSocket("ws://localhost:8081/socketServer/"+userId);
+
+            //连通之后的回调事件
+            webSocket.onopen = function()
+            {
+                webSocket.send("发送数据");
+            };
+
+            //接收后台服务端的消息
+            webSocket.onmessage = function (evt)
+            {
+                var received_msg = evt.data;
+                alert("数据已接收:" + received_msg);
+            };
+
+            //连接关闭的回调事件
+            webSocket.onclose = function()
+            {
+                alert("连接已关闭...");
+            };
+
+        }
     });
-
-</script>
-<script>
-    var webSocket;
-    if (window.WebSocket)
-    {
-        webSocket = new WebSocket("ws://localhost:8081/websocket");
-
-        //连通之后的回调事件
-        webSocket.onopen = function()
-        {
-            webSocket.send("发送数据");
-        };
-
-        //接收后台服务端的消息
-        webSocket.onmessage = function (evt)
-        {
-            var received_msg = evt.data;
-            alert("数据已接收:" + received_msg);
-        };
-
-        //连接关闭的回调事件
-        webSocket.onclose = function()
-        {
-            alert("连接已关闭...");
-        };
-
-    }
 
 </script>
 </body>
