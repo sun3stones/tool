@@ -11,6 +11,7 @@ import com.lei.tool.service.ProjectTaskService;
 import com.lei.tool.service.UserService;
 import com.lei.tool.utils.ObjectUtils;
 import com.lei.tool.utils.Page;
+import com.lei.tool.utils.socket.SocketServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,9 +63,9 @@ public class TaskController extends BaseController {
     @ResponseBody
     public Map<String,Object> taskAddSave(HttpServletRequest request, ProjectTask projectTask){
         Map<String,Object> map = new HashMap<>();
+        UUser user = getUser();
         if(projectTask.getId() == null){//新增
             projectTask.setUpdateTime(new Date());
-            UUser user = getUser();
             projectTask.setCreateName(user.getUserName());
             taskService.addTask(projectTask);
             map.put("msg","新增任务成功");
@@ -73,6 +74,12 @@ public class TaskController extends BaseController {
             taskService.updateTask(projectTask);
             map.put("msg","修改任务成功");
         }
+        if(user.getUserName() != projectTask.getUserName()){
+            UUser user1 = new UUser();
+            user1.setUserName(projectTask.getUserName());
+            user1 = userService.getUser(user1);
+            SocketServer.sendMessage(projectTask.getTaskName(),user1.getId().toString());
+        }
         map.put("errcode",0);
         return map;
     }
@@ -80,7 +87,9 @@ public class TaskController extends BaseController {
     @RequestMapping("taskDetail")
     public String taskDetail(HttpServletRequest request,Long id){
         ProjectTask projectTask = taskService.getTaskById(id);
-        List<UserDto> userList = userService.getUserList(getUserDto());
+        UserDto userDto = new UserDto();
+        userDto.setProjectId(projectTask.getId());
+        List<UserDto> userList = userService.getUserList(userDto);
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String startDate = df.format(projectTask.getStartDate());
         String endDate = df.format(projectTask.getEndDate());

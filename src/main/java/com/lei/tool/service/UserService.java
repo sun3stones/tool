@@ -13,7 +13,7 @@ public interface UserService {
 
     UserDto selectUser(UUser user);
 
-    int getUserCount();
+    UUser getUser(UUser user);
 
     URole getRole(UUser user);
 

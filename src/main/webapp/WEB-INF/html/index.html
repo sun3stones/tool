@@ -140,10 +140,16 @@
     var userId = [[${user.id}]];
 </script>
 <script>
+    layui.config({
+        base: '/js/'
+    }).extend({
+        notice: 'notice'
+    });
+
     //JavaScript代码区域
-    layui.use(['jquery', 'layer', 'element', 'form','upload'], function () {
+    layui.use(['jquery', 'layer', 'element', 'form','upload','notice'], function () {
         var $ = jQuery = layui.$;
-        var element = layui.element, layer = layui.layer, form = layui.form,upload = layui.upload;
+        var element = layui.element, layer = layui.layer, form = layui.form,upload = layui.upload,notice=layui.notice;
         element.init();
         element.render('nav');
 
@@ -360,7 +366,10 @@
             webSocket.onmessage = function (evt)
             {
                 var received_msg = evt.data;
-                alert("数据已接收:" + received_msg);
+                notice.init({
+                    autoClose: true,
+                    title: received_msg
+                });
             };
 
             //连接关闭的回调事件
