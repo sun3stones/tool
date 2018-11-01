@@ -50,7 +50,7 @@
 </script>
 <script type="text/html" id="statusSwitch">
     {{#  if(d.id != 1){ }}
-    <input type="checkbox" name="status" value="{{d.status}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="sexDemo" {{ d.status == 1 ? 'checked' : '' }}>
+    <input type="checkbox" name="status" value="{{d.status}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="userStatus" userId="{{d.id}}" {{ d.status == 1 ? 'checked' : '' }}>
     {{#  } }}
 </script>
 <div id="addUserBar" hidden>
@@ -228,7 +228,14 @@
             layer.closeAll();
         });
 
-        form.on('switch(sexDemo)', function(obj){
+        form.on('switch(userStatus)', function(obj){
+            debugger
+            var status = obj.elem.checked?1:0;
+            var userId = $(this).attr("userId");
+            $.post('/changeStatus',{id:userId,status:status},function(data){
+                layer.closeAll();
+                layer.msg(data.msg);
+            });
             layer.tips(obj.elem.checked?"已启用":"已禁用", obj.othis);
         });
 

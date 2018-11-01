@@ -95,6 +95,15 @@ public class UserController extends BaseController{
         return result;
     }
 
+    @RequestMapping("changeStatus")
+    @ResponseBody
+    public Map<String,Object> changeStatus(HttpServletRequest request, UserDto userDto){
+        Map<String,Object> result = new HashMap<>();
+        userService.updateUser(userDto);
+        result.put("errcode",0);
+        return result;
+    }
+
 
 
 }
