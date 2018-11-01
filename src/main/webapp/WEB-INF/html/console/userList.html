@@ -229,12 +229,10 @@
         });
 
         form.on('switch(userStatus)', function(obj){
-            debugger
             var status = obj.elem.checked?1:0;
             var userId = $(this).attr("userId");
             $.post('/changeStatus',{id:userId,status:status},function(data){
                 layer.closeAll();
-                layer.msg(data.msg);
             });
             layer.tips(obj.elem.checked?"已启用":"已禁用", obj.othis);
         });

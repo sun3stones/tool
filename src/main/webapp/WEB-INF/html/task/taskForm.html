@@ -34,6 +34,21 @@
                 <input type="radio" name="taskType" value="3" lay-verify="type" title="bug" th:checked="${task != null and task.taskType == 3}?true:false">
             </div>
         </div>
+        <div class="layui-form-item" >
+            <label class="layui-form-label">任务状态</label>
+            <div class="layui-input-block" >
+                <select name="taskStatus" lay-verify="required">
+                    <option value="0" th:selected="${task != null and task.taskStatus == 0}?true:false">待处理</option>
+                    <option value="1" th:selected="${task != null and task.taskStatus == 1}?true:false">正在处理</option>
+                    <option value="2" th:selected="${task != null and task.taskStatus == 2}?true:false">处理完成</option>
+                    <option value="3" th:selected="${task != null and task.taskStatus == 3}?true:false">正在测试</option>
+                    <option value="4" th:selected="${task != null and task.taskStatus == 4}?true:false">测试通过</option>
+                    <option value="5" th:selected="${task != null and task.taskStatus == 5}?true:false">已上线</option>
+                    <option value="6" th:selected="${task != null and task.taskStatus == 6}?true:false">挂起</option>
+                    <option value="7" th:selected="${task != null and task.taskStatus == 7}?true:false">作废</option>
+                </select>
+            </div>
+        </div>
         <div class="layui-form-item">
             <label class="layui-form-label">任务对象</label>
             <div class="layui-input-block">
