@@ -103,4 +103,17 @@ public class TaskController extends BaseController {
         request.setAttribute("endDate",endDate);
         return "task/taskForm";
     }
+
+    @RequestMapping("taskCharts")
+    public String taskCharts(HttpServletRequest request,Long id){
+        return "task/taskCharts";
+    }
+
+    @RequestMapping("taskStatistics")
+    @ResponseBody
+    public List<Map<String, Object>> taskStatistics(HttpServletRequest request,ProjectTask projectTask){
+        return taskService.taskStatistics(projectTask);
+    }
+
+
 }

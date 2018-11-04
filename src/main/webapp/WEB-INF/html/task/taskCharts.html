@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>新建任务</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
+</head>
+<body>
+    <div id="main" style="width: 580px;height:450px;">
+
+    </div>
+<script th:src="@{/layui/layui.all.js}"></script>
+<script th:src="@{/js/echarts.common.min.js}"></script>
+<script type="text/javascript">
+    layui.config({
+        base: '/js/' //此处路径请自行处理, 可以使用绝对路径
+    }).extend({
+        formSelects: 'formSelects-v4'
+    });
+
+    layui.use(['jquery', 'layer', 'element', 'table', 'form','formSelects','upload','laydate'], function () {
+        var $ = jQuery = layui.$;
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var upload = layui.upload;
+        var laydate = layui.laydate;
+        var formSelects = layui.formSelects;
+        element.init();
+        form.render();
+        formSelects.render('selectId');
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '任务统计',
+                subtext: '虚构数据',
+                left: 'center'
+            },
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                // orient: 'vertical',
+                // top: 'middle',
+                bottom: 10,
+                left: 'center',
+                data: []
+            },
+            series : [
+                {
+                    type: 'pie',
+                    radius : '65%',
+                    center: ['50%', '50%'],
+                    selectedMode: 'single',
+                    data:[
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+
+        // 异步加载数据
+        myChart.showLoading();
+        $.get('/task/taskStatistics').done(function (data) {
+            myChart.hideLoading();
+            option.series[0].data=data;
+            option.legend.data=['已处理','挂起'];
+            myChart.setOption(option);
+        });
+
+        // 使用刚指定的配置项和数据显示图表。
+        //myChart.setOption(option);
+
+        var startDate = $("input[name=startDate]").val();
+        var endDate = $("input[name=endDate]").val();
+        var dateRange = startDate==""?null:startDate+" ~ "+endDate;
+        //日期范围
+        laydate.render({
+            elem: '#laydate'
+            ,range: "~"
+            ,value:dateRange
+            ,min: parseTime()
+            ,done: function(value, date, endDate){
+                $("input[name=startDate]").val(value.split("~")[0]);
+                $("input[name=endDate]").val(value.split("~")[1]);
+            }
+        });
+
+
+        //监听提交
+        form.on('submit(subBtn)', function(data){
+            var url = '/task/addTaskSave';
+            if($("input[name=id]").length>0){
+                url= 'updateTaskSave';
+            }
+            $.post(url,data.field,function(data){
+                layer.closeAll();
+                if(data.errcode == 0){
+                    layer.msg(data.msg, {
+                        icon: 1,
+                        time: 1200 //1.2秒关闭（如果不配置，默认是3秒）
+                        , shade: [0.1, '#f5f5f5']
+                    },function () {
+                        debugger
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    });
+
+                }
+            });
+            return false;
+        });
+
+        function showLoad() {
+            return layer.msg('上传中...', {icon: 16,shade: [0.5, '#f5f5f5'],scrollbar: false,offset: 'auto', time:100000});
+        }
+        function closeLoad(index) {
+            layer.close(index);
+        }
+        function showSuccess(msg) {
+            layer.msg(msg,{time: 1000,offset: 'auto'});
+        }
+
+        layer.photos({
+            photos: '#previewImg'
+        });
+
+        function parseTime(v) {
+            var date = new Date(v);
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            m = m < 10 ? '0' + m : m;
+            var d = date.getDate();
+            d = d < 10 ? ("0" + d) : d;
+            var h = date.getHours();
+            h = h < 10 ? ("0" + h) : h;
+            var M = date.getMinutes();
+            M = M < 10 ? ("0" + M) : M;
+            var str = y + "-" + m + "-" + d /*+ " " + h + ":" + M*/;
+            return str;
+        }
+    });
+
+</script>
+</body>
+</html>

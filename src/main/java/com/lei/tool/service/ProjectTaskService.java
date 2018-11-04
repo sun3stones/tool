@@ -29,4 +29,6 @@ public interface ProjectTaskService {
     int updateTask(ProjectTask projectTask);
 
     ProjectTask getTaskById(Long id);
+
+    List<Map<String, Object>> taskStatistics(ProjectTask projectTask);
 }

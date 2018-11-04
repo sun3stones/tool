@@ -74,7 +74,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         if (userDto.getStatus() == 0) {
             throw new DisabledAccountException("账号已经禁止登录");
         } else {
-            return new SimpleAuthenticationInfo(userDto, userDto.getPassword(), getName());
+            return new SimpleAuthenticationInfo(userDto, userDto.getPassword(), "MyShiroRealm");
         }
     }
 }

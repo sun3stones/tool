@@ -90,6 +90,7 @@ public class UserController extends BaseController{
         }
         userDto.setHeadImg(img);
         userService.updateUser(userDto);
+        reloadAuthorizing(userDto);
         result.put("img",img);
         result.put("msg","修改头像成功！");
         return result;

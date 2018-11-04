@@ -132,4 +132,9 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     public ProjectTask getTaskById(Long id) {
         return projectTaskMapper.selectByPrimaryKey(id);
     }
+
+    @Override
+    public List<Map<String, Object>> taskStatistics(ProjectTask projectTask) {
+        return projectTaskMapper.taskStatistics(projectTask);
+    }
 }

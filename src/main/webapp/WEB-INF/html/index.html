@@ -322,10 +322,13 @@
                 , success: function (layero, index) {
                     layero.addClass("layui-form");
                     layero.find('.layui-layer-btn0').attr('lay-filter', 'passwordForm').attr('lay-submit', '');//将按钮弄成能提交的
+                    layero.find("img[name=head]").click(function(){
+                        layero.find("#uploadImg").attr('src',$(this).attr("src"));
+                    });
                     form.render();
                 }
                 , yes: function (index, layero) {
-                    var img = layero.find(".layui-upload-img").attr('src');
+                    var img = layero.find("#uploadImg").attr('src');
                     $.post("changeHeadImg", {img:img}, function (result) {
                         $(".layui-nav-img").attr('src', result.img);
                         $("#headImg").attr('src', result.img);
