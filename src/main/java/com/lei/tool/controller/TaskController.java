@@ -112,6 +112,8 @@ public class TaskController extends BaseController {
     @RequestMapping("taskStatistics")
     @ResponseBody
     public List<Map<String, Object>> taskStatistics(HttpServletRequest request,ProjectTask projectTask){
+        UUser user = getUser();
+        projectTask.setUserName(user.getUserName());
         return taskService.taskStatistics(projectTask);
     }
 

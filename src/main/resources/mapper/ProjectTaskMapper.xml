@@ -24,8 +24,8 @@
 
   <select id="taskStatistics" parameterType="com.lei.tool.entity.ProjectTask" resultType="java.util.Map">
     select case task_status when 0 then '待处理' when 1 then '正在处理' when 2 then '处理完成' when 3 then '正在测试'
-        when 4 then '测试通过' when 5 then '已上线' when 6 then '挂起' when 7 then '作废' end
-        as name,count(1) as value from project_task group by task_status
+        when 4 then '测试通过' when 5 then '已上线' when 6 then '挂起' when 7 then '关闭' end
+        as name,count(1) as value from project_task
     <where>
       <if test="pid != null">
         and pid = #{pid}
@@ -34,5 +34,6 @@
         and user_name = #{userName}
       </if>
     </where>
+    group by task_status order by task_status
   </select>
 </mapper>

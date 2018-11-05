@@ -9,8 +9,7 @@
     <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
 </head>
 <body>
-    <div id="main" style="width: 580px;height:450px;">
-
+    <div id="main" style="width: 480px;height:350px;">
     </div>
 <script th:src="@{/layui/layui.all.js}"></script>
 <script th:src="@{/js/echarts.common.min.js}"></script>
@@ -38,37 +37,50 @@
 
         // 指定图表的配置项和数据
         var option = {
-            title: {
-                text: '任务统计',
-                subtext: '虚构数据',
-                left: 'center'
-            },
             tooltip : {
                 trigger: 'item',
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
+                formatter: "{b} <br/>数量:{c} ;占比:({d}%)" //数据格式化，{b}x轴名称，{a}series的name，{c}value,{d}占百分比
             },
             legend: {
-                // orient: 'vertical',
-                // top: 'middle',
+                orient: 'top',
+                top: 'middle',
                 bottom: 10,
-                left: 'center',
+                left: 'right',
                 data: []
             },
             series : [
                 {
                     type: 'pie',
-                    radius : '65%',
-                    center: ['50%', '50%'],
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
                     selectedMode: 'single',
-                    data:[
-                    ],
+                    color: ['#edc063','#79d1f5','#5ed99f','#52a9f5','#56c364','#19ad44','#dcd43a','#9ba8a5'],
+                    data:[],
                     itemStyle: {
                         emphasis: {
                             shadowBlur: 10,
                             shadowOffsetX: 0,
                             shadowColor: 'rgba(0, 0, 0, 0.5)'
                         }
-                    }
+                    },
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center',
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '30',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
                 }
             ]
         };
@@ -78,7 +90,11 @@
         $.get('/task/taskStatistics').done(function (data) {
             myChart.hideLoading();
             option.series[0].data=data;
-            option.legend.data=['已处理','挂起'];
+            var names = [] ;
+            for (var i =0;i<data.length;i++){
+                names[i] = data[i].name;
+            }
+            option.legend.data=names;
             myChart.setOption(option);
         });
 
@@ -93,7 +109,6 @@
             elem: '#laydate'
             ,range: "~"
             ,value:dateRange
-            ,min: parseTime()
             ,done: function(value, date, endDate){
                 $("input[name=startDate]").val(value.split("~")[0]);
                 $("input[name=endDate]").val(value.split("~")[1]);
@@ -124,35 +139,6 @@
             });
             return false;
         });
-
-        function showLoad() {
-            return layer.msg('上传中...', {icon: 16,shade: [0.5, '#f5f5f5'],scrollbar: false,offset: 'auto', time:100000});
-        }
-        function closeLoad(index) {
-            layer.close(index);
-        }
-        function showSuccess(msg) {
-            layer.msg(msg,{time: 1000,offset: 'auto'});
-        }
-
-        layer.photos({
-            photos: '#previewImg'
-        });
-
-        function parseTime(v) {
-            var date = new Date(v);
-            var y = date.getFullYear();
-            var m = date.getMonth() + 1;
-            m = m < 10 ? '0' + m : m;
-            var d = date.getDate();
-            d = d < 10 ? ("0" + d) : d;
-            var h = date.getHours();
-            h = h < 10 ? ("0" + h) : h;
-            var M = date.getMinutes();
-            M = M < 10 ? ("0" + M) : M;
-            var str = y + "-" + m + "-" + d /*+ " " + h + ":" + M*/;
-            return str;
-        }
     });
 
 </script>
