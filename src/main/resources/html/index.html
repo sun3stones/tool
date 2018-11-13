@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>主页</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
+    <script th:src="@{/layui/layui.all.js}"></script>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo" style="font-weight: bold">project Tools</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left" lay-filter="menu1">
+            <li class="layui-nav-item" th:each="menu1,meanuSta:${menuList1}">
+                <a href="#" th:id="${menu1.id}" th:utext="${menu1.content}"></a>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img th:src="${user.headImg}" class="layui-nav-img">
+                    <font th:text="${user.userName}"></font>
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="#" data-method="inspectInfo">基本资料</a></dd>
+                    <dd><a href="#" data-method="changePassword">安全设置</a></dd>
+                    <dd><a href="#" data-method="loginOut">注销账户</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="menu2">
+                <li class="layui-nav-item" th:each="menu2,meanuSta:${menuList2}" th:parentid="${menu2.parentId}">
+                    <a href="#" th:name="${menu2.content}" th:utext="${menu2.content}" th:id="${menu2.id}"
+                       th:url="${menu2.url}" th:parentid="${menu2.parentId}"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <div class="layui-tab layui-tab-card" lay-filter="tab" lay-allowclose="true">
+            <ul class="layui-tab-title" lay-filter="tab">
+            </ul>
+            <div class="layui-tab-content">
+            </div>
+        </div>
+
+    </div>
+
+    <!--<div class="layui-footer">
+        &lt;!&ndash; 底部固定区域 &ndash;&gt;
+        © layui.com - 底部固定区域
+    </div>-->
+
+    <div class="layui-hide">
+        <div id="info" layui-btn-fluid>
+            <div class="layui-form-item layui-inline" style="margin:4% 33%">
+                <img th:src="${user.headImg}" class="layui-circle" style="width:100px;height:100px;">
+            </div>
+            <form class="layui-form layui-form-pane layui-site-20" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" autocomplete="off" th:value="${user.userName}"
+                               class="layui-input" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item ">
+                    <label class="layui-form-label">角色</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" autocomplete="off" th:value="${role.name}" class="layui-input"
+                               disabled>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div id="passwordDiv" layui-btn-fluid>
+            <form id="passwordForm" class="layui-form layui-form-pane layui-site-20" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">输入原密码</label>
+                    <div class="layui-input-block">
+                        <input type="password" name="password" lay-verify="password" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item ">
+                    <label class="layui-form-label">输入新密码</label>
+                    <div class="layui-input-block">
+                        <input type="password" name="newPassword" lay-verify="password" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item ">
+                    <label class="layui-form-label">确认新密码</label>
+                    <div class="layui-input-block">
+                        <input type="password" name="newPassword1" lay-verify="password1" class="layui-input">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+<script id="headImgDiv" type="text/html">
+    <form id="headImgForm" class="layui-form layui-form-pane layui-site-20" action="">
+        <div >
+            <img class="layui-upload-img" style="margin-left:33%" id="uploadImg" th:src="${user.headImg}">
+        </div>
+        <div class="site-demo-flow">
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head1.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head2.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head3.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head4.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head5.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head6.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head7.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head8.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head9.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head10.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head11.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head12.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head13.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head14.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head15.png"/>
+            <img name="head" style="width: 70px;height: 70px" src="/images/head/head16.png"/>
+        </div>
+    </form>
+</script>
+<script th:inline="javascript">
+    var userId = [[${user.id}]];
+</script>
+<script>
+    layui.config({
+        base: '/js/'
+    }).extend({
+        notice: 'notice'
+    });
+
+    //JavaScript代码区域
+    layui.use(['jquery', 'layer', 'element', 'form','upload','notice'], function () {
+        var $ = jQuery = layui.$;
+        var element = layui.element, layer = layui.layer, form = layui.form,upload = layui.upload,notice=layui.notice;
+        element.init();
+        element.render('nav');
+
+
+        //监听菜单
+        element.on('nav(menu1)', function (elem) {
+            $(".layui-nav-tree").children("li").each(function (i, n) {
+                if (elem.attr("id") == $(n).attr("parentid")) {
+                    $(n).show();
+                } else {
+                    $(n).hide();
+                }
+            });
+        });
+        element.on('nav(menu2)', function (elem) {
+            if ($("li[lay-id='" + elem.attr("id") + "']").length == 0) {
+                element.tabAdd('tab', {
+                    title: elem.attr("name")
+                    , content: '<iframe data-frameid="' + elem.attr("id") + '"  src="' + elem.attr("url") + '"  ' +
+                    'scrolling="yes" frameborder="0"  class="layui-admin-iframe"  ></iframe>'
+                    , id: elem.attr("id")
+                });
+                FrameWH();
+            }
+            element.tabDelete('tab', 'timeLine');//增加新选项卡时删除时间线
+            element.tabChange('tab', elem.attr("id"));
+        });
+        //触发事件
+        var active = {
+            inspectInfo: function (othis) {
+                var type = othis.data('type')
+                    , text = othis.text();
+                layer.open({
+                    type: 1
+                    , offset: type
+                    , id: 'layerDemo' + type //防止重复弹出
+                    , content: $("#info").html()
+                    , btn: '确定'
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0.3 //不显示遮罩
+                    , anim: 1
+                    , success: function (layero, index) {
+                        layero.addClass("layui-form");
+                        layero.find('img').attr('id', 'headImg').attr('src',$('.layui-nav-img').attr('src'));
+                        form.render();
+                    }
+                    , yes: function (index, layero) {
+                        layer.closeAll();
+                    }
+                });
+            },
+            changePassword: function (othis) {
+                var type = othis.data('type')
+                    , text = othis.text();
+                layer.open({
+                    type: 1
+                    , title: '修改密码'
+                    , offset: type
+                    , id: 'layerDemo' + type //防止重复弹出
+                    , content: $("#passwordDiv").html()
+                    , btn: ['保存', '取消']
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0.3 //不显示遮罩
+                    , anim: 1
+                    , success: function (layero, index) {
+                        layero.addClass("layui-form");
+                        layero.find('.layui-layer-btn0').attr('lay-filter', 'passwordForm').attr('lay-submit', '');//将按钮弄成能提交的
+                        form.render();
+                    }
+                    , yes: function () {
+                        form.on('submit(passwordForm)', function (data) {
+                            $.post("console/changePassword", data.field, function (result) {
+                                layer.msg(result.msg);
+                            });
+                            return false;
+                        });
+                    }
+                    , no: function () {
+                        layer.closeAll();
+                    }
+                });
+            },
+            loginOut:function(othis){
+                layer.confirm('确定注销当前账户吗？', {
+                    icon: 3,
+                    time: 10000, //20s后自动关闭
+                    shade: [0.1, '#f5f5f5'],
+                    btn: ['确定', '取消'],
+                    yes: function () {
+                        location.href="/logout";
+                    }
+                });
+
+            }
+        }
+
+        form.verify({
+            password: [
+                /^[\S]{6,12}$/
+                , '密码必须6到12位，且不能出现空格'
+            ],
+            password1: function (value, item) {
+                if (value != $("input[name='newPassword1']")[1].value) {
+                    return "新密码输入不一致";
+                }
+            }
+        });
+
+
+        $('a').on('click', function () {
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+
+        //初始化点击第一个菜单
+        $("ul li:first").addClass("layui-this");
+        $(".layui-nav-tree").children("li").each(function (i, n) {
+            if ($("ul li:first").find("a").attr("id") == $(n).attr("parentid")) {
+                $(n).show();
+            } else {
+                $(n).hide();
+            }
+        });
+        initTab();
+
+        element.on('tab(tab)', function(data){
+            var id = $(".layui-tab-title").find(".layui-this").attr("lay-id");
+            var parentid = $("#"+id).attr("parentid");
+            $(".layui-nav").find("*").removeClass("layui-this");
+            $("#"+id).addClass("layui-this");
+            $("#"+id).parent().addClass("layui-this");
+            $("#"+parentid).addClass("layui-this");
+            $("#"+parentid).parent().addClass("layui-this");
+            $(".layui-nav-tree").children("li").each(function (i, n) {
+                if (parentid == $(n).attr("parentid")) {
+                    $(n).show();
+                } else {
+                    $(n).hide();
+                }
+            });
+        });
+
+        element.on('tabDelete(tab)', function(data){
+            if($(".layui-tab-item").length == 0){
+                initTab();
+            }
+        });
+
+        function initTab(){
+            element.tabAdd('tab', {
+                title: '项目时间线'
+                , content: '<iframe data-frameid="timeLine"  src="console/timeLine"  ' +
+                'scrolling="yes" frameborder="0"  class="layui-admin-iframe" ></iframe>'
+                , id: 'timeLine'
+            });
+            FrameWH();
+            element.tabChange('tab', 'timeLine');
+        }
+
+        $(document).on('click', '#headImg', function () {
+            layer.open({
+                type: 1
+                , title: '修改头像'
+                , id: 'layerHeadImg' //防止重复弹出
+                , content: $("#headImgDiv").html()
+                , btn: ['保存', '取消']
+                , btnAlign: 'c' //按钮居中
+                , shade: 0.3 //不显示遮罩
+                , anim: 1
+                , success: function (layero, index) {
+                    layero.addClass("layui-form");
+                    layero.find('.layui-layer-btn0').attr('lay-filter', 'passwordForm').attr('lay-submit', '');//将按钮弄成能提交的
+                    layero.find("img[name=head]").click(function(){
+                        layero.find("#uploadImg").attr('src',$(this).attr("src"));
+                    });
+                    form.render();
+                }
+                , yes: function (index, layero) {
+                    var img = layero.find("#uploadImg").attr('src');
+                    $.post("changeHeadImg", {img:img}, function (result) {
+                        $(".layui-nav-img").attr('src', result.img);
+                        $("#headImg").attr('src', result.img);
+                        layer.closeAll();
+                        layer.msg(result.msg,{icon:1,shade: [0.1, '#f5f5f5']});
+                    });
+                }
+                , no: function (index, layero) {
+                    layer.close(index);
+                }
+            });
+        });
+
+        //iframe高度设置
+        function FrameWH() {
+            var h = $(".layui-side").height()  - $(".layui-tab-title").height()-10 ;
+            $(".layui-body").css("height",$(".layui-side").height()+"px");
+            $("iframe").css("height", h + "px");
+        }
+
+        $(window).resize(function () {
+            FrameWH();
+        });
+
+
+        var webSocket;
+        if (window.WebSocket)
+        {
+            webSocket = new WebSocket("ws://localhost:8081/socketServer/"+userId);
+
+            //连通之后的回调事件
+            webSocket.onopen = function()
+            {
+                webSocket.send("发送数据");
+            };
+
+            //接收后台服务端的消息
+            webSocket.onmessage = function (evt)
+            {
+                var received_msg = evt.data;
+                notice.init({
+                    autoClose: true,
+                    title: received_msg
+                });
+            };
+
+            //连接关闭的回调事件
+            webSocket.onclose = function()
+            {
+                alert("连接已关闭...");
+            };
+
+        }
+    });
+
+</script>
+</body>
+</html>

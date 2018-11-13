@@ -8,9 +8,13 @@ import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 public class BaseController {
+
+    public Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public UserDto getUserDto(){
         return (UserDto) SecurityUtils.getSubject().getPrincipal();

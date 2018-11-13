@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>用户管理</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
+    <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/js/myjs/myjs.js}"></script>
+    <script th:src="@{/layui/layui.all.js}"></script>
+</head>
+<body style="overflow-y: scroll;">
+<div >
+
+    <div class="layui-card" >
+        <div class="layui-form layui-card-header layui-border-auto">
+            <blockquote class="layui-elem-quote layui-quote-nm">
+                用户名称：
+                <div class="layui-inline">
+                    <input class="layui-input" id="userName" autocomplete="off">
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" data-type="reload" id="userSearch"><i class="layui-icon layui-icon-search"></i></button>
+                    <shiro:hasPermission name="addUser">
+                        <button class="layui-btn" data-type="reload" id="adduser"><i class="layui-icon layui-icon-add-1"></i></button>
+                    </shiro:hasPermission>
+                </div>
+             </blockquote>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-form-item"  id="userlist" lay-filter="userlist"></table>
+        </div>
+
+    </div>
+
+
+</div>
+</body>
+<script type="text/html" id="userBar">
+    {{#  if(d.id != 1){ }}
+    <shiro:hasPermission name="updateUser">　
+    <a class="layui-btn layui-btn-xs" lay-event="edit" ><i class="layui-icon layui-icon-edit"></i></a>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="deleteUser">　
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i></a>
+    </shiro:hasPermission>
+    {{#  } }}
+</script>
+<script type="text/html" id="statusSwitch">
+    {{#  if(d.id != 1){ }}
+    <input type="checkbox" name="status" value="{{d.status}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="userStatus" userId="{{d.id}}" {{ d.status == 1 ? 'checked' : '' }}>
+    {{#  } }}
+</script>
+<div id="addUserBar" hidden>
+    <form class="layui-form layui-form-pane" id="adduserForm">
+        <input type="hidden" name="id">
+        <div class="layui-site-20">
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户名称</label>
+                <div class="layui-inline">
+                    <input type="text" name="userName" required lay-verify="name"  placeholder="请输入用户名称" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">联系方式</label>
+                <div class="layui-inline">
+                    <input type="text"  name="email"    placeholder="请输入联系方式" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户角色</label>
+                <div class="layui-inline">
+                    <select name="roleId" id="roleId" lay-verify="required">
+                        <option value="">请选择角色</option>
+                    </select>
+                </div>
+            </div>
+           <!-- <div class="layui-form-item">
+                <label class="layui-form-label">所属项目</label>
+                <div class="layui-inline">
+                    <select name="projectId" id="projectId" >
+                        <option value="">请选择项目</option>
+                    </select>
+                </div>
+            </div>-->
+        </div>
+        <div class="layui-btn-container" style="margin-top: 10px;margin-left: 110px">
+            <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="subBtn">保存</button>
+            <button class="layui-btn layui-btn-sm layui-btn-primary"  id="cancalBtn">取消</button>
+        </div>
+    </form>
+</div>
+<script>
+    layui.use(['jquery', 'layer', 'element','table','form'], function(){
+        var $ = jQuery = layui.$;
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        //方法级渲染
+        table.render({
+            elem: '#userlist'
+            ,id:'userTable'
+            ,url: '/console/userDataList/' //数据接口
+            ,page: true //开启分页
+            ,cols: [
+                [ //表头
+                    {type: 'numbers', title: '序号',width:60},
+                    {field: 'userName', title: '用户名',unresize:true},
+                    {field: 'roleName', title: '用户角色',unresize:true},
+                    {field: 'email', title: '联系方式',unresize:true},
+                    {field: 'status', title: '用户状态',unresize:true,templet: '#statusSwitch'},
+                    {fixed: 'right', title:'操作',unresize:true, toolbar: '#userBar', width:150}
+                ]
+            ]
+        });
+
+
+        var $ = layui.$, active = {
+            reload: function(){
+                var userName = $('#userName').val();
+
+                //执行重载
+                table.reload('userTable', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        userName: userName
+                    }
+                });
+            }
+        };
+
+        $('#userSearch').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        table.on('tool(userlist)', function(obj){
+            var data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'del'){
+                layer.confirm('确定删除‘'+ data.userName+'’用户吗？', function(index){
+                    $.post('/console/deleteUser',data,function(data){
+                        layer.closeAll();
+                        layer.msg(data.msg);
+                        obj.del();
+                    });
+                    layer.close(index);
+                    return false;
+                });
+            } else if(obj.event === 'edit'){
+                layer.open({
+                    type: 1
+                    ,offset: 'auto'
+                    ,title: '修改用户'
+                    ,id: 'layerUser'
+                    ,content: $('#addUserBar').html()
+                    ,btnAlign: 'c' //按钮居中
+                    ,shade: 0.3 //不显示遮罩
+                    ,anim:1
+                    ,resize: false
+                });
+                $("input[name='userName']").val(obj.data.userName);
+                $("input[name='email']").val(obj.data.email);
+                $("input[name='id']").val(obj.data.id);
+                $("#roleId option").each(function() {
+                    if ($(this).val() == obj.data.roleId) {
+                        $(this).attr("selected", "selected");
+                    }
+                });
+                $("#projectId option").each(function() {
+                    if ($(this).val() == obj.data.projectId) {
+                        $(this).attr("selected", "selected");
+                    }
+                });
+                form.render();
+            }
+        });
+
+        $("#adduser").click(function(){
+            layer.open({
+                type: 1
+                ,offset: 'auto'
+                ,title: '新增用户'
+                ,id: 'layeruser'
+                ,content: $('#addUserBar').html()
+                ,btnAlign: 'c' //按钮居中
+                ,shade: 0.3 //不显示遮罩
+                ,anim:1
+                ,resize: false
+            });
+            form.render();
+        });
+
+        form.verify({
+            name: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "用户名不能为空";
+                }
+                if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                    return '用户名不能有特殊字符';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '用户名首尾不能出现下划线\'_\'';
+                }
+                if(/^\d+\d+\d$/.test(value)){
+                    return '用户名不能全为数字';
+                }
+            }
+
+        });
+
+        //监听提交
+        form.on('submit(subBtn)', function(data){
+            //ajax 提交
+            $.post('/console/addUser',data.field,function(data){
+                layer.closeAll();
+                layer.msg(data.msg);
+                $("#userSearch").click();
+            });
+            return false;
+        });
+
+        $(document).on('click','#cancalBtn',function(){
+            layer.closeAll();
+        });
+
+        form.on('switch(userStatus)', function(obj){
+            var status = obj.elem.checked?1:0;
+            var userId = $(this).attr("userId");
+            $.post('/changeStatus',{id:userId,status:status},function(data){
+                layer.closeAll();
+            });
+            layer.tips(obj.elem.checked?"已启用":"已禁用", obj.othis);
+        });
+
+        initSelect("[[@{/comm/initRoleSelect}]]",$("#roleId"),null);
+        //initSelect("[[@{/comm/initProjectSelect}]]",$("#projectId"),null);
+        form.render();
+    });
+
+</script>
+</html>

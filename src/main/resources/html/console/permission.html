@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>角色管理</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
+    <script th:src="@{/layui/layui.all.js}"></script>
+</head>
+<body style="background-color: #f2f2f2">
+<form class="layui-form">
+    <div style="padding: 10px;" >
+        <fieldset class="layui-elem-field" style="background-color: #ffffff" th:each="menu1,meanuSta:${menuList1}">
+            <legend>
+                <input type="checkbox" lay-filter="roleCheck" th:level="${menu1.level}" th:id="${menu1.id}" th:title="${menu1.content}"
+                       th:checked="${menu1.sort==1}" th:operable="${menu1.isMenu}">
+            </legend>
+            <div class="layui-field-box">
+                <table class="layui-table">
+                    <col width="100">
+                    <col>
+                    <tbody>
+                        <tr th:each="menu2,meanuSta:${menuList2}" th:if="${menu1.id eq menu2.parentId}">
+                            <td><input type="checkbox" lay-filter="roleCheck" th:id="${menu2.id}" th:title="${menu2.content}" th:operable="${menu2.isMenu}"
+                                       th:level="${menu2.level}" th:checked="${menu2.sort==1}" th:parentId="${menu2.parentId}"></td>
+                            <td><input type="checkbox" lay-skin="primary" lay-filter="roleCheck" th:if="${menu2.id eq func.parentId}" th:id="${func.id}"
+                                       th:title="${func.content}" th:each="func,meanuSta:${funcList3}" th:checked="${func.sort==1}" th:level="${func.level}"
+                                        th:parentId="${func.parentId}" th:grandId="${menu2.parentId}" th:operable="${func.isMenu}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+    <input type="hidden" id="roleId" th:value="${roleId}" >
+</form>
+
+</body>
+<script>
+    layui.use(['jquery', 'layer', 'element','form'], function(){
+        var $ = jQuery = layui.$;
+        var form = layui.form;
+
+
+        $("input[type='checkbox']").each(function(){
+           if(!$(this).attr('operable')==2 || $("#roleId").val() == 1){
+               $(this).attr("disabled","disabled");
+           }
+        });
+        form.render();
+
+        form.on('checkbox(roleCheck)', function(data){
+            var obj = data.elem;
+            if(obj.attributes.level.value == 1){//一级菜单选中下面三级权限
+                $("input[type='checkbox'][grandId='"+obj.id+"']").prop("checked",obj.checked);
+            }
+            if(obj.attributes.level.value <3){//一二级菜单选中下级权限
+                $("input[type='checkbox'][parentId='"+obj.id+"']").prop("checked",obj.checked);
+            }
+            if(obj.attributes.level.value ==3 && obj.checked){//三级选中父权限
+                $("#"+obj.attributes.grandId.value).prop("checked",true);
+                $("#"+obj.attributes.parentId.value).prop("checked",true);
+            }
+            if(obj.attributes.level.value ==2 && obj.checked){//二级选中父权限
+                $("#"+obj.attributes.parentId.value).prop("checked",true);
+            }
+            form.render();
+        });
+
+
+    });
+
+
+
+
+</script>
+</html>

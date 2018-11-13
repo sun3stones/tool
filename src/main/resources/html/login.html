@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>登录</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/login.css}"/>
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/js/md5.js}"></script>
+    <script language="JavaScript">
+        if (window != top)
+            top.location.href = location.href;
+    </script>
+</head>
+
+<body>
+<div class="main">
+    <div class="login">
+        <h1>Task Manager</h1>
+        <div class="inset">
+            <!--start-main-->
+            <form class="layui-form" id="loginForm" method="post">
+                <div>
+                    <span><input type="text" class="textbox" id="active" placeholder="用户名" name="userName"
+                                 lay-verify="userName"></span>
+                </div>
+                <div>
+                    <span><input type="password" class="password" placeholder="密码" name="password"
+                                 lay-verify="password"></span>
+                </div>
+                <!--<div class="layui-form-item" pane="">
+                    <input type="checkbox" name="rememberMe" lay-skin="switch" lay-text="记住|不记住" lay-filter="switchBtn">
+                    <div class="layui-unselect layui-form-switch" lay-skin="_switch"><em></em><i></i></div>
+                </div>-->
+                <div>
+                    <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="subBtn"
+                            style="background-color: #66e6c7;">登录
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <!--//end-main-->
+</div>
+</body>
+<script th:inline="javascript">
+    var msg = [[${msg}]];
+</script>
+<script type="text/javascript" >
+    layui.use(['jquery','layer', 'form'], function () {
+        var $ = jQuery = layui.$;
+        var layer = layui.layer, form = layui.form;
+        form.render();
+        if(msg != null && msg != ""){
+            layer.msg(msg);
+        }
+        form.verify({
+            userName: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "用户名不能为空";
+                }
+                if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                    return '用户名不能有特殊字符';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '用户名首尾不能出现下划线\'_\'';
+                }
+                /*if(/^\d+\d+\d$/.test(value)){
+                    return '用户名不能全为数字';
+                }*/
+            }
+            , password: [
+                /^[\S]{6,12}$/
+                , '密码必须6到12位，且不能出现空格'
+            ]
+        });
+
+        //监听提交
+        form.on('submit(subBtn)', function (data) {
+            var load = layer.load(1, {time: 5000});
+            $.post('/loginAction',data.field,function(data){
+                layer.close(load);
+                if(data.errcode == 0) {
+                    layer.msg(data.msg, {
+                        icon: 1,
+                        time: 1200 //1.2秒关闭（如果不配置，默认是3秒）
+                        , shade: [0.1, '#f5f5f5'],
+                        scrollbar: false,
+                        offset: 'auto'
+                    }, function () {
+                        window.location.href="/index";
+                    });
+                }else{
+                    layer.msg(data.msg, {
+                        icon: 2,
+                        time: 1500 //2秒关闭（如果不配置，默认是3秒）
+                        , shade: [0.1, '#f5f5f5'],
+                        scrollbar: false,
+                        offset: 'auto'
+                    });
+                }
+            });
+            return false;
+        });
+
+    });
+
+
+</script>
+</body>
+</html>

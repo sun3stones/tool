@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>新建任务</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
+</head>
+<body>
+    <div id="main" style="width: 480px;height:350px;">
+    </div>
+<script th:src="@{/layui/layui.all.js}"></script>
+<script th:src="@{/js/echarts.common.min.js}"></script>
+<script type="text/javascript">
+    layui.config({
+        base: '/js/' //此处路径请自行处理, 可以使用绝对路径
+    }).extend({
+        formSelects: 'formSelects-v4'
+    });
+
+    layui.use(['jquery', 'layer', 'element', 'table', 'form','formSelects','upload','laydate'], function () {
+        var $ = jQuery = layui.$;
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var upload = layui.upload;
+        var laydate = layui.laydate;
+        var formSelects = layui.formSelects;
+        element.init();
+        form.render();
+        formSelects.render('selectId');
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // 指定图表的配置项和数据
+        var option = {
+            tooltip : {
+                trigger: 'item',
+                formatter: "{b} <br/>数量:{c} ;占比:({d}%)" //数据格式化，{b}x轴名称，{a}series的name，{c}value,{d}占百分比
+            },
+            legend: {
+                orient: 'top',
+                top: 'middle',
+                bottom: 10,
+                left: 'right',
+                data: []
+            },
+            series : [
+                {
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    selectedMode: 'single',
+                    color: ['#edc063','#79d1f5','#5ed99f','#52a9f5','#56c364','#19ad44','#dcd43a','#9ba8a5'],
+                    data:[],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center',
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '30',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                }
+            ]
+        };
+
+        // 异步加载数据
+        myChart.showLoading();
+        $.get('/task/taskStatistics').done(function (data) {
+            myChart.hideLoading();
+            option.series[0].data=data;
+            var names = [] ;
+            for (var i =0;i<data.length;i++){
+                names[i] = data[i].name;
+            }
+            option.legend.data=names;
+            myChart.setOption(option);
+        });
+
+        // 使用刚指定的配置项和数据显示图表。
+        //myChart.setOption(option);
+
+        var startDate = $("input[name=startDate]").val();
+        var endDate = $("input[name=endDate]").val();
+        var dateRange = startDate==""?null:startDate+" ~ "+endDate;
+        //日期范围
+        laydate.render({
+            elem: '#laydate'
+            ,range: "~"
+            ,value:dateRange
+            ,done: function(value, date, endDate){
+                $("input[name=startDate]").val(value.split("~")[0]);
+                $("input[name=endDate]").val(value.split("~")[1]);
+            }
+        });
+
+
+        //监听提交
+        form.on('submit(subBtn)', function(data){
+            var url = '/task/addTaskSave';
+            if($("input[name=id]").length>0){
+                url= 'updateTaskSave';
+            }
+            $.post(url,data.field,function(data){
+                layer.closeAll();
+                if(data.errcode == 0){
+                    layer.msg(data.msg, {
+                        icon: 1,
+                        time: 1200 //1.2秒关闭（如果不配置，默认是3秒）
+                        , shade: [0.1, '#f5f5f5']
+                    },function () {
+                        debugger
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    });
+
+                }
+            });
+            return false;
+        });
+    });
+
+</script>
+</body>
+</html>

@@ -5,7 +5,7 @@ import com.lei.tool.entity.UPermission;
 import com.lei.tool.entity.URole;
 import com.lei.tool.entity.UUser;
 import com.lei.tool.service.UserService;
-import com.lei.tool.utils.StringUtils;
+import com.lei.tool.utils.DateUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class UserController extends BaseController{
@@ -28,7 +25,7 @@ public class UserController extends BaseController{
 
     @RequestMapping("/login")
     public String login(){
-        return "/login";
+        return "login";
     }
 
     @RequestMapping(value={"/loginAction"})
@@ -42,6 +39,7 @@ public class UserController extends BaseController{
             SecurityUtils.getSubject().login(token);
             errcode = 0;
             msg = "登录成功！";
+            logger.info(user.getUserName()+"用户登录于"+ DateUtil.parseDateToStr(new Date(),DateUtil.DATE_TIME_FORMAT_YYYY_MM_DD_HH_MI_SS ));
             return result;
         } catch (UnknownAccountException  ua){
             msg = "用户不存在！";
@@ -93,6 +91,7 @@ public class UserController extends BaseController{
         reloadAuthorizing(userDto);
         result.put("img",img);
         result.put("msg","修改头像成功！");
+        logger.info(userDto.getUserName()+"用户修改头像");
         return result;
     }
 

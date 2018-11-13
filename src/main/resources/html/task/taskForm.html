@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>新建任务</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/formSelects-v4.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
+    <script th:src="@{/layui/layui.all.js}"></script>
+</head>
+<body>
+<div style="padding: 15px;">
+    <form class="layui-form layui-form-pane" action="">
+        <button id="submited" class="layui-btn layui-hide" lay-submit lay-filter="subBtn" ></button>
+        <input type="hidden" name="id" th:if="${task}" th:value="${task.id}">
+        <input type="hidden" name="pid" th:value="${projectId}">
+        <input type="hidden" name="startDate" th:value="${startDate != null}?${startDate}:''">
+        <input type="hidden" name="endDate" th:value="${endDate != null}?${endDate}:''">
+        <input type="hidden" name="images" th:value="${task != null}?${task.images}:''">
+        <input type="hidden" name="files" th:value="${task != null}?${task.files}:''">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="taskName" lay-verify="name" placeholder="请输入任务名称" autocomplete="off" class="layui-input"
+                       th:value="${task != null}?${task.taskName}:''">
+            </div>
+        </div>
+        <div class="layui-form-item" pane>
+            <label class="layui-form-label">任务类型</label>
+            <div class="layui-input-block" >
+                <input type="radio" name="taskType" value="1" lay-verify="type" title="需求" th:checked="${task != null and task.taskType == 1}?true:false">
+                <input type="radio" name="taskType" value="3" lay-verify="type" title="bug" th:checked="${task != null and task.taskType == 3}?true:false">
+            </div>
+        </div>
+        <div class="layui-form-item" >
+            <label class="layui-form-label">任务状态</label>
+            <div class="layui-input-block" >
+                <select name="taskStatus" lay-verify="required">
+                    <option value="0" th:selected="${task != null and task.taskStatus == 0}?true:false">待处理</option>
+                    <option value="1" th:selected="${task != null and task.taskStatus == 1}?true:false">正在处理</option>
+                    <option value="2" th:selected="${task != null and task.taskStatus == 2}?true:false">处理完成</option>
+                    <option value="3" th:selected="${task != null and task.taskStatus == 3}?true:false">正在测试</option>
+                    <option value="4" th:selected="${task != null and task.taskStatus == 4}?true:false">测试通过</option>
+                    <option value="5" th:selected="${task != null and task.taskStatus == 5}?true:false">已上线</option>
+                    <option value="6" th:selected="${task != null and task.taskStatus == 6}?true:false">挂起</option>
+                    <option value="7" th:selected="${task != null and task.taskStatus == 7}?true:false">关闭</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务对象</label>
+            <div class="layui-input-block">
+                <select name="userName" xm-select="selectId" lay-verify="user" xm-select-search-type="title" xm-select-skin="primary" xm-select-radio xm-select-search>
+                    <option th:each="user,userList:${userList}" th:value="${user.userName}" th:utext="${user.userName}"
+                            th:selected="${task != null and task.userName == user.userName}?true:false"></option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">任务排期</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" lay-verify="date" id="laydate" placeholder=" - ">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">任务描述</label>
+            <div class="layui-input-block">
+                <textarea name="taskRemark" th:utext="${task == null}?'':${task.taskRemark}" placeholder="请输入任务描述" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <button type="button" class="layui-btn layui-btn-fluid" id="uploadImg"><i class="layui-icon">&#xe60d;</i>上传图片</button>
+            <blockquote class="layui-elem-quote layui-quote-nm layui-hide" style="margin-top: 10px;">
+                <div class="layui-upload-list" id="previewImg">
+                    <img th:each="img,images:${images}" th:src="@{'/static/img/'+${img}}" th:alt="${img}" class="layui-upload-img">
+                </div>
+            </blockquote>
+        </div>
+        <div class="layui-form-item ">
+            <button type="button" class="layui-btn layui-btn-fluid" id="selectFiles"><i class="layui-icon">&#xe60a;</i>上传文件</button>
+            <div class="layui-upload-list layui-hide" id="fileDiv">
+                <table class="layui-table">
+                    <thead>
+                    <tr><th>文件名</th>
+                        <th>大小</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr></thead>
+                    <tbody id="uploadFiles">
+                        <tr th:each="file,files:${files}" th:filename="${file}">
+                            <td th:utext="${file}"></td>
+                            <td></td>
+                            <td>已保存</td>
+                            <td><button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    layui.config({
+        base: '/js/' //此处路径请自行处理, 可以使用绝对路径
+    }).extend({
+        formSelects: 'formSelects-v4'
+    });
+
+    layui.use(['jquery', 'layer', 'element', 'table', 'form','formSelects','upload','laydate'], function () {
+        var $ = jQuery = layui.$;
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var upload = layui.upload;
+        var laydate = layui.laydate;
+        var formSelects = layui.formSelects;
+        element.init();
+        form.render();
+        formSelects.render('selectId');
+
+        var startDate = $("input[name=startDate]").val();
+        var endDate = $("input[name=endDate]").val();
+        var dateRange = startDate==""?null:startDate+" ~ "+endDate;
+        //日期范围
+        laydate.render({
+            elem: '#laydate'
+            ,range: "~"
+            ,value:dateRange
+            ,min: parseTime()
+            ,done: function(value, date, endDate){
+                $("input[name=startDate]").val(value.split("~")[0]);
+                $("input[name=endDate]").val(value.split("~")[1]);
+            }
+        });
+
+        var load;
+        var imagesStr = $("input[name=images]").val();
+        var filesStr = $("input[name=files]").val();
+        if(imagesStr != ""){
+            $(".layui-elem-quote").removeClass("layui-hide");
+        }
+        if(filesStr != ""){
+            $("#fileDiv").removeClass("layui-hide");
+        }
+
+
+        var uploadInst = upload.render({
+            elem: '#uploadImg' //绑定元素
+            ,url: '/upload/uploadFile?type=img' //上传接口
+            ,size:2048
+            ,auto:false
+            ,choose:function(obj){
+                obj.preview(function(index, file, result){
+                    var flag = true;
+                    $("#previewImg").find("img").each(function(){
+                            if(this.alt.substr(0,this.alt.lastIndexOf("_")) == file.name.substr(0,file.name.lastIndexOf("."))){
+                                flag = false;
+                            }
+                        }
+                    );
+                    if(flag){
+                        obj.upload(index, file);//文件上传
+                    }
+
+                });
+            }
+            ,before:function(){
+                load = showLoad();
+            }
+            ,done: function(res){
+                if(res.errcode == 0){
+                    closeLoad(load);
+                    $(".layui-elem-quote").removeClass("layui-hide");
+                    $('#previewImg').append('<img src="/static/img/'+ res.filename +'" alt="'+ res.filename +'" class="layui-upload-img">');
+                    imagesStr += res.filename+";";
+                    $("input[name=images]").val(imagesStr);
+                }
+            }
+            ,error: function(){
+                //请求异常回调
+            }
+        });
+
+        //多文件列表示例
+        var uploadFilesView = $('#uploadFiles')
+            ,uploadListIns = upload.render({
+            elem: '#selectFiles'
+            ,url: '/upload/uploadFile?type=file'
+            ,accept: 'file'
+            ,multiple: true
+            ,auto: false
+            ,choose: function(obj){
+                var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+                //读取本地文件
+                obj.preview(function(index, file, result){
+                    obj.upload(index, file);//文件上传
+                    var tr = $(['<tr id="upload-'+ index +'">'
+                        ,'<td>'+ file.name +'</td>'
+                        ,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                        ,'<td>等待上传</td>'
+                        ,'<td>'
+                        //,'<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+                        ,'<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+                        ,'</td>'
+                        ,'</tr>'].join(''));
+                    $("#fileDiv").removeClass("layui-hide");
+                    //单个重传
+                    tr.find('.demo-reload').on('click', function(){
+                        obj.upload(index, file);
+                    });
+
+                    uploadFilesView.append(tr);
+                });
+            }
+            ,done: function(res, index, upload){
+                if(res.errcode == 0){ //上传成功
+                    var tr = uploadFilesView.find('tr#upload-'+ index)
+                        ,tds = tr.children();
+                    tr.attr('filename',res.filename);
+                    tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+                    //tds.eq(3).html(''); //清空操作
+                    filesStr += res.filename+";";
+                    $("input[name=files]").val(filesStr);
+                    return delete this.files[index]; //删除文件队列已经上传成功的文件
+                }
+                this.error(index, upload);
+            }
+            ,error: function(index, upload){
+                var tr = uploadFilesView.find('tr#upload-'+ index)
+                    ,tds = tr.children();
+                tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+                tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+            }
+        });
+
+        //删除
+        $("tr").find('.demo-delete').on('click', function(){
+            //delete files[index]; //删除对应的文件
+            var tr = $(this).parent().parent();
+            tr.remove();
+            var filename = tr.attr("filename");
+            filesStr = filesStr.replace(filename+";","");
+            $("input[name=files]").val(filesStr);
+            uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+        });
+
+        form.verify({
+            name: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "任务名不能为空";
+                }
+                if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                    return '任务名不能有特殊字符';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '任务名首尾不能出现下划线\'_\'';
+                }
+                if (/^\d+\d+\d$/.test(value)) {
+                    return '任务名不能全为数字';
+                }
+            },
+            type: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "请选择任务类型";
+                }
+            },
+            user: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "请选择任务对象";
+                }
+            },
+            date: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "请输入任务排期";
+                }
+            }
+
+        });
+
+        //监听提交
+        form.on('submit(subBtn)', function(data){
+            var url = '/task/addTaskSave';
+            if($("input[name=id]").length>0){
+                url= 'updateTaskSave';
+            }
+            $.post(url,data.field,function(data){
+                layer.closeAll();
+                if(data.errcode == 0){
+                    layer.msg(data.msg, {
+                        icon: 1,
+                        time: 1200 //1.2秒关闭（如果不配置，默认是3秒）
+                        , shade: [0.1, '#f5f5f5']
+                    },function () {
+                        debugger
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    });
+
+                }
+            });
+            return false;
+        });
+
+        function showLoad() {
+            return layer.msg('上传中...', {icon: 16,shade: [0.5, '#f5f5f5'],scrollbar: false,offset: 'auto', time:100000});
+        }
+        function closeLoad(index) {
+            layer.close(index);
+        }
+        function showSuccess(msg) {
+            layer.msg(msg,{time: 1000,offset: 'auto'});
+        }
+
+        layer.photos({
+            photos: '#previewImg'
+        });
+
+        function parseTime(v) {
+            var date = new Date(v);
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            m = m < 10 ? '0' + m : m;
+            var d = date.getDate();
+            d = d < 10 ? ("0" + d) : d;
+            var h = date.getHours();
+            h = h < 10 ? ("0" + h) : h;
+            var M = date.getMinutes();
+            M = M < 10 ? ("0" + M) : M;
+            var str = y + "-" + m + "-" + d /*+ " " + h + ":" + M*/;
+            return str;
+        }
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>角色管理</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mystyle/mystyle.css}"/>
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/js/formSelects-v4.js}" type="text/javascript" charset="utf-8"></script>
+</head>
+<body style="background-color: #f2f2f2">
+<div style="padding: 10px;" class="layui-fluid">
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md3">
+            <div class="layui-card">
+                <div class="layui-card-header">项目信息</div>
+                <div class="layui-card-body">
+                    <form class="layui-form layui-form-pane" id="addprojectForm">
+                        <input type="hidden" id="projectId" name="id" th:value="${pg.id}">
+                        <div class="layui-site-20">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">项目编号</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="projectNo" required lay-verify="no" placeholder="请输入项目编号"
+                                           autocomplete="off" class="layui-input" readonly="readonly" th:value="${pg.projectNo}"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">项目名称</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="projectName" required lay-verify="name" placeholder="请输入项目名称"
+                                           autocomplete="off" class="layui-input" th:value="${pg.projectName}"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <textarea name="remark" placeholder="请输入项目描述" class="layui-textarea" th:utext="${pg.remark}"></textarea>
+                            </div>
+
+                        </div>
+                        <div class="layui-btn-container" style="margin-top: 10px;margin-left: 33%">
+                            <button class="layui-btn layui-btn-sm " lay-submit lay-filter="subBtn">保存</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary" type="reset">重置</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md9">
+            <div class="layui-card">
+                <div class="layui-card-header">项目成员</div>
+                <div class="layui-card-body">
+                    <div class="layui-form layui-card-header layui-border-auto">
+                        <div class="layui-form-item">
+                            成员名称：
+                            <div class="layui-inline">
+                                <input class="layui-input" name="id" id="userName" autocomplete="off">
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn" data-type="reload" id="userSearch"><i class="layui-icon layui-icon-search"></i></button>
+                                <button class="layui-btn" data-type="reload" id="addProjectUser" title="添加组员"><i class="layui-icon layui-icon-add-1"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="layui-form-item"  id="userlist" lay-filter="userlist"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/html" id="projectRoleBar">
+    {{#  if(d.isAdmin == 1){ }}
+    <i class="layui-icon layui-icon-friends" style="font-size: 20px; color: #009688;" ></i>组长
+    {{#  }
+    else { }}
+    <i class="layui-icon layui-icon-friends" style="font-size: 20px; " ></i>组员
+    {{#  } }}
+</script>
+<script type="text/html" id="operateBar">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" title="移除成员"><i class="layui-icon layui-icon-delete"></i></a>
+</script>
+
+<script>
+    layui.use(['jquery', 'layer', 'element','form','table'], function(){
+        var $ = jQuery = layui.$;
+        var form = layui.form;
+        var table = layui.table;
+
+        var projectId = $("#projectId").val();
+
+        table.render({
+            elem: '#userlist'
+            ,id:'userTable'
+            ,url: '/console/projectUserList?projectId='+projectId //数据接口
+            ,page: true //开启分页
+            ,cols: [
+                [ //表头
+                    {type: 'numbers', title: '序号',width:60},
+                    {field: 'userName', title: '成员名',unresize:true},
+                    {field: 'email', title: '联系方式',unresize:true},
+                    {fixed: 'right', title:'成员角色',unresize:true, toolbar: '#projectRoleBar', width:120},
+                ]
+            ]
+        });
+
+        //监听提交
+        form.on('submit(subBtn)', function (data) {
+            //ajax 提交
+            $.post('/console/addProject', data.field, function (data) {
+                if(data.errcode == 0){
+                    layer.closeAll();
+                }
+                layer.msg(data.msg);
+                $("#projectSearch").click();
+            });
+            return false;
+        });
+
+        var $ = layui.$, active = {
+            reload: function(){
+                var userName = $('#userName').val();
+
+                //执行重载
+                table.reload('userTable', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        userName: userName
+                    }
+                });
+            }
+        };
+
+        $('#userSearch').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        $('#addProjectUser').on('click', function(){
+            layer.open({
+                type: 2
+                ,offset: 'auto'
+                ,title: '新增组员'
+                ,id: 'layerProjectUser'
+                ,content: '/console/addProjectUser?projectId=' + projectId
+                ,btnAlign: 'c' //按钮居中
+                ,shade: 0.3 //不显示遮罩
+                ,anim:1
+                ,resize: false
+                , area: ['50%', '50%']
+                ,btn: ['保存', '取消']
+                ,yes: function(index, layero){
+                    var body = layer.getChildFrame('body', index);//通过该对象可以获取iframe中的dom元素
+                    var userIds = body.find("#userIds").val();
+                    console.log(userIds);
+                    if(userIds.length>0){
+                        userIds = userIds.substr(1);
+                    }
+                    $.post("/console/addProjectUserSave",{userIds:userIds,projectId:projectId},function(result){
+                        layer.msg(result);
+                    });
+                    $('#userSearch').click();
+                },no:function(){
+                    layer.closeAll();
+                }
+            });
+            form.render();
+        });
+
+        form.verify({
+            name: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "项目名不能为空";
+                }
+                if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                    return '项目名不能有特殊字符';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '项目名首尾不能出现下划线\'_\'';
+                }
+                if (/^\d+\d+\d$/.test(value)) {
+                    return '项目名不能全为数字';
+                }
+            },
+            no: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if ("" == value) {
+                    return "项目编号不能为空";
+                }
+                if (!new RegExp("^[A-Z0-9_\\s·]+$").test(value)) {
+                    return '项目编号只能为大写英文和数字';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '项目编号首尾不能出现下划线\'_\'';
+                }
+                if (/^\d+\d+\d$/.test(value)) {
+                    return '项目编号不能全为数字';
+                }
+            }
+
+        });
+
+    });
+
+
+
+
+</script>
+</html>
