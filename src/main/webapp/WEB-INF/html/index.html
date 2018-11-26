@@ -359,7 +359,7 @@
             //连通之后的回调事件
             webSocket.onopen = function()
             {
-                webSocket.send("发送数据");
+                webSocket.send("连接测试");
             };
 
             //接收后台服务端的消息
@@ -375,7 +375,7 @@
             //连接关闭的回调事件
             webSocket.onclose = function()
             {
-                alert("连接已关闭...");
+                console.log("连接已关闭...");
             };
 
         }
