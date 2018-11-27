@@ -39,7 +39,7 @@ public class UserController extends BaseController{
             SecurityUtils.getSubject().login(token);
             errcode = 0;
             msg = "登录成功！";
-            logger.info(user.getUserName()+"用户登录于"+ DateUtil.parseDateToStr(new Date(),DateUtil.DATE_TIME_FORMAT_YYYY_MM_DD_HH_MI_SS ));
+            logger.info(request.getPathInfo()+"@@"+user.getUserName()+"@@登录于"+ DateUtil.parseDateToStr(new Date(),DateUtil.DATE_TIME_FORMAT_YYYY_MM_DD_HH_MI_SS ));
             return result;
         } catch (UnknownAccountException  ua){
             msg = "用户不存在！";
@@ -91,7 +91,7 @@ public class UserController extends BaseController{
         reloadAuthorizing(userDto);
         result.put("img",img);
         result.put("msg","修改头像成功！");
-        logger.info(userDto.getUserName()+"用户修改头像");
+        logger.info(request.getPathInfo()+"@@"+userDto.getUserName()+"@@修改头像");
         return result;
     }
 
@@ -101,6 +101,7 @@ public class UserController extends BaseController{
         Map<String,Object> result = new HashMap<>();
         userService.updateUser(userDto);
         result.put("errcode",0);
+        logger.info(request.getPathInfo()+"@@"+userDto.getUserName()+"@@"+(userDto.getStatus()==0?"禁用":"启用")+userDto.getUserName());
         return result;
     }
 
