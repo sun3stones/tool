@@ -39,6 +39,7 @@ public class ActiveMQTest {
                 System.out.println(message);
             }
         };
+        consumer.setMessageListener(listener);
         while(true){
             TextMessage message = (TextMessage) consumer.receive();
             System.out.println(message.getText());
