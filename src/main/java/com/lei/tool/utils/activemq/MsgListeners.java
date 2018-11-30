@@ -1,3 +1,4 @@
+/*
 package com.lei.tool.utils.activemq;
 
 import org.apache.activemq.command.ActiveMQQueue;
@@ -13,21 +14,25 @@ import javax.jms.Topic;
 @EnableJms
 public class MsgListeners {
 
-    /**
+    */
+/**
      * 点对点
      * @return
-     */
+     *//*
+
     @Bean
     public Queue queue(){
         return new ActiveMQQueue("active.queue");
     }
 
-    /**
+    */
+/**
      * 发布/订阅
      * @return
-     */
+     *//*
+
     @Bean
     public Topic topic(){
         return new ActiveMQTopic("active.topic");
     }
-}
+}*/

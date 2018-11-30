@@ -1,6 +1,7 @@
 package com.lei.tool;
 
 import com.lei.tool.mapper.UUserMapper;
+import com.lei.tool.utils.ssh.DeployService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ public class ToolApplicationTests {
 
     @Autowired
     private UUserMapper userMapper;
+    @Autowired
+    private DeployService deployService;
 
     @Test
     public void contextLoads() {
@@ -22,5 +25,15 @@ public class ToolApplicationTests {
         userMapper.getUserCount();
     }
 
+    @Test
+    public void getStatus(){
+        System.out.println(deployService.getStatus(""));
+
+    }
+    @Test
+    public void stop(){
+        deployService.stop();
+
+    }
 
 }

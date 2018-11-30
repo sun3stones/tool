@@ -1,3 +1,4 @@
+/*
 package com.lei.tool.utils.activemq;
 
 import org.springframework.jms.annotation.JmsListener;
@@ -5,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RestController
+@Service
 public class Consumer {
     @JmsListener(destination="active.queue")
     public void readActiveQueue(String message) {
@@ -19,3 +20,4 @@ public class Consumer {
 
 }
 
+*/
